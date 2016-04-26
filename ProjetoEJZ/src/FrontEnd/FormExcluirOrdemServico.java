@@ -25,7 +25,7 @@ public class FormExcluirOrdemServico extends JFrame {
 	private JTextField txtMostraDadosExcluir_2;
 	private JTextField txtMostraOS;
 	private JTextField txtMostraPlacaVeiculo;
-
+// teste
 	/**
 	 * Launch the application.
 	 */
@@ -94,7 +94,7 @@ public class FormExcluirOrdemServico extends JFrame {
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				int option = JOptionPane.showConfirmDialog(null, "Confirma a Exclus„o?", "ConfirmaÁ„o", JOptionPane.YES_NO_OPTION);
+				int option = JOptionPane.showConfirmDialog(null, "Confirma a Exclus√£o?", "Confirma√ß√£o", JOptionPane.YES_NO_OPTION);
 				if(option == 0){
 					FormExcluirOrdemServico.this.setVisible(false);
 				}else{
@@ -155,7 +155,7 @@ public class FormExcluirOrdemServico extends JFrame {
 
 				if (comboBoxPesquisa.getSelectedItem().equals("Numero O.S")) {
 
-					String exclusaoID = JOptionPane.showInputDialog("Informe o numero da O.S para exclus„o:");
+					String exclusaoID = JOptionPane.showInputDialog("Informe o numero da O.S para exclus√£o:");
 					if (exclusaoID != null) {
 						lblMostraDadosExcluir.setVisible(true);
 						lblMostraDadosExcluir_2.setVisible(true);

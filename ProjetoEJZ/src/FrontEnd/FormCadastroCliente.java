@@ -55,7 +55,7 @@ public class FormCadastroCliente extends JFrame {
 
 	/**
 	 * Create the frame.
-	 * 
+	 * teste2
 	 * @throws ParseException
 	 */
 	public FormCadastroCliente() throws ParseException {

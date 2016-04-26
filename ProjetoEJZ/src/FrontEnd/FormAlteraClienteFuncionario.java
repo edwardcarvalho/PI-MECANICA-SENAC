@@ -25,6 +25,7 @@ public class FormAlteraClienteFuncionario extends JFrame {
 
 	/**
 	 * Launch the application.
+	 * alteracao
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -71,8 +72,8 @@ public class FormAlteraClienteFuncionario extends JFrame {
 					String buscaNome = JOptionPane.showInputDialog("Informe o nome para pesquisa:");
 				} else if (comboBoxBusca.getSelectedItem().equals("CPF")) {
 					String buscaCPF = JOptionPane.showInputDialog("Informe o CPF para pesquisa:");
-				}else if(comboBoxBusca.getSelectedItem().equals("Placa Veículo")){
-					String buscaPlaca = JOptionPane.showInputDialog("Informe a placa do veículo para pesquisa:");
+				}else if(comboBoxBusca.getSelectedItem().equals("Placa VeÃ­culo")){
+					String buscaPlaca = JOptionPane.showInputDialog("Informe a placa do veÃ­culo para pesquisa:");
 				}
 			}
 		});

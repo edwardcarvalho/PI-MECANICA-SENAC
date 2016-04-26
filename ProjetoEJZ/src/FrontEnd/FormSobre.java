@@ -31,6 +31,7 @@ public class FormSobre extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * Create frame.
 	 */
 	public FormSobre() {
 		setBounds(100, 100, 259, 173);

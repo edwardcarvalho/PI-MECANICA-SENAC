@@ -1,6 +1,5 @@
 package FrontEnd;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -24,7 +23,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JSeparator;
 import java.awt.Toolkit;
 import java.awt.Label;
-import com.jgoodies.forms.factories.DefaultComponentFactory;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -101,56 +99,6 @@ public class FormMainEJZ extends JFrame {
 		JMenuItem mntmExcluir_1 = new JMenuItem("Excluir");
 		mntmExcluir_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnAgendamento.add(mntmExcluir_1);
-
-		JMenu mnAbrirOrdemDe = new JMenu("Ordem de Servi\u00E7o");
-		mnAbrirOrdemDe.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnArquivo.add(mnAbrirOrdemDe);
-
-		JMenuItem mntmNova = new JMenuItem("Nova");
-		mntmNova.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				FormOrdemServico ordemServico = new FormOrdemServico();
-				ordemServico.setVisible(true);
-			}
-		});
-		mntmNova.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnAbrirOrdemDe.add(mntmNova);
-
-		JMenuItem mntmAlterar = new JMenuItem("Alterar");
-		mntmAlterar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				FormAlterarOrdemServico alterarOrdemServico = new FormAlterarOrdemServico();
-
-				alterarOrdemServico.setVisible(true);
-			}
-		});
-		mntmAlterar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnAbrirOrdemDe.add(mntmAlterar);
-
-		JMenuItem mntmEncerrar = new JMenuItem("Baixar");
-		mntmEncerrar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				FormBaixarOrdemServico baixarOrdemServico = new FormBaixarOrdemServico();
-				baixarOrdemServico.setVisible(true);
-			}
-		});
-		mntmEncerrar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnAbrirOrdemDe.add(mntmEncerrar);
-
-		JMenuItem mntmExcluir_2 = new JMenuItem("Excluir");
-		mntmExcluir_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				FormExcluirOrdemServico excluirOrdemServico = new FormExcluirOrdemServico();
-
-				excluirOrdemServico.setVisible(true);
-			}
-		});
-		mntmExcluir_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnAbrirOrdemDe.add(mntmExcluir_2);
 		mnArquivo.add(mntmSair);
 
 		JMenu mnCadastro = new JMenu("Cadastro");
@@ -177,27 +125,11 @@ public class FormMainEJZ extends JFrame {
 		mntmCliente.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnNovo.add(mntmCliente);
 
-		JMenuItem mntmFuncionrio_1 = new JMenuItem("Funcion\u00E1rio");
-		mntmFuncionrio_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				FormCadastroFuncionario cadastroFuncionario = null;
-				try {
-					cadastroFuncionario = new FormCadastroFuncionario();
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				cadastroFuncionario.setVisible(true);
-			}
-		});
-		mntmFuncionrio_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnNovo.add(mntmFuncionrio_1);
-
 		JMenuItem mntmAlterar_1 = new JMenuItem("Alterar");
 		mntmAlterar_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				FormAlteraClienteFuncionario alteraClienteFuncionario = new FormAlteraClienteFuncionario();
+				FormAlteraCliente alteraClienteFuncionario = new FormAlteraCliente();
 
 				alteraClienteFuncionario.setVisible(true);
 			}
@@ -209,7 +141,7 @@ public class FormMainEJZ extends JFrame {
 		mntmExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				FormExcluirClienteFuncionario excluirClienteFuncionario = new FormExcluirClienteFuncionario();
+				FormExcluirCliente excluirClienteFuncionario = new FormExcluirCliente();
 				excluirClienteFuncionario.setVisible(true);
 			}
 		});
@@ -227,14 +159,6 @@ public class FormMainEJZ extends JFrame {
 		JMenuItem mntmCliente_1 = new JMenuItem("Cliente");
 		mntmCliente_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnPesquisa.add(mntmCliente_1);
-
-		JMenuItem mntmFuncionrio = new JMenuItem("Funcion\u00E1rio");
-		mntmFuncionrio.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnPesquisa.add(mntmFuncionrio);
-
-		JMenuItem mntmOrdemDeServio = new JMenuItem("Ordem de Servi\u00E7o");
-		mntmOrdemDeServio.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnPesquisa.add(mntmOrdemDeServio);
 
 		JMenu mnRelatrios = new JMenu("Relat\u00F3rios");
 		mnRelatrios.setFont(new Font("Segoe UI", Font.PLAIN, 14));

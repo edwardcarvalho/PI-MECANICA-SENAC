@@ -23,6 +23,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.ButtonGroup;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class FormCadastroCliente extends JFrame {
 
@@ -36,6 +39,7 @@ public class FormCadastroCliente extends JFrame {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField txtIdCliente;
 	private JTextField txtEmail;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -59,7 +63,7 @@ public class FormCadastroCliente extends JFrame {
 	 * @throws ParseException
 	 */
 	public FormCadastroCliente() throws ParseException {
-		setBounds(100, 100, 651, 440);
+		setBounds(100, 100, 768, 496);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -68,12 +72,12 @@ public class FormCadastroCliente extends JFrame {
 		Label label = new Label("Cadastro de Clientes");
 		label.setFont(new Font("Dialog", Font.BOLD, 28));
 		label.setAlignment(Label.CENTER);
-		label.setBounds(0, 0, 638, 51);
+		label.setBounds(0, 0, 752, 51);
 		contentPane.add(label);
 
 		JPanel panel = new JPanel();
 		panel.setBorder(null);
-		panel.setBounds(0, 59, 635, 343);
+		panel.setBounds(0, 59, 752, 398);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
@@ -173,23 +177,6 @@ public class FormCadastroCliente extends JFrame {
 		comboBoxCorCarro.setBounds(378, 181, 115, 20);
 		panel.add(comboBoxCorCarro);
 
-		JLabel lblCambioManual = new JLabel("C\u00E2mbio");
-		lblCambioManual.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCambioManual.setBounds(10, 230, 46, 14);
-		panel.add(lblCambioManual);
-
-		JRadioButton rdbtnCambioManual = new JRadioButton("Mec\u00E2nico");
-		buttonGroup.add(rdbtnCambioManual);
-		rdbtnCambioManual.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		rdbtnCambioManual.setBounds(66, 226, 86, 23);
-		panel.add(rdbtnCambioManual);
-
-		JRadioButton rdbtnCambioAutomtico = new JRadioButton("Autom\u00E1tico");
-		buttonGroup.add(rdbtnCambioAutomtico);
-		rdbtnCambioAutomtico.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		rdbtnCambioAutomtico.setBounds(161, 226, 116, 23);
-		panel.add(rdbtnCambioAutomtico);
-
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -203,7 +190,7 @@ public class FormCadastroCliente extends JFrame {
 			}
 		});
 		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnCancelar.setBounds(524, 281, 89, 23);
+		btnCancelar.setBounds(640, 307, 89, 23);
 		panel.add(btnCancelar);
 
 		JButton btnSalvar = new JButton("Salvar");
@@ -231,7 +218,7 @@ public class FormCadastroCliente extends JFrame {
 			}
 		});
 		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnSalvar.setBounds(402, 283, 89, 23);
+		btnSalvar.setBounds(640, 341, 89, 23);
 		panel.add(btnSalvar);
 
 		JLabel lblAnoCarro = new JLabel("Ano");
@@ -267,5 +254,29 @@ public class FormCadastroCliente extends JFrame {
 		txtEmail.setBounds(66, 143, 246, 20);
 		panel.add(txtEmail);
 		txtEmail.setColumns(10);
+		
+		JButton btnNewButton = new JButton("Inserir");
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnNewButton.setBounds(647, 179, 80, 23);
+		panel.add(btnNewButton);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 223, 483, 141);
+		panel.add(scrollPane);
+		
+		table = new JTable();
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Placa", "Modelo", "Cor", "Ano"
+			}
+		));
+		scrollPane.setViewportView(table);
+		
+		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnExcluir.setBounds(405, 371, 89, 23);
+		panel.add(btnExcluir);
 	}
 }

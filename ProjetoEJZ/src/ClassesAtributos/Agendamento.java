@@ -3,18 +3,18 @@ package ClassesAtributos;
 public class Agendamento {
 
 	private int idAgendamento;
-	private Automovel altomovel;
+	private Automovel automovel;
 	private Funcionario funcionario;
 	private Servico servico;
 	private String dataAgendamento;
 	private String horarioInicial;
 	private String horarioFinal;
 
-	public Agendamento(int idAgendamento, Automovel altomovel,
+	public Agendamento(int idAgendamento, Automovel automovel,
 			Funcionario funcionario, Servico servico, String dataAgendamento,
 			String horarioInicial, String horarioFinal) {
 		this.idAgendamento = idAgendamento;
-		this.altomovel = altomovel;
+		this.automovel = automovel;
 		this.funcionario = funcionario;
 		this.servico = servico;
 		this.dataAgendamento = dataAgendamento;
@@ -30,12 +30,12 @@ public class Agendamento {
 		this.idAgendamento = idAgendamento;
 	}
 
-	public Automovel getAltomovel() {
-		return altomovel;
+	public Automovel getAutomovel() {
+		return automovel;
 	}
 
-	public void setAltomovel(Automovel altomovel) {
-		this.altomovel = altomovel;
+	public void setAutomovel(Automovel automovel) {
+		this.automovel = automovel;
 	}
 
 	public Funcionario getFuncionario() {

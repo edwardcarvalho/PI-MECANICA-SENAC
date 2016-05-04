@@ -4,7 +4,6 @@ public class Automovel {
 
 	private int idAutomovel;
 	private Cliente cliente;
-	private String marca;
 	private String modelo;
 	private String cor;
 	private String anoFabricacao;
@@ -14,7 +13,6 @@ public class Automovel {
 			String modelo, String cor, String anoFabricacao, String placa) {
 		this.idAutomovel = idAutomovel;
 		this.cliente = cliente;
-		this.marca = marca;
 		this.modelo = modelo;
 		this.cor = cor;
 		this.anoFabricacao = anoFabricacao;
@@ -37,13 +35,6 @@ public class Automovel {
 		this.cliente = cliente;
 	}
 
-	public String getMarca() {
-		return marca;
-	}
-
-	public void setMarca(String marca) {
-		this.marca = marca;
-	}
 
 	public String getModelo() {
 		return modelo;

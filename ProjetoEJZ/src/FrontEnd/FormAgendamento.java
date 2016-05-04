@@ -32,7 +32,10 @@ public class FormAgendamento extends JFrame {
 	private JTextField txtCPFcadastrado;
 	private JTextField txtPlacaVeiculoCadastrado;
 	private JTable tableHorariosDisponiveis;
+<<<<<<< HEAD
 	private JTextField txtNumeroAgendamento;
+=======
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 
 	/**
 	 * Launch the application.
@@ -54,7 +57,11 @@ public class FormAgendamento extends JFrame {
 	 * Create the frame.
 	 */
 	public FormAgendamento() {
+<<<<<<< HEAD
 		setBounds(100, 100, 784, 490);
+=======
+		setBounds(100, 100, 784, 444);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -67,93 +74,161 @@ public class FormAgendamento extends JFrame {
 		contentPane.add(lblAgendamentoDeHrs);
 		
 		JPanel panelAgendamento = new JPanel();
+<<<<<<< HEAD
 		panelAgendamento.setBounds(0, 62, 768, 390);
+=======
+		panelAgendamento.setBounds(0, 62, 774, 375);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		contentPane.add(panelAgendamento);
 		panelAgendamento.setLayout(null);
 		
 		JLabel lblPesquisarCliente = new JLabel("M\u00E9todo de Pesquisa");
 		lblPesquisarCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
+<<<<<<< HEAD
 		lblPesquisarCliente.setBounds(42, 51, 129, 23);
+=======
+		lblPesquisarCliente.setBounds(42, 11, 129, 23);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(lblPesquisarCliente);
 		
 		JComboBox comboBoxBuscaCliente = new JComboBox();
 		comboBoxBuscaCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBoxBuscaCliente.setModel(new DefaultComboBoxModel(new String[] {"...", "Nome", "CPF", "Placa do Veiculo"}));
+<<<<<<< HEAD
 		comboBoxBuscaCliente.setBounds(42, 78, 142, 20);
 		panelAgendamento.add(comboBoxBuscaCliente);
 		
 		txtCampoBuscaCliente = new JTextField();
 		txtCampoBuscaCliente.setBounds(194, 78, 432, 20);
+=======
+		comboBoxBuscaCliente.setBounds(42, 38, 142, 20);
+		panelAgendamento.add(comboBoxBuscaCliente);
+		
+		txtCampoBuscaCliente = new JTextField();
+		txtCampoBuscaCliente.setBounds(194, 38, 432, 20);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(txtCampoBuscaCliente);
 		txtCampoBuscaCliente.setColumns(10);
 		
 		JButton btnBuscarCliente = new JButton("Buscar");
 		btnBuscarCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
+<<<<<<< HEAD
 		btnBuscarCliente.setBounds(637, 77, 89, 23);
+=======
+		btnBuscarCliente.setBounds(637, 37, 89, 23);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(btnBuscarCliente);
 		
 		JLabel lblNome = new JLabel("Nome");
 		lblNome.setFont(new Font("Tahoma", Font.PLAIN, 14));
+<<<<<<< HEAD
 		lblNome.setBounds(42, 127, 46, 14);
+=======
+		lblNome.setBounds(42, 87, 46, 14);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(lblNome);
 		
 		JLabel lblCpf = new JLabel("CPF");
 		lblCpf.setFont(new Font("Tahoma", Font.PLAIN, 14));
+<<<<<<< HEAD
 		lblCpf.setBounds(355, 127, 24, 14);
+=======
+		lblCpf.setBounds(355, 87, 24, 14);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(lblCpf);
 		
 		JLabel lblPlacaDoVeiculo = new JLabel("Placa do Veiculo");
 		lblPlacaDoVeiculo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+<<<<<<< HEAD
 		lblPlacaDoVeiculo.setBounds(528, 130, 104, 14);
+=======
+		lblPlacaDoVeiculo.setBounds(528, 90, 104, 14);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(lblPlacaDoVeiculo);
 		
 		txtNomeCadastrado = new JTextField();
 		txtNomeCadastrado.setEditable(false);
+<<<<<<< HEAD
 		txtNomeCadastrado.setBounds(85, 127, 260, 20);
+=======
+		txtNomeCadastrado.setBounds(85, 87, 260, 20);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(txtNomeCadastrado);
 		txtNomeCadastrado.setColumns(10);
 		
 		txtCPFcadastrado = new JTextField();
 		txtCPFcadastrado.setEditable(false);
+<<<<<<< HEAD
 		txtCPFcadastrado.setBounds(389, 127, 129, 20);
+=======
+		txtCPFcadastrado.setBounds(389, 87, 129, 20);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(txtCPFcadastrado);
 		txtCPFcadastrado.setColumns(10);
 		
 		txtPlacaVeiculoCadastrado = new JTextField();
 		txtPlacaVeiculoCadastrado.setEditable(false);
+<<<<<<< HEAD
 		txtPlacaVeiculoCadastrado.setBounds(637, 129, 89, 20);
+=======
+		txtPlacaVeiculoCadastrado.setBounds(637, 89, 89, 20);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(txtPlacaVeiculoCadastrado);
 		txtPlacaVeiculoCadastrado.setColumns(10);
 		
 		JDateChooser dateChooser = new JDateChooser();
+<<<<<<< HEAD
 		dateChooser.setBounds(42, 172, 103, 20);
+=======
+		dateChooser.setBounds(42, 132, 103, 20);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(dateChooser);
 		
 		JButton btnPesquisaData = new JButton("Pesquisar");
 		btnPesquisaData.setFont(new Font("Tahoma", Font.PLAIN, 14));
+<<<<<<< HEAD
 		btnPesquisaData.setBounds(155, 170, 104, 23);
+=======
+		btnPesquisaData.setBounds(155, 130, 104, 23);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(btnPesquisaData);
 		
 		JLabel lblHorriosDisponiveis = new JLabel("Hor\u00E1rios Disponiveis");
 		lblHorriosDisponiveis.setFont(new Font("Tahoma", Font.PLAIN, 14));
+<<<<<<< HEAD
 		lblHorriosDisponiveis.setBounds(42, 207, 129, 23);
+=======
+		lblHorriosDisponiveis.setBounds(42, 167, 129, 23);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(lblHorriosDisponiveis);
 		
 		JLabel lblNewLabel = new JLabel("Status");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+<<<<<<< HEAD
 		lblNewLabel.setBounds(333, 278, 46, 14);
+=======
+		lblNewLabel.setBounds(333, 238, 46, 14);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(lblNewLabel);
 		
 		JComboBox comboBoxStatusAgendamento = new JComboBox();
 		comboBoxStatusAgendamento.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBoxStatusAgendamento.setModel(new DefaultComboBoxModel(new String[] {"...", "Agendado", "Em atendimento", "Atendido"}));
+<<<<<<< HEAD
 		comboBoxStatusAgendamento.setBounds(334, 302, 142, 23);
+=======
+		comboBoxStatusAgendamento.setBounds(334, 262, 142, 20);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(comboBoxStatusAgendamento);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+<<<<<<< HEAD
 		scrollPane.setBounds(42, 241, 270, 109);
+=======
+		scrollPane.setBounds(42, 201, 270, 109);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(scrollPane);
 		
 		tableHorariosDisponiveis = new JTable();
@@ -169,13 +244,21 @@ public class FormAgendamento extends JFrame {
 		
 		JLabel lblReviso = new JLabel("Servi\u00E7o");
 		lblReviso.setFont(new Font("Tahoma", Font.PLAIN, 14));
+<<<<<<< HEAD
 		lblReviso.setBounds(334, 213, 61, 17);
+=======
+		lblReviso.setBounds(334, 173, 61, 17);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(lblReviso);
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"...", "Revis\u00E3o - 10.000 km", "Revis\u00E3o - 20.000 km", "Revis\u00E3o - 30.000 km", "Revis\u00E3o - 40.000 km", "Revis\u00E3o - 50.000 km", "Revis\u00E3o - 60.000 km", "Revis\u00E3o - 70.000 km", "Revis\u00E3o - 80.000 km", "Revis\u00E3o - 90.000 km", "Revis\u00E3o - 100.000 km", "Revis\u00E3o - Acima de 100.000 km"}));
+<<<<<<< HEAD
 		comboBox.setBounds(333, 241, 222, 23);
+=======
+		comboBox.setBounds(333, 201, 222, 23);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(comboBox);
 		
 		JButton btnCancelar = new JButton("Cancelar");
@@ -190,11 +273,16 @@ public class FormAgendamento extends JFrame {
 			}
 		});
 		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 14));
+<<<<<<< HEAD
 		btnCancelar.setBounds(637, 339, 89, 23);
+=======
+		btnCancelar.setBounds(637, 299, 89, 23);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panelAgendamento.add(btnCancelar);
 		
 		JButton btnAgendar = new JButton("Agendar");
 		btnAgendar.setFont(new Font("Tahoma", Font.PLAIN, 14));
+<<<<<<< HEAD
 		btnAgendar.setBounds(537, 339, 89, 23);
 		panelAgendamento.add(btnAgendar);
 		
@@ -208,5 +296,9 @@ public class FormAgendamento extends JFrame {
 		txtNumeroAgendamento.setBounds(170, 14, 86, 20);
 		panelAgendamento.add(txtNumeroAgendamento);
 		txtNumeroAgendamento.setColumns(10);
+=======
+		btnAgendar.setBounds(537, 299, 89, 23);
+		panelAgendamento.add(btnAgendar);
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 	}
 }

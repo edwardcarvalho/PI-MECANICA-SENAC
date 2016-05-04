@@ -118,6 +118,7 @@ public class FormMainEJZ extends JFrame {
 		mnAgendamento.add(mntmAlterar_2);
 
 		JMenuItem mntmExcluir_1 = new JMenuItem("Excluir");
+<<<<<<< HEAD
 		mntmExcluir_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -126,6 +127,8 @@ public class FormMainEJZ extends JFrame {
 				excluirAgendamento.setVisible(true);
 			}
 		});
+=======
+>>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		mntmExcluir_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnAgendamento.add(mntmExcluir_1);
 		mnArquivo.add(mntmSair);

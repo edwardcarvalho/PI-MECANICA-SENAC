@@ -38,11 +38,8 @@ public class FormCadastroCliente extends JFrame {
 	private JTextField txtPlacaVeiculoCliente;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField txtIdCliente;
-<<<<<<< HEAD
-=======
-	private JTextField txtEmail;
->>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 	private JTable table;
+	private JButton btnInserir;
 
 	/**
 	 * Launch the application.
@@ -66,11 +63,8 @@ public class FormCadastroCliente extends JFrame {
 	 * @throws ParseException
 	 */
 	public FormCadastroCliente() throws ParseException {
-<<<<<<< HEAD
 		setBounds(100, 100, 768, 479);
-=======
 		setBounds(100, 100, 768, 496);
->>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -84,11 +78,8 @@ public class FormCadastroCliente extends JFrame {
 
 		JPanel panel = new JPanel();
 		panel.setBorder(null);
-<<<<<<< HEAD
 		panel.setBounds(0, 59, 752, 382);
-=======
 		panel.setBounds(0, 59, 752, 398);
->>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
@@ -212,11 +203,8 @@ public class FormCadastroCliente extends JFrame {
 			}
 		});
 		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-<<<<<<< HEAD
 		btnCancelar.setBounds(640, 269, 89, 23);
-=======
 		btnCancelar.setBounds(640, 307, 89, 23);
->>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panel.add(btnCancelar);
 
 		JButton btnSalvar = new JButton("Salvar");
@@ -243,11 +231,8 @@ public class FormCadastroCliente extends JFrame {
 			}
 		});
 		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-<<<<<<< HEAD
 		btnSalvar.setBounds(640, 303, 89, 23);
-=======
 		btnSalvar.setBounds(640, 341, 89, 23);
->>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
 		panel.add(btnSalvar);
 
 		JLabel lblAnoCarro = new JLabel("Ano");
@@ -263,10 +248,11 @@ public class FormCadastroCliente extends JFrame {
 		comboBoxAnoCarro.setBounds(533, 143, 80, 20);
 		panel.add(comboBoxAnoCarro);
 		
-		JButton btnNewButton = new JButton("Inserir");
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnNewButton.setBounds(647, 141, 80, 23);
-		panel.add(btnNewButton);
+		JButton btnNewButton;
+		btnInserir = new JButton("Inserir");
+		btnInserir.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnInserir.setBounds(647, 141, 80, 23);
+		panel.add(btnInserir);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 185, 483, 141);
@@ -282,24 +268,13 @@ public class FormCadastroCliente extends JFrame {
 		));
 		scrollPane.setViewportView(table);
 		
-<<<<<<< HEAD
 		JButton btnExcluir = new JButton("Excluir");
 		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnExcluir.setBounds(405, 333, 89, 23);
-=======
-		txtEmail = new JTextField();
-		txtEmail.setBounds(66, 143, 246, 20);
-		panel.add(txtEmail);
-		txtEmail.setColumns(10);
 		
-		JButton btnNewButton = new JButton("Inserir");
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnNewButton.setBounds(647, 179, 80, 23);
-		panel.add(btnNewButton);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 223, 483, 141);
-		panel.add(scrollPane);
+		JScrollPane scrollPane1 = new JScrollPane();
+		scrollPane1.setBounds(10, 223, 483, 141);
+		panel.add(scrollPane1);
 		
 		table = new JTable();
 		table.setModel(new DefaultTableModel(
@@ -309,12 +284,11 @@ public class FormCadastroCliente extends JFrame {
 				"Placa", "Modelo", "Cor", "Ano"
 			}
 		));
-		scrollPane.setViewportView(table);
+		scrollPane1.setViewportView(table);
 		
-		JButton btnExcluir = new JButton("Excluir");
-		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnExcluir.setBounds(405, 371, 89, 23);
->>>>>>> 8f1e2816737083c07206a1a677b1c77af5a878a1
-		panel.add(btnExcluir);
+		JButton btnExcluir1 = new JButton("Excluir");
+		btnExcluir1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnExcluir1.setBounds(405, 371, 89, 23);
+		panel.add(btnExcluir1);
 	}
 }

@@ -89,6 +89,13 @@ public class FormMainEJZ extends JFrame {
 		mnArquivo.add(mnAgendamento);
 
 		JMenuItem mntmNovo = new JMenuItem("Novo");
+		mntmNovo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				FormAgendamento agendamento = new FormAgendamento();
+				agendamento.setVisible(true);
+			}
+		});
 		mntmNovo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnAgendamento.add(mntmNovo);
 

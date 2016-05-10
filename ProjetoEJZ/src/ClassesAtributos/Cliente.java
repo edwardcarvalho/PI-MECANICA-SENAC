@@ -9,19 +9,12 @@ public class Cliente {
 	private String telefoneCelular;
 	private String dataNas;
 
-	public Cliente(int idCliente, String nomeCliente, String cpf,
-			String telefoneRes, String telefoneCelular, String dataNas) {
+	public Cliente(String nomeCliente, String cpf,String telefoneRes, String telefoneCelular, String dataNas) {
 		this.idCliente = idCliente;
 		this.nomeCliente = nomeCliente;
 		this.cpf = cpf;
 		this.telefoneRes = telefoneRes;
 		this.telefoneCelular = telefoneCelular;
-		this.dataNas = dataNas;
-	}
-
-	public Cliente(String nomeCliente, String cpf, String dataNas) {
-		this.nomeCliente = nomeCliente;
-		this.cpf = cpf;
 		this.dataNas = dataNas;
 	}
 

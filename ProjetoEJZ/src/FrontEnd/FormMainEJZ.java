@@ -1,11 +1,16 @@
 package FrontEnd;
 
 import java.awt.EventQueue;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
+
+import BancoDados.ConexaoDAO;
+
 import javax.swing.JLabel;
 import javax.swing.JToolBar;
 import javax.swing.JDesktopPane;
@@ -13,6 +18,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
+import java.net.ConnectException;
 import java.text.ParseException;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
@@ -33,6 +39,8 @@ import java.awt.Rectangle;
 import javax.swing.SwingConstants;
 
 public class FormMainEJZ extends JFrame {
+	
+	ConexaoDAO conn = new ConexaoDAO();
 
 	private JPanel contentPane;
 
@@ -43,6 +51,7 @@ public class FormMainEJZ extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
 					FormMainEJZ frame = new FormMainEJZ();
 					frame.setResizable(false);
 					frame.setVisible(true);
@@ -56,7 +65,9 @@ public class FormMainEJZ extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public FormMainEJZ() {
+	
+	public FormMainEJZ() throws SQLException {
+		
 		setTitle("SCA - Sistema de Controle de Agendamento");
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 1200, 660);

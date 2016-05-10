@@ -1,4 +1,5 @@
 package FrontEnd;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -6,6 +7,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
+
+import BancoDados.ConexaoDAO;
+import ClassesAtributos.Cliente;
 
 import java.awt.Label;
 import java.awt.Font;
@@ -22,12 +26,26 @@ import java.text.ParseException;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 public class FormCadastroCliente extends JFrame {
+
+	ConexaoDAO conexao = new ConexaoDAO();
+	Connection conn;
+	Statement st;
+
+	public static void removeMask(JTextField item) {
+		item.getText().replaceAll("\\D", "");
+	}
 
 	private JPanel contentPane;
 	private JTextField txtNomeCliente;
@@ -58,8 +76,8 @@ public class FormCadastroCliente extends JFrame {
 	}
 
 	/**
-	 * Create the frame.
-	 * teste2
+	 * Create the frame. teste2
+	 * 
 	 * @throws ParseException
 	 */
 	public FormCadastroCliente() throws ParseException {
@@ -82,12 +100,12 @@ public class FormCadastroCliente extends JFrame {
 		panel.setBounds(0, 59, 752, 398);
 		contentPane.add(panel);
 		panel.setLayout(null);
-		
+
 		JLabel lblIdCliente = new JLabel("ID Cliente");
 		lblIdCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblIdCliente.setBounds(10, 11, 59, 14);
 		panel.add(lblIdCliente);
-		
+
 		txtIdCliente = new JTextField();
 		txtIdCliente.setEditable(false);
 		txtIdCliente.setBounds(73, 8, 58, 20);
@@ -211,23 +229,51 @@ public class FormCadastroCliente extends JFrame {
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				if (txtNomeCliente.getText().isEmpty() ||
-						txtDataNascimentoCliente.getText().equals("__/__/__") ||
-						txtCpfCliente.getText().equals("   .   .   -  ") ||
-						txtCelularCliente.getText().equals("(  )      -    ") ||
-						txtTelefoneCliente.getText().equals("(  )     -    )") ||
-						txtPlacaVeiculoCliente.getText().equals("   -    ") || 
-						comboBoxCorCarro.getSelectedItem().equals("...") ||
-						comboBoxModeloCarro.getSelectedItem().equals("...")) {
+				/*
+				 * if (txtNomeCliente.getText().isEmpty() ||
+				 * txtDataNascimentoCliente.getText().equals("__/__/__") ||
+				 * txtCpfCliente.getText().equals("   .   .   -  ") ||
+				 * txtCelularCliente.getText().equals("(  )      -    ") ||
+				 * txtTelefoneCliente.getText().equals("(  )     -    )") ||
+				 * txtPlacaVeiculoCliente.getText().equals("   -    ") ||
+				 * comboBoxCorCarro.getSelectedItem().equals("...") ||
+				 * comboBoxModeloCarro.getSelectedItem().equals("...")) {
+				 * 
+				 * JOptionPane.showMessageDialog(null,
+				 * "Complete todos os campos!");
+				 * FormCadastroCliente.this.setVisible(true);
+				 * 
+				 * } else {
+				 * 
+				 * JOptionPane.showMessageDialog(null,
+				 * "Cadastro feito com Sucesso!");
+				 * FormCadastroCliente.this.setVisible(false); }
+				 */
+				try {
+					conexao.conectaBanco();
 
-					JOptionPane.showMessageDialog(null, "Complete todos os campos!");
-					FormCadastroCliente.this.setVisible(true);
+					Cliente cliente = new Cliente(txtNomeCliente.getText(),
+							txtCpfCliente.getText().replaceAll("\\D", ""),
+							txtTelefoneCliente.getText().replaceAll("\\D", ""),
+							txtCelularCliente.getText().replaceAll("\\D", ""),
+							txtDataNascimentoCliente.getText().replaceAll("/", "-"));
 
-				} else {
+					conexao.adicionaCliente(cliente);
 
-					JOptionPane.showMessageDialog(null, "Cadastro feito com Sucesso!");
+					conexao.desconectaBanco();
+
+					JOptionPane.showMessageDialog(null, "Cadastro feito com sucesso!");
+
 					FormCadastroCliente.this.setVisible(false);
+
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+
 			}
 		});
 		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -247,45 +293,33 @@ public class FormCadastroCliente extends JFrame {
 		comboBoxAnoCarro.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBoxAnoCarro.setBounds(533, 143, 80, 20);
 		panel.add(comboBoxAnoCarro);
-		
+
 		JButton btnNewButton;
 		btnInserir = new JButton("Inserir");
 		btnInserir.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnInserir.setBounds(647, 141, 80, 23);
 		panel.add(btnInserir);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 185, 483, 141);
 		panel.add(scrollPane);
-		
+
 		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Placa", "Modelo", "Cor", "Ano"
-			}
-		));
+		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Placa", "Modelo", "Cor", "Ano" }));
 		scrollPane.setViewportView(table);
-		
+
 		JButton btnExcluir = new JButton("Excluir");
 		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnExcluir.setBounds(405, 333, 89, 23);
-		
+
 		JScrollPane scrollPane1 = new JScrollPane();
 		scrollPane1.setBounds(10, 223, 483, 141);
 		panel.add(scrollPane1);
-		
+
 		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Placa", "Modelo", "Cor", "Ano"
-			}
-		));
+		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Placa", "Modelo", "Cor", "Ano" }));
 		scrollPane1.setViewportView(table);
-		
+
 		JButton btnExcluir1 = new JButton("Excluir");
 		btnExcluir1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnExcluir1.setBounds(405, 371, 89, 23);

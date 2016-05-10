@@ -8,7 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
 
-import BancoDados.ConexaoDAO;
+import BancoDados.Conexao;
+import ClassesAtributos.Automovel;
 import ClassesAtributos.Cliente;
 
 import java.awt.Label;
@@ -39,7 +40,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class FormCadastroCliente extends JFrame {
 
-	ConexaoDAO conexao = new ConexaoDAO();
+	Conexao conexao = new Conexao();
 	Connection conn;
 	Statement st;
 
@@ -57,7 +58,7 @@ public class FormCadastroCliente extends JFrame {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField txtIdCliente;
 	private JTable table;
-	private JButton btnInserir;
+	private JButton btnAdicionar;
 
 	/**
 	 * Launch the application.
@@ -81,7 +82,7 @@ public class FormCadastroCliente extends JFrame {
 	 * @throws ParseException
 	 */
 	public FormCadastroCliente() throws ParseException {
-		setBounds(100, 100, 768, 479);
+		setBounds(100, 100, 866, 496);
 		setBounds(100, 100, 768, 496);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -96,7 +97,7 @@ public class FormCadastroCliente extends JFrame {
 
 		JPanel panel = new JPanel();
 		panel.setBorder(null);
-		panel.setBounds(0, 59, 752, 382);
+		panel.setBounds(0, 59, 752, 441);
 		panel.setBounds(0, 59, 752, 398);
 		contentPane.add(panel);
 		panel.setLayout(null);
@@ -114,11 +115,11 @@ public class FormCadastroCliente extends JFrame {
 
 		JLabel lblNome = new JLabel("Nome");
 		lblNome.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNome.setBounds(10, 66, 46, 14);
+		lblNome.setBounds(10, 50, 46, 14);
 		panel.add(lblNome);
 
 		txtNomeCliente = new JTextField();
-		txtNomeCliente.setBounds(66, 63, 295, 20);
+		txtNomeCliente.setBounds(66, 47, 295, 20);
 		txtNomeCliente.getText().toUpperCase();
 		panel.add(txtNomeCliente);
 		txtNomeCliente.setColumns(10);
@@ -128,11 +129,11 @@ public class FormCadastroCliente extends JFrame {
 
 		JLabel lblDataDeNascimento = new JLabel("Data de Nascimento");
 		lblDataDeNascimento.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDataDeNascimento.setBounds(382, 66, 135, 14);
+		lblDataDeNascimento.setBounds(382, 50, 135, 14);
 		panel.add(lblDataDeNascimento);
 
 		txtDataNascimentoCliente = new JFormattedTextField(dateMask);
-		txtDataNascimentoCliente.setBounds(520, 61, 93, 20);
+		txtDataNascimentoCliente.setBounds(520, 45, 93, 20);
 		panel.add(txtDataNascimentoCliente);
 		txtDataNascimentoCliente.setColumns(10);
 
@@ -140,11 +141,11 @@ public class FormCadastroCliente extends JFrame {
 
 		JLabel lblCpf = new JLabel("CPF");
 		lblCpf.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCpf.setBounds(10, 104, 46, 14);
+		lblCpf.setBounds(10, 88, 46, 14);
 		panel.add(lblCpf);
 
 		txtCpfCliente = new JFormattedTextField(cpfMask);
-		txtCpfCliente.setBounds(66, 101, 146, 20);
+		txtCpfCliente.setBounds(66, 85, 146, 20);
 		panel.add(txtCpfCliente);
 		txtCpfCliente.setColumns(10);
 
@@ -152,11 +153,11 @@ public class FormCadastroCliente extends JFrame {
 
 		JLabel lblTelefone = new JLabel("Telefone");
 		lblTelefone.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblTelefone.setBounds(231, 104, 59, 14);
+		lblTelefone.setBounds(231, 88, 59, 14);
 		panel.add(lblTelefone);
 
 		txtTelefoneCliente = new JFormattedTextField(foneMask);
-		txtTelefoneCliente.setBounds(300, 101, 102, 20);
+		txtTelefoneCliente.setBounds(300, 85, 102, 20);
 		panel.add(txtTelefoneCliente);
 		txtTelefoneCliente.setColumns(10);
 
@@ -164,48 +165,51 @@ public class FormCadastroCliente extends JFrame {
 
 		JLabel lblCelular = new JLabel("Celular");
 		lblCelular.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCelular.setBounds(425, 104, 46, 14);
+		lblCelular.setBounds(425, 88, 46, 14);
 		panel.add(lblCelular);
 
 		txtCelularCliente = new JFormattedTextField(celularMask);
 		txtCelularCliente.setColumns(10);
-		txtCelularCliente.setBounds(480, 101, 115, 20);
+		txtCelularCliente.setBounds(480, 85, 115, 20);
 		panel.add(txtCelularCliente);
 
 		MaskFormatter placaMask = new MaskFormatter("UUU-####");
 
 		JLabel lblPlaca = new JLabel("Placa");
 		lblPlaca.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPlaca.setBounds(10, 149, 46, 14);
+		lblPlaca.setBounds(10, 176, 46, 14);
 		panel.add(lblPlaca);
 
 		txtPlacaVeiculoCliente = new JFormattedTextField(placaMask);
-		txtPlacaVeiculoCliente.setBounds(66, 146, 93, 20);
+		txtPlacaVeiculoCliente.setEnabled(false);
+		txtPlacaVeiculoCliente.setBounds(66, 173, 93, 20);
 		panel.add(txtPlacaVeiculoCliente);
 		txtPlacaVeiculoCliente.setColumns(10);
 
 		JLabel lblMarca = new JLabel("Modelo");
 		lblMarca.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblMarca.setBounds(169, 146, 46, 14);
+		lblMarca.setBounds(169, 173, 46, 14);
 		panel.add(lblMarca);
 
 		JComboBox comboBoxModeloCarro = new JComboBox();
+		comboBoxModeloCarro.setEnabled(false);
 		comboBoxModeloCarro.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBoxModeloCarro.setModel(
 				new DefaultComboBoxModel(new String[] { "...", "ACCORD", "CITY", "CIVIC", "CR-V", "FIT", "HR-V" }));
-		comboBoxModeloCarro.setBounds(226, 143, 115, 20);
+		comboBoxModeloCarro.setBounds(226, 170, 115, 20);
 		panel.add(comboBoxModeloCarro);
 
 		JLabel lblCor = new JLabel("Cor");
 		lblCor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCor.setBounds(351, 146, 46, 14);
+		lblCor.setBounds(351, 173, 46, 14);
 		panel.add(lblCor);
 
 		JComboBox comboBoxCorCarro = new JComboBox();
+		comboBoxCorCarro.setEnabled(false);
 		comboBoxCorCarro.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBoxCorCarro.setModel(new DefaultComboBoxModel(new String[] { "...", "AZUL", "BRANCO", "CINZA", "CHUMBO",
 				"DOURADO", "LARANJA", "MARROM", "PRATA", "PRETO", "VERMELHO", "VINHO" }));
-		comboBoxCorCarro.setBounds(378, 143, 115, 20);
+		comboBoxCorCarro.setBounds(378, 170, 115, 20);
 		panel.add(comboBoxCorCarro);
 
 		JButton btnCancelar = new JButton("Cancelar");
@@ -226,82 +230,42 @@ public class FormCadastroCliente extends JFrame {
 		panel.add(btnCancelar);
 
 		JButton btnSalvar = new JButton("Salvar");
+		btnSalvar.setEnabled(false);
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				/*
-				 * if (txtNomeCliente.getText().isEmpty() ||
-				 * txtDataNascimentoCliente.getText().equals("__/__/__") ||
-				 * txtCpfCliente.getText().equals("   .   .   -  ") ||
-				 * txtCelularCliente.getText().equals("(  )      -    ") ||
-				 * txtTelefoneCliente.getText().equals("(  )     -    )") ||
-				 * txtPlacaVeiculoCliente.getText().equals("   -    ") ||
-				 * comboBoxCorCarro.getSelectedItem().equals("...") ||
-				 * comboBoxModeloCarro.getSelectedItem().equals("...")) {
-				 * 
-				 * JOptionPane.showMessageDialog(null,
-				 * "Complete todos os campos!");
-				 * FormCadastroCliente.this.setVisible(true);
-				 * 
-				 * } else {
-				 * 
-				 * JOptionPane.showMessageDialog(null,
-				 * "Cadastro feito com Sucesso!");
-				 * FormCadastroCliente.this.setVisible(false); }
-				 */
-				try {
-					conexao.conectaBanco();
-
-					Cliente cliente = new Cliente(txtNomeCliente.getText(),
-							txtCpfCliente.getText().replaceAll("\\D", ""),
-							txtTelefoneCliente.getText().replaceAll("\\D", ""),
-							txtCelularCliente.getText().replaceAll("\\D", ""),
-							txtDataNascimentoCliente.getText().replaceAll("/", "-"));
-
-					conexao.adicionaCliente(cliente);
-
-					conexao.desconectaBanco();
-
-					JOptionPane.showMessageDialog(null, "Cadastro feito com sucesso!");
-
-					FormCadastroCliente.this.setVisible(false);
-
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
+				JOptionPane.showMessageDialog(null, "Cadastro feito com sucesso!");
+				FormCadastroCliente.this.setVisible(false);
 			}
 		});
 		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnSalvar.setBounds(640, 303, 89, 23);
+		btnSalvar.setBounds(623, 117, 89, 23);
 		btnSalvar.setBounds(640, 341, 89, 23);
 		panel.add(btnSalvar);
 
 		JLabel lblAnoCarro = new JLabel("Ano");
 		lblAnoCarro.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblAnoCarro.setBounds(503, 146, 29, 14);
+		lblAnoCarro.setBounds(503, 173, 29, 14);
 		panel.add(lblAnoCarro);
 
 		JComboBox comboBoxAnoCarro = new JComboBox();
+		comboBoxAnoCarro.setEnabled(false);
 		comboBoxAnoCarro.setModel(new DefaultComboBoxModel(new String[] { "...", "2016", "2015", "2014", "2013", "2012",
 				"2011", "2010", "2009", "2008", "2007", "2006", "2005", "2004", "2003", "2002", "2001", "2000", "1999",
 				"1998", "1997", "1996", "1995", "1994", "1993", "1992", "1991" }));
 		comboBoxAnoCarro.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBoxAnoCarro.setBounds(533, 143, 80, 20);
+		comboBoxAnoCarro.setBounds(533, 170, 80, 20);
 		panel.add(comboBoxAnoCarro);
 
-		JButton btnNewButton;
-		btnInserir = new JButton("Inserir");
-		btnInserir.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnInserir.setBounds(647, 141, 80, 23);
-		panel.add(btnInserir);
+		btnAdicionar = new JButton("Adicionar");
+		btnAdicionar.setEnabled(false);
+		btnAdicionar.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnAdicionar.setBounds(623, 168, 104, 23);
+		panel.add(btnAdicionar);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 185, 483, 141);
+		scrollPane.setEnabled(false);
+		scrollPane.setBounds(10, 207, 483, 141);
 		panel.add(scrollPane);
 
 		table = new JTable();
@@ -312,17 +276,85 @@ public class FormCadastroCliente extends JFrame {
 		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnExcluir.setBounds(405, 333, 89, 23);
 
-		JScrollPane scrollPane1 = new JScrollPane();
-		scrollPane1.setBounds(10, 223, 483, 141);
-		panel.add(scrollPane1);
-
-		table = new JTable();
-		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Placa", "Modelo", "Cor", "Ano" }));
-		scrollPane1.setViewportView(table);
-
 		JButton btnExcluir1 = new JButton("Excluir");
+		btnExcluir1.setEnabled(false);
 		btnExcluir1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnExcluir1.setBounds(405, 371, 89, 23);
+		btnExcluir1.setBounds(405, 356, 89, 23);
 		panel.add(btnExcluir1);
+
+		JButton btnCadastrarVeiculo = new JButton("Cadastrar Veiculo");
+		btnCadastrarVeiculo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				if (txtNomeCliente.getText().length() < 4 || txtDataNascimentoCliente.getText().length() < 10
+						|| txtCpfCliente.getText().length() < 14 || txtCelularCliente.getText().length() < 15
+						|| txtTelefoneCliente.getText().length() < 14) {
+					JOptionPane.showMessageDialog(null, "Complete todos os campos!");
+					FormCadastroCliente.this.setVisible(true);
+
+				} else {
+
+					try {
+
+						Cliente cliente = new Cliente(txtNomeCliente.getText().toString(),
+								txtCpfCliente.getText().replaceAll("\\D", "").toString(),
+								txtTelefoneCliente.getText().replaceAll("\\D", "").toString(),
+								txtCelularCliente.getText().replaceAll("\\D", "").toString(),
+								txtDataNascimentoCliente.getText().replaceAll("/", "-").toString());
+
+						conexao.adicionaCliente(cliente);
+
+						txtPlacaVeiculoCliente.setEnabled(true);
+						comboBoxAnoCarro.setEnabled(true);
+						comboBoxCorCarro.setEnabled(true);
+						comboBoxModeloCarro.setEnabled(true);
+						btnExcluir.setEnabled(true);
+						btnAdicionar.setEnabled(true);
+						btnSalvar.setEnabled(true);
+
+						btnAdicionar.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent arg0) {
+
+								try {
+									if (txtPlacaVeiculoCliente.getText().length() < 8
+											|| comboBoxCorCarro.getSelectedItem().equals("...")
+											|| comboBoxModeloCarro.getSelectedItem().equals("...")) {
+
+										JOptionPane.showMessageDialog(null, "Complete todos os campos!");
+										FormCadastroCliente.this.setVisible(true);
+
+									} else {
+										Automovel automovel = new Automovel(cliente,
+												comboBoxModeloCarro.getSelectedItem().toString(),
+												comboBoxCorCarro.getSelectedItem().toString(),
+												comboBoxAnoCarro.getSelectedItem().toString(),
+												txtPlacaVeiculoCliente.getText());
+										conexao.adicionaAutomovel(automovel, cliente);
+									}
+								} catch (ClassNotFoundException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (SQLException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						});
+
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+
+			}
+		});
+		btnCadastrarVeiculo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnCadastrarVeiculo.setBounds(11, 124, 148, 23);
+		panel.add(btnCadastrarVeiculo);
 	}
 }

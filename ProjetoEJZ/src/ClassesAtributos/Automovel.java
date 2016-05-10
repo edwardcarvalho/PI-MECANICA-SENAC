@@ -9,9 +9,7 @@ public class Automovel {
 	private String anoFabricacao;
 	private String placa;
 
-	public Automovel(int idAutomovel, Cliente cliente, String marca,
-			String modelo, String cor, String anoFabricacao, String placa) {
-		this.idAutomovel = idAutomovel;
+	public Automovel(Cliente cliente,String modelo, String cor, String anoFabricacao, String placa) {
 		this.cliente = cliente;
 		this.modelo = modelo;
 		this.cor = cor;

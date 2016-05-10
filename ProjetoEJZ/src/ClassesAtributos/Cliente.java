@@ -10,7 +10,6 @@ public class Cliente {
 	private String dataNas;
 
 	public Cliente(String nomeCliente, String cpf,String telefoneRes, String telefoneCelular, String dataNas) {
-		this.idCliente = idCliente;
 		this.nomeCliente = nomeCliente;
 		this.cpf = cpf;
 		this.telefoneRes = telefoneRes;

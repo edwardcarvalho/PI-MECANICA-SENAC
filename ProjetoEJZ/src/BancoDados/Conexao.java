@@ -78,31 +78,30 @@ public class Conexao {
 
 	public void mostraCarroCadastrado(Cliente cliente, Automovel carro, JTable tabela)
 			throws ClassNotFoundException, SQLException {
-		
+
 		conectaBanco();
-		
+
 		DefaultTableModel model = (DefaultTableModel) tabela.getModel();
-		
+
 		for (int i = 0; i < model.getRowCount(); i++) {
 			model.removeRow(0);
 		}
-		
+
 		rs = null;
 		Statement st = conn.createStatement();
-		
-		String sql = "SELECT A.PLACA, A.MODELO, A.COR, A.ANOFABRICACAO FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON A.ID_CLIENTE = C.ID_CLIENTE";
-		
+
+		String sql = "SELECT A.PLACA, A.MODELO, A.COR, A.ANOFABRICACAO FROM AUTOMOVEIS A WHERE A.ID_CLIENTE ="
+				+ cliente.getIdCliente();
+
 		rs = st.executeQuery(sql);
-		
-		while(rs.next()){
+
+		while (rs.next()) {
 			model = (DefaultTableModel) tabela.getModel();
-			model.addRow(new String [] {rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4)});
+			model.addRow(new String[] { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4) });
 		}
-		
+
 		st.close();
 		desconectaBanco();
-
-		
 
 	}
 

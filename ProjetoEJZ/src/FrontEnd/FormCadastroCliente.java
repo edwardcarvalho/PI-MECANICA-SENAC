@@ -270,6 +270,8 @@ public class FormCadastroCliente extends JFrame {
 		panel.add(scrollPane);
 
 		tableVeiculosCadastrados = new JTable();
+		tableVeiculosCadastrados.setColumnSelectionAllowed(true);
+		tableVeiculosCadastrados.setCellSelectionEnabled(true);
 		tableVeiculosCadastrados.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
@@ -336,6 +338,11 @@ public class FormCadastroCliente extends JFrame {
 										conexao.adicionaAutomovel(automovel, cliente);
 
 										conexao.mostraCarroCadastrado(cliente, automovel, tableVeiculosCadastrados);
+										
+										((JFormattedTextField) txtPlacaVeiculoCliente).setValue(null);
+										comboBoxAnoCarro.setSelectedItem("...");
+										comboBoxCorCarro.setSelectedItem("...");
+										comboBoxModeloCarro.setSelectedItem("...");
 									}
 								} catch (ClassNotFoundException e) {
 									// TODO Auto-generated catch block

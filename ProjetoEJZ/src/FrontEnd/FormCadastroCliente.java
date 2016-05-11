@@ -57,8 +57,9 @@ public class FormCadastroCliente extends JFrame {
 	private JTextField txtPlacaVeiculoCliente;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField txtIdCliente;
-	private JTable table;
+	private JTable tableVeiculosCadastrados;
 	private JButton btnAdicionar;
+	private JScrollPane scrollPane;
 
 	/**
 	 * Launch the application.
@@ -263,24 +264,26 @@ public class FormCadastroCliente extends JFrame {
 		btnAdicionar.setBounds(623, 168, 104, 23);
 		panel.add(btnAdicionar);
 
-		JScrollPane scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		scrollPane.setEnabled(false);
 		scrollPane.setBounds(10, 207, 483, 141);
 		panel.add(scrollPane);
 
-		table = new JTable();
-		table.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Placa", "Modelo", "Cor", "Ano" }));
-		scrollPane.setViewportView(table);
+		tableVeiculosCadastrados = new JTable();
+		tableVeiculosCadastrados.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Placa", "Modelo", "Cor", "Ano"
+			}
+		));
+		scrollPane.setViewportView(tableVeiculosCadastrados);
 
 		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.setEnabled(false);
 		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnExcluir.setBounds(405, 333, 89, 23);
-
-		JButton btnExcluir1 = new JButton("Excluir");
-		btnExcluir1.setEnabled(false);
-		btnExcluir1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnExcluir1.setBounds(405, 356, 89, 23);
-		panel.add(btnExcluir1);
+		btnExcluir.setBounds(405, 356, 89, 23);
+		panel.add(btnExcluir);
 
 		JButton btnCadastrarVeiculo = new JButton("Cadastrar Veiculo");
 		btnCadastrarVeiculo.addActionListener(new ActionListener() {
@@ -311,6 +314,7 @@ public class FormCadastroCliente extends JFrame {
 						btnExcluir.setEnabled(true);
 						btnAdicionar.setEnabled(true);
 						btnSalvar.setEnabled(true);
+						tableVeiculosCadastrados.setVisible(true);
 
 						btnAdicionar.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent arg0) {
@@ -330,6 +334,8 @@ public class FormCadastroCliente extends JFrame {
 												comboBoxAnoCarro.getSelectedItem().toString(),
 												txtPlacaVeiculoCliente.getText());
 										conexao.adicionaAutomovel(automovel, cliente);
+
+										conexao.mostraCarroCadastrado(cliente, automovel, tableVeiculosCadastrados);
 									}
 								} catch (ClassNotFoundException e) {
 									// TODO Auto-generated catch block

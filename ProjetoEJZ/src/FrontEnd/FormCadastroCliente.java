@@ -116,25 +116,25 @@ public class FormCadastroCliente extends JFrame {
 
 		JLabel lblNome = new JLabel("Nome");
 		lblNome.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNome.setBounds(10, 50, 46, 14);
+		lblNome.setBounds(214, 50, 46, 14);
 		panel.add(lblNome);
 
 		txtNomeCliente = new JTextField();
-		txtNomeCliente.setBounds(66, 47, 295, 20);
+		txtNomeCliente.setBounds(270, 47, 295, 20);
 		txtNomeCliente.getText().toUpperCase();
 		panel.add(txtNomeCliente);
 		txtNomeCliente.setColumns(10);
-
+		
 		MaskFormatter dateMask = new MaskFormatter("##/##/####");
 		dateMask.setPlaceholderCharacter('_');
 
 		JLabel lblDataDeNascimento = new JLabel("Data de Nascimento");
 		lblDataDeNascimento.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDataDeNascimento.setBounds(382, 50, 135, 14);
+		lblDataDeNascimento.setBounds(10, 90, 135, 14);
 		panel.add(lblDataDeNascimento);
 
 		txtDataNascimentoCliente = new JFormattedTextField(dateMask);
-		txtDataNascimentoCliente.setBounds(520, 45, 93, 20);
+		txtDataNascimentoCliente.setBounds(148, 85, 93, 20);
 		panel.add(txtDataNascimentoCliente);
 		txtDataNascimentoCliente.setColumns(10);
 
@@ -142,11 +142,30 @@ public class FormCadastroCliente extends JFrame {
 
 		JLabel lblCpf = new JLabel("CPF");
 		lblCpf.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCpf.setBounds(10, 88, 46, 14);
+		lblCpf.setBounds(10, 50, 46, 14);
 		panel.add(lblCpf);
 
 		txtCpfCliente = new JFormattedTextField(cpfMask);
-		txtCpfCliente.setBounds(66, 85, 146, 20);
+		txtCpfCliente.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				String cpf = txtCpfCliente.getText().replaceAll("\\D", "").toString();
+				
+				try {
+					boolean validacao = conexao.validaCpf(cpf);
+					if(validacao){
+						JOptionPane.showMessageDialog(null, "CPF ja cadastrado");
+						txtCpfCliente.requestFocusInWindow();
+						((JFormattedTextField) txtCpfCliente).setValue(null);
+					}
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		txtCpfCliente.setBounds(66, 47, 125, 20);
 		panel.add(txtCpfCliente);
 		txtCpfCliente.setColumns(10);
 
@@ -154,11 +173,11 @@ public class FormCadastroCliente extends JFrame {
 
 		JLabel lblTelefone = new JLabel("Telefone");
 		lblTelefone.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblTelefone.setBounds(231, 88, 59, 14);
+		lblTelefone.setBounds(255, 88, 59, 14);
 		panel.add(lblTelefone);
 
 		txtTelefoneCliente = new JFormattedTextField(foneMask);
-		txtTelefoneCliente.setBounds(300, 85, 102, 20);
+		txtTelefoneCliente.setBounds(324, 85, 102, 20);
 		panel.add(txtTelefoneCliente);
 		txtTelefoneCliente.setColumns(10);
 
@@ -166,12 +185,12 @@ public class FormCadastroCliente extends JFrame {
 
 		JLabel lblCelular = new JLabel("Celular");
 		lblCelular.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCelular.setBounds(425, 88, 46, 14);
+		lblCelular.setBounds(449, 88, 46, 14);
 		panel.add(lblCelular);
 
 		txtCelularCliente = new JFormattedTextField(celularMask);
 		txtCelularCliente.setColumns(10);
-		txtCelularCliente.setBounds(480, 85, 115, 20);
+		txtCelularCliente.setBounds(504, 85, 115, 20);
 		panel.add(txtCelularCliente);
 
 		MaskFormatter placaMask = new MaskFormatter("UUU-####");
@@ -308,7 +327,12 @@ public class FormCadastroCliente extends JFrame {
 								txtDataNascimentoCliente.getText().replaceAll("/", "-").toString());
 
 						conexao.adicionaCliente(cliente);
-
+						
+						txtNomeCliente.setEditable(false);
+						txtCpfCliente.setEditable(false);
+						txtTelefoneCliente.setEditable(false);
+						txtCelularCliente.setEditable(false);
+						txtDataNascimentoCliente.setEditable(false);
 						txtPlacaVeiculoCliente.setEnabled(true);
 						comboBoxAnoCarro.setEnabled(true);
 						comboBoxCorCarro.setEnabled(true);

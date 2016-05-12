@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.plaf.basic.BasicTabbedPaneUI.TabbedPaneLayout;
 import javax.swing.table.DefaultTableModel;
@@ -50,10 +51,8 @@ public class Conexao {
 		pst.setString(5, cliente.getDataNas());
 		pst.executeUpdate();
 		pst.close();
-
 		rs = pst.getGeneratedKeys();
 		cliente.setIdCliente(rs.getInt(1));
-
 		desconectaBanco();
 
 	}
@@ -105,4 +104,29 @@ public class Conexao {
 
 	}
 
+	public boolean validaCpf(String cpf) throws ClassNotFoundException, SQLException {
+
+		String sql = "SELECT C.CPF FROM CLIENTES C WHERE CPF =" + cpf;
+
+		conectaBanco();
+		Statement st = conn.createStatement();
+		rs = st.executeQuery(sql);
+
+		ArrayList<String> ListaCpf = new ArrayList<>();
+
+		while (rs.next()) {
+			ListaCpf.add(rs.getString("cpf"));
+		}
+
+		st.close();
+		rs.close();
+		desconectaBanco();
+
+		if (ListaCpf.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
 }

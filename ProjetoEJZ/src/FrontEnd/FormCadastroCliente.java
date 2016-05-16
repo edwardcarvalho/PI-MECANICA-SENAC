@@ -24,6 +24,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -55,7 +56,6 @@ public class FormCadastroCliente extends JFrame {
 	private JTextField txtTelefoneCliente;
 	private JTextField txtCelularCliente;
 	private JTextField txtPlacaVeiculoCliente;
-	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField txtIdCliente;
 	private JTable tableVeiculosCadastrados;
 	private JButton btnAdicionar;
@@ -78,7 +78,6 @@ public class FormCadastroCliente extends JFrame {
 	}
 
 	/**
-	 * Create the frame. teste2
 	 * 
 	 * @throws ParseException
 	 */
@@ -110,7 +109,7 @@ public class FormCadastroCliente extends JFrame {
 
 		txtIdCliente = new JTextField();
 		txtIdCliente.setEditable(false);
-		txtIdCliente.setBounds(73, 8, 58, 20);
+		txtIdCliente.setBounds(74, 8, 34, 20);
 		panel.add(txtIdCliente);
 		txtIdCliente.setColumns(10);
 
@@ -124,7 +123,7 @@ public class FormCadastroCliente extends JFrame {
 		txtNomeCliente.getText().toUpperCase();
 		panel.add(txtNomeCliente);
 		txtNomeCliente.setColumns(10);
-		
+
 		MaskFormatter dateMask = new MaskFormatter("##/##/####");
 		dateMask.setPlaceholderCharacter('_');
 
@@ -144,19 +143,58 @@ public class FormCadastroCliente extends JFrame {
 		lblCpf.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblCpf.setBounds(10, 50, 46, 14);
 		panel.add(lblCpf);
-
 		txtCpfCliente = new JFormattedTextField(cpfMask);
+
+		JButton btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int opcao = JOptionPane.showConfirmDialog(null, "Cancelar o cadastro?", "Confirmação",
+						JOptionPane.YES_NO_OPTION);
+				if (opcao == 0) {
+					FormCadastroCliente.this.setVisible(false);
+				} else {
+
+				}
+			}
+		});
+		
 		txtCpfCliente.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
 				String cpf = txtCpfCliente.getText().replaceAll("\\D", "").toString();
-				
+
 				try {
 					boolean validacao = conexao.validaCpf(cpf);
-					if(validacao){
-						JOptionPane.showMessageDialog(null, "CPF ja cadastrado");
-						txtCpfCliente.requestFocusInWindow();
-						((JFormattedTextField) txtCpfCliente).setValue(null);
+					if (validacao) {
+						JOptionPane.showMessageDialog(null, "CPF ja cadastrado!");
+						int opcao = JOptionPane.showConfirmDialog(null, "Deseja editar?", "Confirmação de Edição",
+								JOptionPane.YES_NO_OPTION);
+
+						if (opcao == 0) {
+
+							ArrayList<Cliente> cliente = conexao.buscaCliente(cpf);
+
+							for (Cliente c : cliente) {
+								txtIdCliente.setText(String.valueOf(c.getIdCliente()));
+								txtCpfCliente.setText(c.getCpf());
+								txtNomeCliente.setText(c.getNomeCliente());
+								txtDataNascimentoCliente.setText(c.getDataNas().replaceAll("\\D", ""));
+								txtCelularCliente.setText(c.getTelefoneCelular());
+								txtTelefoneCliente.setText(c.getTelefoneRes());
+								btnCancelar.setEnabled(false);
+								conexao.mostraCarroCadastrado(c, tableVeiculosCadastrados);
+								
+								
+								
+							}
+							
+						} else {
+
+							((JFormattedTextField) txtCpfCliente).setValue(null);
+							txtCpfCliente.requestFocusInWindow();
+
+						}
+
 					}
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
@@ -232,18 +270,6 @@ public class FormCadastroCliente extends JFrame {
 		comboBoxCorCarro.setBounds(378, 170, 115, 20);
 		panel.add(comboBoxCorCarro);
 
-		JButton btnCancelar = new JButton("Cancelar");
-		btnCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int opcao = JOptionPane.showConfirmDialog(null, "Cancelar o cadastro?", "Confirmação",
-						JOptionPane.YES_NO_OPTION);
-				if (opcao == 0) {
-					FormCadastroCliente.this.setVisible(false);
-				} else {
-
-				}
-			}
-		});
 		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnCancelar.setBounds(640, 269, 89, 23);
 		btnCancelar.setBounds(640, 307, 89, 23);
@@ -289,17 +315,13 @@ public class FormCadastroCliente extends JFrame {
 		panel.add(scrollPane);
 
 		tableVeiculosCadastrados = new JTable();
-		tableVeiculosCadastrados.setColumnSelectionAllowed(true);
-		tableVeiculosCadastrados.setCellSelectionEnabled(true);
-		tableVeiculosCadastrados.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Placa", "Modelo", "Cor", "Ano"
-			}
-		));
+		tableVeiculosCadastrados.setColumnSelectionAllowed(false);
+		tableVeiculosCadastrados.setCellSelectionEnabled(false);
+		tableVeiculosCadastrados.setRowSelectionAllowed(true);
+		tableVeiculosCadastrados
+				.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Placa", "Modelo", "Cor", "Ano" }));
 		scrollPane.setViewportView(tableVeiculosCadastrados);
-
+		
 		JButton btnExcluir = new JButton("Excluir");
 		btnExcluir.setEnabled(false);
 		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -327,7 +349,8 @@ public class FormCadastroCliente extends JFrame {
 								txtDataNascimentoCliente.getText().replaceAll("/", "-").toString());
 
 						conexao.adicionaCliente(cliente);
-						
+
+						txtIdCliente.setText(String.valueOf(cliente.getIdCliente()));
 						txtNomeCliente.setEditable(false);
 						txtCpfCliente.setEditable(false);
 						txtTelefoneCliente.setEditable(false);
@@ -348,7 +371,8 @@ public class FormCadastroCliente extends JFrame {
 								try {
 									if (txtPlacaVeiculoCliente.getText().length() < 8
 											|| comboBoxCorCarro.getSelectedItem().equals("...")
-											|| comboBoxModeloCarro.getSelectedItem().equals("...")) {
+											|| comboBoxModeloCarro.getSelectedItem().equals("...")
+											|| comboBoxAnoCarro.getSelectedItem().equals("...")) {
 
 										JOptionPane.showMessageDialog(null, "Complete todos os campos!");
 										FormCadastroCliente.this.setVisible(true);
@@ -361,8 +385,8 @@ public class FormCadastroCliente extends JFrame {
 												txtPlacaVeiculoCliente.getText());
 										conexao.adicionaAutomovel(automovel, cliente);
 
-										conexao.mostraCarroCadastrado(cliente, automovel, tableVeiculosCadastrados);
-										
+										conexao.mostraCarroCadastrado(cliente, tableVeiculosCadastrados);
+
 										((JFormattedTextField) txtPlacaVeiculoCliente).setValue(null);
 										comboBoxAnoCarro.setSelectedItem("...");
 										comboBoxCorCarro.setSelectedItem("...");

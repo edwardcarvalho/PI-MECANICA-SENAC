@@ -17,6 +17,7 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.DefaultComboBoxModel;
@@ -38,6 +39,8 @@ import javax.swing.ButtonGroup;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class FormCadastroCliente extends JFrame {
 
@@ -146,66 +149,6 @@ public class FormCadastroCliente extends JFrame {
 		txtCpfCliente = new JFormattedTextField(cpfMask);
 
 		JButton btnCancelar = new JButton("Cancelar");
-		btnCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int opcao = JOptionPane.showConfirmDialog(null, "Cancelar o cadastro?", "Confirmação",
-						JOptionPane.YES_NO_OPTION);
-				if (opcao == 0) {
-					FormCadastroCliente.this.setVisible(false);
-				} else {
-
-				}
-			}
-		});
-		
-		txtCpfCliente.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				String cpf = txtCpfCliente.getText().replaceAll("\\D", "").toString();
-
-				try {
-					boolean validacao = conexao.validaCpf(cpf);
-					if (validacao) {
-						JOptionPane.showMessageDialog(null, "CPF ja cadastrado!");
-						int opcao = JOptionPane.showConfirmDialog(null, "Deseja editar?", "Confirmação de Edição",
-								JOptionPane.YES_NO_OPTION);
-
-						if (opcao == 0) {
-
-							ArrayList<Cliente> cliente = conexao.buscaCliente(cpf);
-
-							for (Cliente c : cliente) {
-								txtIdCliente.setText(String.valueOf(c.getIdCliente()));
-								txtCpfCliente.setText(c.getCpf());
-								txtNomeCliente.setText(c.getNomeCliente());
-								txtDataNascimentoCliente.setText(c.getDataNas().replaceAll("\\D", ""));
-								txtCelularCliente.setText(c.getTelefoneCelular());
-								txtTelefoneCliente.setText(c.getTelefoneRes());
-								btnCancelar.setEnabled(false);
-								conexao.mostraCarroCadastrado(c, tableVeiculosCadastrados);
-								
-								
-								
-							}
-							
-						} else {
-
-							((JFormattedTextField) txtCpfCliente).setValue(null);
-							txtCpfCliente.requestFocusInWindow();
-
-						}
-
-					}
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		txtCpfCliente.setBounds(66, 47, 125, 20);
-		panel.add(txtCpfCliente);
-		txtCpfCliente.setColumns(10);
 
 		MaskFormatter foneMask = new MaskFormatter("(##) ####-####");
 
@@ -280,8 +223,13 @@ public class FormCadastroCliente extends JFrame {
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				JOptionPane.showMessageDialog(null, "Cadastro feito com sucesso!");
-				FormCadastroCliente.this.setVisible(false);
+				if (tableVeiculosCadastrados.getRowCount() > 0) {
+					JOptionPane.showMessageDialog(null, "Cadastro feito com sucesso!");
+					FormCadastroCliente.this.setVisible(false);
+				} else {
+					JOptionPane.showMessageDialog(null, "Complete todos os campos!");
+				}
+
 			}
 		});
 		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -309,24 +257,25 @@ public class FormCadastroCliente extends JFrame {
 		btnAdicionar.setBounds(623, 168, 104, 23);
 		panel.add(btnAdicionar);
 
+		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.setEnabled(false);
+		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnExcluir.setBounds(405, 356, 89, 23);
+		panel.add(btnExcluir);
+		btnExcluir.setEnabled(false);
+
 		scrollPane = new JScrollPane();
 		scrollPane.setEnabled(false);
 		scrollPane.setBounds(10, 207, 483, 141);
 		panel.add(scrollPane);
-
 		tableVeiculosCadastrados = new JTable();
+		tableVeiculosCadastrados.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableVeiculosCadastrados.setColumnSelectionAllowed(false);
 		tableVeiculosCadastrados.setCellSelectionEnabled(false);
 		tableVeiculosCadastrados.setRowSelectionAllowed(true);
 		tableVeiculosCadastrados
 				.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Placa", "Modelo", "Cor", "Ano" }));
 		scrollPane.setViewportView(tableVeiculosCadastrados);
-		
-		JButton btnExcluir = new JButton("Excluir");
-		btnExcluir.setEnabled(false);
-		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnExcluir.setBounds(405, 356, 89, 23);
-		panel.add(btnExcluir);
 
 		JButton btnCadastrarVeiculo = new JButton("Cadastrar Veiculo");
 		btnCadastrarVeiculo.addActionListener(new ActionListener() {
@@ -365,11 +314,24 @@ public class FormCadastroCliente extends JFrame {
 						btnSalvar.setEnabled(true);
 						tableVeiculosCadastrados.setVisible(true);
 
+						btnCancelar.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								int opcao = JOptionPane.showConfirmDialog(null, "Cancelar o cadastro?", "Confirmação",
+										JOptionPane.YES_NO_OPTION);
+								if (opcao == 0) {
+									conexao.cancelaCadastro(Integer.valueOf(txtIdCliente.getText()));
+									FormCadastroCliente.this.setVisible(false);
+								} else {
+
+								}
+							}
+						});
+
 						btnAdicionar.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent arg0) {
 
 								try {
-									if (txtPlacaVeiculoCliente.getText().length() < 8
+									if (txtPlacaVeiculoCliente.getText().equals("   -    ")
 											|| comboBoxCorCarro.getSelectedItem().equals("...")
 											|| comboBoxModeloCarro.getSelectedItem().equals("...")
 											|| comboBoxAnoCarro.getSelectedItem().equals("...")) {
@@ -384,13 +346,39 @@ public class FormCadastroCliente extends JFrame {
 												comboBoxAnoCarro.getSelectedItem().toString(),
 												txtPlacaVeiculoCliente.getText());
 										conexao.adicionaAutomovel(automovel, cliente);
+										conexao.atualizaCarrosCadastrado(cliente, tableVeiculosCadastrados);
 
-										conexao.mostraCarroCadastrado(cliente, tableVeiculosCadastrados);
+										tableVeiculosCadastrados.addMouseListener(new MouseAdapter() {
+											@Override
+											public void mousePressed(MouseEvent arg0) {
+
+												String placa = tableVeiculosCadastrados
+														.getValueAt(tableVeiculosCadastrados.getSelectedRow(), 0)
+														.toString();
+
+												btnExcluir.addActionListener(new ActionListener() {
+													public void actionPerformed(ActionEvent arg0) {
+
+														try {
+															conexao.excluirAutomovel(placa);
+															conexao.atualizaCarrosCadastrado(cliente,
+																	tableVeiculosCadastrados);
+														} catch (ClassNotFoundException e) {
+															e.printStackTrace();
+														} catch (SQLException e) {
+															e.printStackTrace();
+														}
+													}
+												});
+
+											}
+										});
 
 										((JFormattedTextField) txtPlacaVeiculoCliente).setValue(null);
 										comboBoxAnoCarro.setSelectedItem("...");
 										comboBoxCorCarro.setSelectedItem("...");
 										comboBoxModeloCarro.setSelectedItem("...");
+
 									}
 								} catch (ClassNotFoundException e) {
 									// TODO Auto-generated catch block
@@ -415,7 +403,164 @@ public class FormCadastroCliente extends JFrame {
 			}
 		});
 		btnCadastrarVeiculo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnCadastrarVeiculo.setBounds(11, 124, 148, 23);
+		btnCadastrarVeiculo.setBounds(11, 125, 148, 23);
 		panel.add(btnCadastrarVeiculo);
+
+		JButton btnAlterarVeiculo = new JButton("Alterar Veiculo");
+		btnAlterarVeiculo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				txtPlacaVeiculoCliente.setEnabled(true);
+				comboBoxAnoCarro.setEnabled(true);
+				comboBoxCorCarro.setEnabled(true);
+				comboBoxModeloCarro.setEnabled(true);
+				btnExcluir.setEnabled(true);
+				btnAdicionar.setEnabled(true);
+				btnSalvar.setEnabled(true);
+				tableVeiculosCadastrados.setVisible(true);
+
+			}
+		});
+		btnAlterarVeiculo.setVisible(false);
+		btnAlterarVeiculo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnAlterarVeiculo.setBounds(10, 126, 148, 23);
+		panel.add(btnAlterarVeiculo);
+
+		txtCpfCliente.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				String cpf = txtCpfCliente.getText().replaceAll("\\D", "").toString();
+
+				try {
+					boolean validacao = conexao.validaCpf(cpf);
+					if (validacao) {
+						JOptionPane.showMessageDialog(null, "CPF ja cadastrado!");
+						int opcao = JOptionPane.showConfirmDialog(null, "Deseja editar?", "Confirmação de Edição",
+								JOptionPane.YES_NO_OPTION);
+
+						if (opcao == 0) {
+
+							Cliente cliente = conexao.buscaCliente(cpf);
+
+							txtIdCliente.setText(String.valueOf(cliente.getIdCliente()));
+							txtCpfCliente.setText(cliente.getCpf());
+							txtCpfCliente.setEditable(false);
+							txtNomeCliente.setText(cliente.getNomeCliente());
+							txtDataNascimentoCliente.setText(cliente.getDataNas().replaceAll("\\D", ""));
+							txtCelularCliente.setText(cliente.getTelefoneCelular());
+							txtTelefoneCliente.setText(cliente.getTelefoneRes());
+							btnCancelar.setEnabled(false);
+							btnCadastrarVeiculo.setVisible(false);
+							btnAlterarVeiculo.setVisible(true);
+							conexao.atualizaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+							btnSalvar.setVisible(false);
+
+							JButton btnConcluirAlterao = new JButton("Concluir Altera\u00E7\u00E3o");
+							btnConcluirAlterao.setFont(new Font("Tahoma", Font.PLAIN, 14));
+							btnConcluirAlterao.setEnabled(false);
+							btnConcluirAlterao.setBounds(581, 341, 148, 23);
+							panel.add(btnConcluirAlterao);
+							btnConcluirAlterao.setEnabled(true);
+
+							tableVeiculosCadastrados.addMouseListener(new MouseAdapter() {
+								@Override
+								public void mousePressed(MouseEvent arg0) {
+
+									String placa = tableVeiculosCadastrados
+											.getValueAt(tableVeiculosCadastrados.getSelectedRow(), 0).toString();
+
+									btnExcluir.addActionListener(new ActionListener() {
+										public void actionPerformed(ActionEvent arg0) {
+
+											try {
+												conexao.excluirAutomovel(placa);
+												conexao.atualizaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+											} catch (ClassNotFoundException e) {
+												e.printStackTrace();
+											} catch (SQLException e) {
+												e.printStackTrace();
+											}
+										}
+									});
+
+								}
+							});
+
+							btnConcluirAlterao.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+
+									Cliente altCliente = new Cliente(txtNomeCliente.getText().toString(),
+											txtCpfCliente.getText().replaceAll("\\D", "").toString(),
+											txtTelefoneCliente.getText().replaceAll("\\D", "").toString(),
+											txtCelularCliente.getText().replaceAll("\\D", "").toString(),
+											txtDataNascimentoCliente.getText().replaceAll("/", "-").toString());
+
+									boolean atualiza = conexao.atualizaDadosCliente(altCliente,
+											Integer.valueOf((txtIdCliente.getText())));
+
+									if (atualiza) {
+										JOptionPane.showMessageDialog(null, "Alteração feita com sucesso!");
+										FormCadastroCliente.this.setVisible(false);
+									}
+
+								}
+							});
+
+							btnAdicionar.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent arg0) {
+
+									try {
+										if (txtPlacaVeiculoCliente.getText().equals("   -    ")
+												|| comboBoxCorCarro.getSelectedItem().equals("...")
+												|| comboBoxModeloCarro.getSelectedItem().equals("...")
+												|| comboBoxAnoCarro.getSelectedItem().equals("...")) {
+
+											JOptionPane.showMessageDialog(null, "Complete todos os campos!");
+											FormCadastroCliente.this.setVisible(true);
+
+										} else {
+											Automovel automovel = new Automovel(cliente,
+													comboBoxModeloCarro.getSelectedItem().toString(),
+													comboBoxCorCarro.getSelectedItem().toString(),
+													comboBoxAnoCarro.getSelectedItem().toString(),
+													txtPlacaVeiculoCliente.getText());
+											conexao.adicionaAutomovel(automovel, cliente);
+
+											conexao.atualizaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+
+											((JFormattedTextField) txtPlacaVeiculoCliente).setValue(null);
+											comboBoxAnoCarro.setSelectedItem("...");
+											comboBoxCorCarro.setSelectedItem("...");
+											comboBoxModeloCarro.setSelectedItem("...");
+										}
+									} catch (ClassNotFoundException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (SQLException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+							});
+
+						} else {
+
+							((JFormattedTextField) txtCpfCliente).setValue(null);
+							txtCpfCliente.requestFocusInWindow();
+
+						}
+
+					}
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		txtCpfCliente.setBounds(66, 47, 125, 20);
+		panel.add(txtCpfCliente);
+		txtCpfCliente.setColumns(10);
+
 	}
 }

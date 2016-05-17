@@ -145,7 +145,7 @@ public class FormMainEJZ extends JFrame {
 		mnCadastro.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuBar.add(mnCadastro);
 
-		JMenu mnNovo = new JMenu("Novo");
+		JMenu mnNovo = new JMenu("Editar / Novo");
 		mnNovo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnCadastro.add(mnNovo);
 
@@ -164,29 +164,6 @@ public class FormMainEJZ extends JFrame {
 		});
 		mntmCliente.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnNovo.add(mntmCliente);
-
-		JMenuItem mntmAlterar_1 = new JMenuItem("Alterar");
-		mntmAlterar_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				FormAlteraCliente alteraClienteFuncionario = new FormAlteraCliente();
-
-				alteraClienteFuncionario.setVisible(true);
-			}
-		});
-		mntmAlterar_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnCadastro.add(mntmAlterar_1);
-
-		JMenuItem mntmExcluir = new JMenuItem("Excluir");
-		mntmExcluir.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				FormExcluirCliente excluirClienteFuncionario = new FormExcluirCliente();
-				excluirClienteFuncionario.setVisible(true);
-			}
-		});
-		mntmExcluir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnCadastro.add(mntmExcluir);
 
 		JMenu mnPesquisa = new JMenu("Pesquisar");
 		mnPesquisa.setFont(new Font("Segoe UI", Font.PLAIN, 14));

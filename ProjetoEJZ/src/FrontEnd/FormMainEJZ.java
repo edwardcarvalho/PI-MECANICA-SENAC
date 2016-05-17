@@ -107,8 +107,14 @@ public class FormMainEJZ extends JFrame {
 		mntmNovo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				FormAgendamento agendamento = new FormAgendamento();
-				agendamento.setVisible(true);
+				FormAgendamento agendamento;
+				try {
+					agendamento = new FormAgendamento();
+					agendamento.setVisible(true);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		mntmNovo.setFont(new Font("Segoe UI", Font.PLAIN, 14));

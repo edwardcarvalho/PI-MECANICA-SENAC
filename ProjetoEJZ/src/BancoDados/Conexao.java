@@ -78,7 +78,7 @@ public class Conexao {
 		desconectaBanco();
 	}
 
-	public void atualizaCarrosCadastrado(Cliente cliente, JTable tabela) throws ClassNotFoundException, SQLException {
+	public void atualizaTabelaCarrosCadastrado(Cliente cliente, JTable tabela) throws ClassNotFoundException, SQLException {
 
 		conectaBanco();
 
@@ -93,6 +93,33 @@ public class Conexao {
 
 		String sql = "SELECT A.PLACA, A.MODELO, A.COR, A.ANOFABRICACAO FROM AUTOMOVEIS A WHERE A.ID_CLIENTE ='"
 				+ cliente.getIdCliente() + "'AND A.STATUS_AUTO = 'ATIVO' GROUP BY A.PLACA";
+
+		rs = st.executeQuery(sql);
+
+		while (rs.next()) {
+			model = (DefaultTableModel) tabela.getModel();
+			model.addRow(new String[] { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4) });
+		}
+
+		st.close();
+		desconectaBanco();
+
+	}
+	
+	public void atualizaTabelaAgendamento(String unidade, String data, String periodo, JTable tabela) throws ClassNotFoundException, SQLException {
+
+		conectaBanco();
+
+		DefaultTableModel model = (DefaultTableModel) tabela.getModel();
+
+		while (model.getRowCount() > 0) {
+			model.removeRow(0);
+		}
+
+		rs = null;
+		Statement st = conn.createStatement();
+
+		String sql = "SELECT ";
 
 		rs = st.executeQuery(sql);
 
@@ -168,12 +195,79 @@ public class Conexao {
 
 	}
 
+	public Automovel buscaAutomovelCliente(int id_cliente) {
+
+		Automovel automovelCliente = null;
+
+		try {
+			conectaBanco();
+
+			String sql = "SELECT A.MODELO, A.COR, A.ANOFABRICACAO, A.PLACA FROM AUTOMOVEIS A WHERE A.ID_CLIENTE ='"+id_cliente+"'";
+
+			Statement st = conn.createStatement();
+			rs = st.executeQuery(sql);
+
+			while (rs.next()) {
+				Cliente cliente = null;
+				automovelCliente = new Automovel(cliente, rs.getString("modelo"), rs.getString("cor"), rs.getString("anofabricacao"), rs.getString("placa"));
+
+			}
+
+			st.close();
+			rs.close();
+			desconectaBanco();
+			return automovelCliente;
+
+		} catch (ClassNotFoundException e) {
+
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+
+	}
+	
+	public ArrayList<String> buscaPlacaComboBox(Cliente cliente) {
+
+		ArrayList<String> automovel = new ArrayList<>();
+		
+		
+
+		try {
+			conectaBanco();
+
+			String sql = "SELECT A.PLACA FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON A.ID_CLIENTE ='"+cliente.getIdCliente()+"'GROUP BY A.PLACA";
+
+			Statement st = conn.createStatement();
+			rs = st.executeQuery(sql);
+
+			while (rs.next()) {
+				automovel.add(rs.getString("placa"));
+			}
+
+			st.close();
+			rs.close();
+			desconectaBanco();
+			return automovel;
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public void excluirAutomovel(String placa) {
 
 		try {
 			conectaBanco();
 
-			String sql = "UPDATE AUTOMOVEIS SET STATUS_AUTO ='INATIVO', PLACA ='"+placa+"(I)' WHERE PLACA = '"+placa+"'";
+			String sql = "UPDATE AUTOMOVEIS SET STATUS_AUTO ='INATIVO', PLACA ='" + placa + "(I)' WHERE PLACA = '"
+					+ placa + "'";
 
 			Statement st = conn.createStatement();
 			st.executeUpdate(sql);
@@ -216,23 +310,23 @@ public class Conexao {
 
 	}
 
-	public void cancelaCadastro(int id_cliente){
-		
+	public void cancelaCadastro(int id_cliente) {
+
 		try {
 			conectaBanco();
-			
-			String sql = "DELETE FROM CLIENTES WHERE ID_CLIENTE ="+id_cliente;
-			
+
+			String sql = "DELETE FROM CLIENTES WHERE ID_CLIENTE =" + id_cliente;
+
 			Statement st = conn.createStatement();
 			st.executeUpdate(sql);
 			st.close();
 			desconectaBanco();
-			
+
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 }

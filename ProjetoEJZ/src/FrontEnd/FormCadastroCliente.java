@@ -346,7 +346,7 @@ public class FormCadastroCliente extends JFrame {
 												comboBoxAnoCarro.getSelectedItem().toString(),
 												txtPlacaVeiculoCliente.getText());
 										conexao.adicionaAutomovel(automovel, cliente);
-										conexao.atualizaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+										conexao.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
 
 										tableVeiculosCadastrados.addMouseListener(new MouseAdapter() {
 											@Override
@@ -361,7 +361,7 @@ public class FormCadastroCliente extends JFrame {
 
 														try {
 															conexao.excluirAutomovel(placa);
-															conexao.atualizaCarrosCadastrado(cliente,
+															conexao.atualizaTabelaCarrosCadastrado(cliente,
 																	tableVeiculosCadastrados);
 														} catch (ClassNotFoundException e) {
 															e.printStackTrace();
@@ -452,7 +452,7 @@ public class FormCadastroCliente extends JFrame {
 							btnCancelar.setEnabled(false);
 							btnCadastrarVeiculo.setVisible(false);
 							btnAlterarVeiculo.setVisible(true);
-							conexao.atualizaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+							conexao.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
 							btnSalvar.setVisible(false);
 
 							JButton btnConcluirAlterao = new JButton("Concluir Altera\u00E7\u00E3o");
@@ -474,7 +474,7 @@ public class FormCadastroCliente extends JFrame {
 
 											try {
 												conexao.excluirAutomovel(placa);
-												conexao.atualizaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+												conexao.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
 											} catch (ClassNotFoundException e) {
 												e.printStackTrace();
 											} catch (SQLException e) {
@@ -526,7 +526,7 @@ public class FormCadastroCliente extends JFrame {
 													txtPlacaVeiculoCliente.getText());
 											conexao.adicionaAutomovel(automovel, cliente);
 
-											conexao.atualizaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+											conexao.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
 
 											((JFormattedTextField) txtPlacaVeiculoCliente).setValue(null);
 											comboBoxAnoCarro.setSelectedItem("...");

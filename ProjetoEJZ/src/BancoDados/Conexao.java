@@ -14,6 +14,7 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI.TabbedPaneLayout;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import ClassesAtributos.Agendamento;
 import ClassesAtributos.Automovel;
 import ClassesAtributos.Cliente;
 
@@ -78,7 +79,8 @@ public class Conexao {
 		desconectaBanco();
 	}
 
-	public void atualizaTabelaCarrosCadastrado(Cliente cliente, JTable tabela) throws ClassNotFoundException, SQLException {
+	public void atualizaTabelaCarrosCadastrado(Cliente cliente, JTable tabela)
+			throws ClassNotFoundException, SQLException {
 
 		conectaBanco();
 
@@ -105,31 +107,38 @@ public class Conexao {
 		desconectaBanco();
 
 	}
-	
-	public void atualizaTabelaAgendamento(String unidade, String data, String periodo, JTable tabela) throws ClassNotFoundException, SQLException {
 
+	public ArrayList<Agendamento> buscaHorariosDisponiveis(int unidade, String data)
+			throws ClassNotFoundException, SQLException {
+		
+		Agendamento agendamento = null;
+		
+		ArrayList<Agendamento> horarios = new ArrayList<>();
+		
+		String sql = "SELECT AG.HORARIOINICIAL, AG.HORARIOFINAL, AG.STATUS, C.NOME, A.PLACA, A.MODELO, S.DESCRICAO, U.NOME_UNIDADE, F.NOME FROM CLIENTES C "
+				+ "INNER JOIN AUTOMOVEIS A ON C.ID_CLIENTE = A.ID_CLIENTE "
+				+ "INNER JOIN AGENDAMENTOS AG ON AG.ID_AUTOMOVEL = A.ID_AUTOMOVEL INNER JOIN FUNCIONARIOS F ON F.ID_FUNCIONARIO = AG.ID_FUNCIONARIO "
+				+ "INNER JOIN SERVICOS S ON S.ID_SERVICO = AG.ID_SERVICO "
+				+ "INNER JOIN UNIDADE U ON U.ID_UNIDADE = AG.ID_UNIDADE WHERE AG.ID_UNIDADE ='" + unidade+"' AND AG.DATAAGENDAMENTO = '"+data+"' GROUP BY AG.ID_AUTOMOVEL"; 
+		
 		conectaBanco();
 
-		DefaultTableModel model = (DefaultTableModel) tabela.getModel();
-
-		while (model.getRowCount() > 0) {
-			model.removeRow(0);
-		}
-
-		rs = null;
 		Statement st = conn.createStatement();
 
-		String sql = "SELECT ";
-
 		rs = st.executeQuery(sql);
-
 		while (rs.next()) {
-			model = (DefaultTableModel) tabela.getModel();
-			model.addRow(new String[] { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4) });
+			agendamento = new Agendamento();
+			
+			agendamento.setHorarioInicial(rs.getString("HORARIOINICIAL"));
+			agendamento.setHorarioFinal(rs.getString("HORARIOFINAL"));
+			
+			horarios.add(agendamento);
 		}
 
 		st.close();
 		desconectaBanco();
+		
+		return horarios;
 
 	}
 
@@ -202,14 +211,16 @@ public class Conexao {
 		try {
 			conectaBanco();
 
-			String sql = "SELECT A.MODELO, A.COR, A.ANOFABRICACAO, A.PLACA FROM AUTOMOVEIS A WHERE A.ID_CLIENTE ='"+id_cliente+"'";
+			String sql = "SELECT A.MODELO, A.COR, A.ANOFABRICACAO, A.PLACA FROM AUTOMOVEIS A WHERE A.ID_CLIENTE ='"
+					+ id_cliente + "'";
 
 			Statement st = conn.createStatement();
 			rs = st.executeQuery(sql);
 
 			while (rs.next()) {
 				Cliente cliente = null;
-				automovelCliente = new Automovel(cliente, rs.getString("modelo"), rs.getString("cor"), rs.getString("anofabricacao"), rs.getString("placa"));
+				automovelCliente = new Automovel(cliente, rs.getString("modelo"), rs.getString("cor"),
+						rs.getString("anofabricacao"), rs.getString("placa"));
 
 			}
 
@@ -228,17 +239,16 @@ public class Conexao {
 		return null;
 
 	}
-	
+
 	public ArrayList<String> buscaPlacaComboBox(Cliente cliente) {
 
 		ArrayList<String> automovel = new ArrayList<>();
-		
-		
 
 		try {
 			conectaBanco();
 
-			String sql = "SELECT A.PLACA FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON A.ID_CLIENTE ='"+cliente.getIdCliente()+"'GROUP BY A.PLACA";
+			String sql = "SELECT A.PLACA FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON A.ID_CLIENTE ='"
+					+ cliente.getIdCliente() + "'GROUP BY A.PLACA";
 
 			Statement st = conn.createStatement();
 			rs = st.executeQuery(sql);

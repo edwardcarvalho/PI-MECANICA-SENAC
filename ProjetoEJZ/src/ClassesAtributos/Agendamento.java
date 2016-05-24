@@ -2,13 +2,16 @@ package ClassesAtributos;
 
 public class Agendamento {
 
-	private int idAgendamento;
 	private Automovel automovel;
 	private Funcionario funcionario;
 	private Servico servico;
+	private int idAgendamento;
 	private String dataAgendamento;
 	private String horarioInicial;
 	private String horarioFinal;
+	
+	public Agendamento() {
+	}
 
 	public Agendamento(int idAgendamento, Automovel automovel,
 			Funcionario funcionario, Servico servico, String dataAgendamento,

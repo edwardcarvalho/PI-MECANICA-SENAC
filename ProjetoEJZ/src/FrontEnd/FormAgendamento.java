@@ -21,6 +21,7 @@ import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 
 import BancoDados.Conexao;
+import ClassesAtributos.Agendamento;
 import ClassesAtributos.Automovel;
 import ClassesAtributos.Cliente;
 
@@ -30,9 +31,13 @@ import javax.swing.text.MaskFormatter;
 import javax.swing.JScrollPane;
 import javax.swing.JRadioButton;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.zip.CheckedOutputStream;
 import java.awt.event.ActionEvent;
 import javax.swing.ScrollPaneConstants;
 import java.awt.Component;
@@ -48,11 +53,11 @@ public class FormAgendamento extends JFrame {
 	private JTextField txtNomeCadastrado;
 	private JTextField txtCPFcadastrado;
 	private JTextField txtPlacaVeiculoCadastrado;
-	private JTable tableHorariosDisponiveis;
 	private Conexao conexao = new Conexao();
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private Cliente cliente;
 	private Automovel automovelCliente;
+	private int qtdAgendamentos;
 
 	/**
 	 * Launch the application.
@@ -76,7 +81,7 @@ public class FormAgendamento extends JFrame {
 	 * @throws ParseException
 	 */
 	public FormAgendamento() throws ParseException {
-		setBounds(100, 100, 784, 568);
+		setBounds(100, 100, 801, 491);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -85,11 +90,11 @@ public class FormAgendamento extends JFrame {
 		JLabel lblAgendamentoDeHrs = new JLabel("Agendamento de Hor\u00E1rios");
 		lblAgendamentoDeHrs.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAgendamentoDeHrs.setFont(new Font("Dialog", Font.BOLD, 28));
-		lblAgendamentoDeHrs.setBounds(0, 0, 768, 51);
+		lblAgendamentoDeHrs.setBounds(0, 0, 785, 51);
 		contentPane.add(lblAgendamentoDeHrs);
 
 		JPanel panelAgendamento = new JPanel();
-		panelAgendamento.setBounds(1, 64, 774, 468);
+		panelAgendamento.setBounds(1, 64, 784, 388);
 		contentPane.add(panelAgendamento);
 		panelAgendamento.setLayout(null);
 
@@ -113,10 +118,10 @@ public class FormAgendamento extends JFrame {
 		txtCPFcadastrado.setColumns(10);
 
 		JComboBox comboBoxStatusAgendamento = new JComboBox();
-		comboBoxStatusAgendamento.setBounds(534, 330, 142, 20);
+		comboBoxStatusAgendamento.setBounds(279, 272, 142, 23);
 		comboBoxStatusAgendamento.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBoxStatusAgendamento.setModel(new DefaultComboBoxModel(
-				new String[] { "...", "Agendado", "Em atendimento", "Atendido", "Fila de Espera" }));
+		comboBoxStatusAgendamento
+				.setModel(new DefaultComboBoxModel(new String[] { "...", "Agendado", "Fila de Espera" }));
 		panelAgendamento.add(comboBoxStatusAgendamento);
 
 		JComboBox comboBoxUnidade = new JComboBox();
@@ -134,17 +139,24 @@ public class FormAgendamento extends JFrame {
 		btnBuscarCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				cliente = conexao.buscaCliente(txtCampoBuscaClienteCpf.getText().replaceAll("\\D", ""));
-				automovelCliente = conexao.buscaAutomovelCliente(cliente.getIdCliente());
-				txtNomeCadastrado.setText(cliente.getNomeCliente());
-				txtCPFcadastrado.setText(cliente.getCpf().trim());
-				comboBoxPlacasCadastradas.removeAllItems();
+				if (txtCampoBuscaClienteCpf.getText().equals("   .   .   -  ")) {
 
-				ArrayList<String> placas = conexao.buscaPlacaComboBox(cliente);
-				for (String a : placas) {
-					comboBoxPlacasCadastradas.addItem(a);
+					JOptionPane.showMessageDialog(null, "Digite um CPF para fazer a busca!");
+
+				} else {
+
+					cliente = conexao.buscaCliente(txtCampoBuscaClienteCpf.getText().replaceAll("\\D", ""));
+					automovelCliente = conexao.buscaAutomovelCliente(cliente.getIdCliente());
+					txtNomeCadastrado.setText(cliente.getNomeCliente());
+					txtCPFcadastrado.setText(cliente.getCpf().trim());
+					comboBoxPlacasCadastradas.removeAllItems();
+
+					ArrayList<String> placas = conexao.buscaPlacaComboBox(cliente);
+					for (String a : placas) {
+						comboBoxPlacasCadastradas.addItem(a);
+					}
+
 				}
-
 			}
 		});
 		btnBuscarCliente.setBounds(203, 48, 89, 23);
@@ -166,54 +178,37 @@ public class FormAgendamento extends JFrame {
 		lblPlacaDoVeiculo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelAgendamento.add(lblPlacaDoVeiculo);
 
-		JDateChooser dateChooser = new JDateChooser();
-		dateChooser.setBounds(214, 150, 103, 20);
-		panelAgendamento.add(dateChooser);
+		JDateChooser calendario = new JDateChooser();
+		calendario.setBounds(208, 150, 103, 20);
+		panelAgendamento.add(calendario);
 
-		JLabel lblHorriosDisponiveis = new JLabel("Hor\u00E1rios Marcados");
-		lblHorriosDisponiveis.setBounds(42, 217, 129, 23);
+		JLabel lblHorriosDisponiveis = new JLabel("Hor\u00E1rios Dispon\u00EDveis");
+		lblHorriosDisponiveis.setBounds(41, 183, 129, 23);
 		lblHorriosDisponiveis.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelAgendamento.add(lblHorriosDisponiveis);
 
-		JLabel lblNewLabel = new JLabel("Status");
-		lblNewLabel.setBounds(533, 310, 46, 14);
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panelAgendamento.add(lblNewLabel);
-
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(42, 251, 476, 151);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		panelAgendamento.add(scrollPane);
-
-		tableHorariosDisponiveis = new JTable();
-		scrollPane.setViewportView(tableHorariosDisponiveis);
-		tableHorariosDisponiveis.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Horario", "Placa", "Cliente", "Servi\u00E7o", "Mecanico", "Status"
-			}
-		));
-		tableHorariosDisponiveis.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		JLabel lblStatus = new JLabel("Status");
+		lblStatus.setBounds(278, 253, 46, 14);
+		lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panelAgendamento.add(lblStatus);
 
 		JLabel lblReviso = new JLabel("Servi\u00E7o");
-		lblReviso.setBounds(534, 247, 61, 17);
+		lblReviso.setBounds(43, 250, 61, 17);
 		lblReviso.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelAgendamento.add(lblReviso);
 
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(533, 269, 222, 23);
-		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] { "...", "Revis\u00E3o - 10.000 km",
+		JComboBox comboBoxServicos = new JComboBox();
+		comboBoxServicos.setBounds(42, 272, 222, 23);
+		comboBoxServicos.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		comboBoxServicos.setModel(new DefaultComboBoxModel(new String[] { "...", "Revis\u00E3o - 10.000 km",
 				"Revis\u00E3o - 20.000 km", "Revis\u00E3o - 30.000 km", "Revis\u00E3o - 40.000 km",
 				"Revis\u00E3o - 50.000 km", "Revis\u00E3o - 60.000 km", "Revis\u00E3o - 70.000 km",
 				"Revis\u00E3o - 80.000 km", "Revis\u00E3o - 90.000 km", "Revis\u00E3o - 100.000 km",
 				"Revis\u00E3o - Acima de 100.000 km" }));
-		panelAgendamento.add(comboBox);
+		panelAgendamento.add(comboBoxServicos);
 
 		JButton btnCancelar = new JButton("Cancelar");
-		btnCancelar.setBounds(641, 427, 89, 23);
+		btnCancelar.setBounds(647, 333, 89, 23);
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -228,7 +223,7 @@ public class FormAgendamento extends JFrame {
 		panelAgendamento.add(btnCancelar);
 
 		JButton btnAgendar = new JButton("Agendar");
-		btnAgendar.setBounds(541, 427, 89, 23);
+		btnAgendar.setBounds(547, 333, 89, 23);
 		btnAgendar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelAgendamento.add(btnAgendar);
 		panelAgendamento.add(btnAgendar);
@@ -243,55 +238,79 @@ public class FormAgendamento extends JFrame {
 		lblUnidade.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelAgendamento.add(lblUnidade);
 
-		JRadioButton rdbtnManhhs = new JRadioButton("Matutino");
-		buttonGroup.add(rdbtnManhhs);
-		rdbtnManhhs.setBounds(337, 146, 83, 23);
-		panelAgendamento.add(rdbtnManhhs);
-
-		JRadioButton rdbtnTardehs = new JRadioButton("Vespertino");
-		buttonGroup.add(rdbtnTardehs);
-		rdbtnTardehs.setBounds(337, 165, 83, 23);
-		panelAgendamento.add(rdbtnTardehs);
-
 		JLabel lblData = new JLabel("Data");
 		lblData.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblData.setBounds(214, 128, 46, 14);
+		lblData.setBounds(209, 128, 46, 14);
 		panelAgendamento.add(lblData);
 
-		JLabel lblPeriodo = new JLabel("Periodo");
-		lblPeriodo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPeriodo.setBounds(342, 128, 61, 14);
-		panelAgendamento.add(lblPeriodo);
-
 		JButton btnPesquisaData = new JButton("Pesquisar");
-		btnPesquisaData.setBounds(341, 195, 104, 23);
+		btnPesquisaData.setBounds(335, 149, 104, 23);
 		btnPesquisaData.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelAgendamento.add(btnPesquisaData);
-		
-		JLabel lblhsh = new JLabel(" (08h:00 \u00E1s 12h:00)");
-		lblhsh.setBounds(417, 150, 104, 14);
-		panelAgendamento.add(lblhsh);
-		
-		JLabel lblhsh_1 = new JLabel(" (13h:15 \u00E1s 17h:15)");
-		lblhsh_1.setBounds(417, 169, 104, 14);
-		panelAgendamento.add(lblhsh_1);
+
+		JComboBox comboBoxHorarioDisponivel = new JComboBox();
+		comboBoxHorarioDisponivel.setBounds(41, 210, 165, 20);
+		panelAgendamento.add(comboBoxHorarioDisponivel);
 		btnPesquisaData.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				try {
-					
-					String unidade = comboBoxUnidade.getSelectedItem().toString();
-					String data = dateChooser.getDateFormatString().replaceAll("/", "-");
-					String periodo = buttonGroup.getSelection().toString();
-					
-					conexao.atualizaTabelaAgendamento(unidade, data, periodo, tableHorariosDisponiveis);
-					
-					
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				} catch (SQLException e) {
-					e.printStackTrace();
+				if (txtCampoBuscaClienteCpf.getText().equals("   .   .   -  ")
+						|| comboBoxUnidade.getSelectedItem().equals("...") || calendario.getDate() == null) {
+
+					JOptionPane.showMessageDialog(null, "Complete todos os campos para fazer a pesquisa!");
+
+				} else {
+
+					int unidade = comboBoxUnidade.getSelectedIndex();
+					int id_cliente = cliente.getIdCliente();
+					Object date = calendario.getDate();
+					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					String data = sdf.format(date);
+
+					try {
+						ArrayList<Agendamento> horariosDisponiveis = conexao.buscaHorariosDisponiveis(unidade, data);
+						int agendaManha = 0;
+						int agendaTarde = 0;
+
+						for (Agendamento horario : horariosDisponiveis) {
+							if(horario.getHorarioInicial().equalsIgnoreCase("8:00")){
+								agendaManha++;
+							}else{
+								agendaTarde++;
+							}
+						}
+						
+						if (agendaManha < 3 && agendaTarde < 3) {
+							comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(
+									new String[] { "...", "Manhã (8h00 às 12h00)", "Tarde (13h15 às 17h15)" }));
+						}else if(agendaManha < 3 && agendaTarde > 2){
+							comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(new String[] {"...", "Manhã (8h00 às 12h00)"}));
+						}else if(agendaManha > 2 && agendaTarde < 3){
+							comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(new String[] {"...", "Tarde (13h15 às 17h15)"}));
+						}else{
+							JOptionPane.showMessageDialog(null, "Não há horarios disponiveis nesta data.");
+							
+						}
+
+					} catch (ClassNotFoundException | SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+
+				btnAgendar.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+
+						int unidade = comboBoxUnidade.getSelectedIndex();
+						int id_cliente = cliente.getIdCliente();
+						Object date = calendario.getDate();
+						SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+						String data = sdf.format(date);
+						int periodo = 0;
+
+					}
+				});
+
 			}
 		});
 	}

@@ -1,4 +1,4 @@
-package FrontEnd;
+package senac.agendamento.assets.view;
 
 import java.awt.EventQueue;
 import java.sql.Connection;
@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 
-import BancoDados.DAO;
+import senac.agendamento.dao.DAO;
 
 import javax.swing.JLabel;
 import javax.swing.JToolBar;

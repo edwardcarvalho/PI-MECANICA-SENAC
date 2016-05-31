@@ -1,4 +1,4 @@
-package FrontEnd;
+package senac.agendamento.assets.view;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 

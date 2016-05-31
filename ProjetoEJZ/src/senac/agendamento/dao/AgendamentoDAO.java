@@ -1,13 +1,13 @@
-package BancoDados;
+package senac.agendamento.dao;
 
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import ClassesAtributos.Agendamento;
-import ClassesAtributos.Automovel;
-import ClassesAtributos.Cliente;
-import ClassesAtributos.Funcionario;
+import senac.agendamento.model.Agendamento;
+import senac.agendamento.model.Automovel;
+import senac.agendamento.model.Cliente;
+import senac.agendamento.model.Funcionario;
 
 public class AgendamentoDAO extends DAO{
 	
@@ -54,7 +54,7 @@ public class AgendamentoDAO extends DAO{
 		try {
 			conectaBanco();
 
-			String sql = "SELECT A.MODELO, A.COR, A.ANOFABRICACAO, A.PLACA FROM AUTOMOVEIS A WHERE A.ID_CLIENTE ='"
+			String sql = "SELECT A.ID_CLIENTE, A.MODELO, A.COR, A.ANOFABRICACAO, A.PLACA FROM AUTOMOVEIS A WHERE A.ID_CLIENTE ='"
 					+ id_cliente + "'";
 
 			Statement st = conn.createStatement();
@@ -62,7 +62,7 @@ public class AgendamentoDAO extends DAO{
 
 			while (rs.next()) {
 				Cliente cliente = null;
-				automovelCliente = new Automovel(cliente, rs.getString("modelo"), rs.getString("cor"),
+				automovelCliente = new Automovel(rs.getInt("id_cliente"), rs.getString("modelo"), rs.getString("cor"),
 						rs.getString("anofabricacao"), rs.getString("placa"));
 
 			}
@@ -150,21 +150,32 @@ public class AgendamentoDAO extends DAO{
 
 	}
 
-	public ArrayList<String> buscaPlacaComboBox(Cliente cliente) {
+	public ArrayList<Automovel> buscaPlacaComboBox(Cliente cliente) {
 
-		ArrayList<String> automovel = new ArrayList<>();
+		ArrayList<Automovel> automovel = new ArrayList<>();
+		
+		Automovel auto;
 
 		try {
 			conectaBanco();
 
-			String sql = "SELECT A.PLACA FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON A.ID_CLIENTE ='"
-					+ cliente.getIdCliente() + "'GROUP BY A.PLACA";
+			String sql = "SELECT A.ID_CLIENTE, A.PLACA, A.ID_AUTOMOVEL, A.MODELO, A.ANOFABRICACAO, A.COR FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON A.ID_CLIENTE ='"
+					+ cliente.getIdCliente() + "' WHERE A.STATUS_AUTO = 'ATIVO' GROUP BY A.PLACA";
 
 			Statement st = conn.createStatement();
 			rs = st.executeQuery(sql);
 
 			while (rs.next()) {
-				automovel.add(rs.getString("placa"));
+				auto = new Automovel();
+				
+				auto.setIdAutomovel(rs.getInt("id_Automovel"));
+				auto.setIdCliente(rs.getInt("id_Cliente"));
+				auto.setPlaca(rs.getString("placa"));
+				auto.setModelo(rs.getString("modelo"));
+				auto.setAnoFabricacao(rs.getString("anoFabricacao"));
+				auto.setCor(rs.getString("cor"));
+				
+				automovel.add(auto);
 			}
 
 			st.close();
@@ -180,5 +191,5 @@ public class AgendamentoDAO extends DAO{
 
 		return null;
 	}
-
+//
 }

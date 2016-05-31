@@ -1,4 +1,4 @@
-package ClassesAtributos;
+package senac.agendamento.model;
 
 public class Servico {
 

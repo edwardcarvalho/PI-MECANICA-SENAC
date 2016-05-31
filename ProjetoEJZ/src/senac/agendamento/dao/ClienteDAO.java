@@ -1,4 +1,4 @@
-package BancoDados;
+package senac.agendamento.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import ClassesAtributos.Automovel;
-import ClassesAtributos.Cliente;
+import senac.agendamento.model.Automovel;
+import senac.agendamento.model.Cliente;
 
 public class ClienteDAO extends DAO{
 	

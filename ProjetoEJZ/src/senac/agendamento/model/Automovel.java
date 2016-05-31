@@ -1,16 +1,20 @@
-package ClassesAtributos;
+package senac.agendamento.model;
 
 public class Automovel {
 
 	private int idAutomovel;
-	private Cliente cliente;
+	private int idCliente;
 	private String modelo;
 	private String cor;
 	private String anoFabricacao;
 	private String placa;
+	private String status_Auto;
+	
+	public Automovel() {
+	}
 
-	public Automovel(Cliente cliente,String modelo, String cor, String anoFabricacao, String placa) {
-		this.cliente = cliente;
+	public Automovel(int idCliente, String modelo, String cor, String anoFabricacao, String placa) {
+		this.setIdCliente(idCliente);
 		this.modelo = modelo;
 		this.cor = cor;
 		this.anoFabricacao = anoFabricacao;
@@ -24,15 +28,6 @@ public class Automovel {
 	public void setIdAutomovel(int idAutomovel) {
 		this.idAutomovel = idAutomovel;
 	}
-
-	public Cliente getCliente() {
-		return cliente;
-	}
-
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
-
 
 	public String getModelo() {
 		return modelo;
@@ -64,6 +59,22 @@ public class Automovel {
 
 	public void setPlaca(String placa) {
 		this.placa = placa;
+	}
+
+	public int getIdCliente() {
+		return idCliente;
+	}
+
+	public void setIdCliente(int idCliente) {
+		this.idCliente = idCliente;
+	}
+
+	public String getStatus() {
+		return status_Auto;
+	}
+
+	public void setStatus(String status) {
+		this.status_Auto = status;
 	}
 
 }

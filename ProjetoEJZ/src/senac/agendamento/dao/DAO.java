@@ -1,4 +1,4 @@
-package BancoDados;
+package senac.agendamento.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,10 +14,10 @@ import javax.swing.plaf.basic.BasicTabbedPaneUI.TabbedPaneLayout;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-import ClassesAtributos.Agendamento;
-import ClassesAtributos.Automovel;
-import ClassesAtributos.Cliente;
-import ClassesAtributos.Funcionario;
+import senac.agendamento.model.Agendamento;
+import senac.agendamento.model.Automovel;
+import senac.agendamento.model.Cliente;
+import senac.agendamento.model.Funcionario;
 
 public class DAO {
 

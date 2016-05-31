@@ -1,4 +1,4 @@
-package FrontEnd;
+package senac.agendamento.assets.view;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -8,10 +8,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
 
-import BancoDados.ClienteDAO;
-import BancoDados.DAO;
-import ClassesAtributos.Automovel;
-import ClassesAtributos.Cliente;
+import senac.agendamento.dao.ClienteDAO;
+import senac.agendamento.dao.DAO;
+import senac.agendamento.model.Automovel;
+import senac.agendamento.model.Cliente;
 
 import java.awt.Label;
 import java.awt.Font;
@@ -339,7 +339,7 @@ public class FormCadastroCliente extends JFrame{
 										FormCadastroCliente.this.setVisible(true);
 
 									} else {
-										Automovel automovel = new Automovel(cliente,
+										Automovel automovel = new Automovel(cliente.getIdCliente(),
 												comboBoxModeloCarro.getSelectedItem().toString(),
 												comboBoxCorCarro.getSelectedItem().toString(),
 												comboBoxAnoCarro.getSelectedItem().toString(),
@@ -518,7 +518,7 @@ public class FormCadastroCliente extends JFrame{
 											FormCadastroCliente.this.setVisible(true);
 
 										} else {
-											Automovel automovel = new Automovel(cliente,
+											Automovel automovel = new Automovel(cliente.getIdCliente(),
 													comboBoxModeloCarro.getSelectedItem().toString(),
 													comboBoxCorCarro.getSelectedItem().toString(),
 													comboBoxAnoCarro.getSelectedItem().toString(),

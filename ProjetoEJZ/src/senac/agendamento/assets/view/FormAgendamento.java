@@ -1,4 +1,4 @@
-package FrontEnd;
+package senac.agendamento.assets.view;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -20,12 +20,12 @@ import javax.swing.JButton;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 
-import BancoDados.AgendamentoDAO;
-import BancoDados.DAO;
-import ClassesAtributos.Agendamento;
-import ClassesAtributos.Automovel;
-import ClassesAtributos.Cliente;
-import ClassesAtributos.Funcionario;
+import senac.agendamento.dao.AgendamentoDAO;
+import senac.agendamento.dao.DAO;
+import senac.agendamento.model.Agendamento;
+import senac.agendamento.model.Automovel;
+import senac.agendamento.model.Cliente;
+import senac.agendamento.model.Funcionario;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -60,8 +60,11 @@ public class FormAgendamento extends JFrame {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private Cliente cliente;
 	private Automovel automovelCliente;
-	private int qtdAgendamentos;
-	
+	private String horarioInicial;
+	ArrayList<Automovel> placas;
+	ArrayList<Funcionario> funcionarios;
+	ArrayList<Agendamento> horariosDisponiveis;
+
 	AgendamentoDAO agendamentoDAO = new AgendamentoDAO();
 
 	/**
@@ -156,9 +159,9 @@ public class FormAgendamento extends JFrame {
 					txtCPFcadastrado.setText(cliente.getCpf().trim());
 					comboBoxPlacasCadastradas.removeAllItems();
 
-					ArrayList<String> placas = agendamentoDAO.buscaPlacaComboBox(cliente);
-					for (String a : placas) {
-						comboBoxPlacasCadastradas.addItem(a);
+					placas = agendamentoDAO.buscaPlacaComboBox(cliente);
+					for (Automovel a : placas) {
+						comboBoxPlacasCadastradas.addItem(a.getPlaca());
 					}
 
 				}
@@ -273,7 +276,7 @@ public class FormAgendamento extends JFrame {
 					String data = sdf.format(date);
 
 					try {
-						ArrayList<Agendamento> horariosDisponiveis = agendamentoDAO.buscaHorariosDisponiveis(unidade, data);
+						horariosDisponiveis = agendamentoDAO.buscaHorariosDisponiveis(unidade, data);
 						int agendaManha = 0;
 						int agendaTarde = 0;
 
@@ -308,15 +311,42 @@ public class FormAgendamento extends JFrame {
 				btnAgendar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 
-						int unidade = comboBoxUnidade.getSelectedIndex();
-						String placa = txtPlacaVeiculoCadastrado.getText().toString();
 						Object date = calendario.getDate();
 						SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 						String data = sdf.format(date);
-						int periodo = 0;
+
+						String periodo = comboBoxHorarioDisponivel.getSelectedItem().toString();
+						if(periodo.contains("Manhã")){
+							horarioInicial = "8:00";
+						}else{
+							horarioInicial = "13:15";
+						}
 						
+						String status = comboBoxStatusAgendamento.getSelectedItem().toString();
+						int idAutomovel;
+						for (Automovel a : placas) {
+							if (a.getPlaca().toString()
+									.equalsIgnoreCase(txtPlacaVeiculoCadastrado.getText().toString())) {
+								idAutomovel = a.getIdAutomovel();
+								break;
+							}
+						}
+
+						int unidade = comboBoxUnidade.getSelectedIndex();
+						int idFuncionario;
+
+						try {
+							funcionarios = agendamentoDAO.buscaFuncionariosDisponiveis(unidade, data, horarioInicial);
+						} catch (ClassNotFoundException e) {
+							e.printStackTrace();
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+
+						String placa = txtPlacaVeiculoCadastrado.getText().toString();
+
 						Agendamento agendamento = new Agendamento();
-						
+
 					}
 				});
 			}

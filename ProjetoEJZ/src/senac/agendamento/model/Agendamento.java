@@ -1,4 +1,4 @@
-package ClassesAtributos;
+package senac.agendamento.model;
 
 public class Agendamento {
 
@@ -8,8 +8,8 @@ public class Agendamento {
 	private String statusAgendamento;
 	private int idAgendamento;
 	private int idAutomovel;
-	private int idServico;
 	private int idFuncionario;
+	private int idServico;
 	private int idUnidade;
 
 	public Agendamento() {

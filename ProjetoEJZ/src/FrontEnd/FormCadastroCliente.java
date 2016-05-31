@@ -8,7 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
 
-import BancoDados.Conexao;
+import BancoDados.ClienteDAO;
+import BancoDados.DAO;
 import ClassesAtributos.Automovel;
 import ClassesAtributos.Cliente;
 
@@ -42,11 +43,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class FormCadastroCliente extends JFrame {
+public class FormCadastroCliente extends JFrame{
 
-	Conexao conexao = new Conexao();
-	Connection conn;
-	Statement st;
+	ClienteDAO clienteDAO = new ClienteDAO();
 
 	public static void removeMask(JTextField item) {
 		item.getText().replaceAll("\\D", "");
@@ -297,7 +296,7 @@ public class FormCadastroCliente extends JFrame {
 								txtCelularCliente.getText().replaceAll("\\D", "").toString(),
 								txtDataNascimentoCliente.getText().replaceAll("/", "-").toString());
 
-						conexao.adicionaCliente(cliente);
+						clienteDAO.adicionaCliente(cliente);
 
 						txtIdCliente.setText(String.valueOf(cliente.getIdCliente()));
 						txtNomeCliente.setEditable(false);
@@ -319,7 +318,7 @@ public class FormCadastroCliente extends JFrame {
 								int opcao = JOptionPane.showConfirmDialog(null, "Cancelar o cadastro?", "Confirmação",
 										JOptionPane.YES_NO_OPTION);
 								if (opcao == 0) {
-									conexao.cancelaCadastro(Integer.valueOf(txtIdCliente.getText()));
+									clienteDAO.cancelaCadastro(Integer.valueOf(txtIdCliente.getText()));
 									FormCadastroCliente.this.setVisible(false);
 								} else {
 
@@ -345,8 +344,8 @@ public class FormCadastroCliente extends JFrame {
 												comboBoxCorCarro.getSelectedItem().toString(),
 												comboBoxAnoCarro.getSelectedItem().toString(),
 												txtPlacaVeiculoCliente.getText());
-										conexao.adicionaAutomovel(automovel, cliente);
-										conexao.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+										clienteDAO.adicionaAutomovel(automovel, cliente);
+										clienteDAO.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
 
 										tableVeiculosCadastrados.addMouseListener(new MouseAdapter() {
 											@Override
@@ -360,8 +359,8 @@ public class FormCadastroCliente extends JFrame {
 													public void actionPerformed(ActionEvent arg0) {
 
 														try {
-															conexao.excluirAutomovel(placa);
-															conexao.atualizaTabelaCarrosCadastrado(cliente,
+															clienteDAO.excluirAutomovel(placa);
+															clienteDAO.atualizaTabelaCarrosCadastrado(cliente,
 																	tableVeiculosCadastrados);
 														} catch (ClassNotFoundException e) {
 															e.printStackTrace();
@@ -432,7 +431,7 @@ public class FormCadastroCliente extends JFrame {
 				String cpf = txtCpfCliente.getText().replaceAll("\\D", "").toString();
 
 				try {
-					boolean validacao = conexao.validaCpf(cpf);
+					boolean validacao = clienteDAO.validaCpf(cpf);
 					if (validacao) {
 						JOptionPane.showMessageDialog(null, "CPF ja cadastrado!");
 						int opcao = JOptionPane.showConfirmDialog(null, "Deseja editar?", "Confirmação de Edição",
@@ -440,7 +439,7 @@ public class FormCadastroCliente extends JFrame {
 
 						if (opcao == 0) {
 
-							Cliente cliente = conexao.buscaCliente(cpf);
+							Cliente cliente = clienteDAO.buscaCliente(cpf);
 
 							txtIdCliente.setText(String.valueOf(cliente.getIdCliente()));
 							txtCpfCliente.setText(cliente.getCpf());
@@ -452,7 +451,7 @@ public class FormCadastroCliente extends JFrame {
 							btnCancelar.setEnabled(false);
 							btnCadastrarVeiculo.setVisible(false);
 							btnAlterarVeiculo.setVisible(true);
-							conexao.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+							clienteDAO.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
 							btnSalvar.setVisible(false);
 
 							JButton btnConcluirAlterao = new JButton("Concluir Altera\u00E7\u00E3o");
@@ -473,8 +472,8 @@ public class FormCadastroCliente extends JFrame {
 										public void actionPerformed(ActionEvent arg0) {
 
 											try {
-												conexao.excluirAutomovel(placa);
-												conexao.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+												clienteDAO.excluirAutomovel(placa);
+												clienteDAO.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
 											} catch (ClassNotFoundException e) {
 												e.printStackTrace();
 											} catch (SQLException e) {
@@ -495,7 +494,7 @@ public class FormCadastroCliente extends JFrame {
 											txtCelularCliente.getText().replaceAll("\\D", "").toString(),
 											txtDataNascimentoCliente.getText().replaceAll("/", "-").toString());
 
-									boolean atualiza = conexao.atualizaDadosCliente(altCliente,
+									boolean atualiza = clienteDAO.atualizaDadosCliente(altCliente,
 											Integer.valueOf((txtIdCliente.getText())));
 
 									if (atualiza) {
@@ -524,9 +523,9 @@ public class FormCadastroCliente extends JFrame {
 													comboBoxCorCarro.getSelectedItem().toString(),
 													comboBoxAnoCarro.getSelectedItem().toString(),
 													txtPlacaVeiculoCliente.getText());
-											conexao.adicionaAutomovel(automovel, cliente);
+											clienteDAO.adicionaAutomovel(automovel, cliente);
 
-											conexao.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+											clienteDAO.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
 
 											((JFormattedTextField) txtPlacaVeiculoCliente).setValue(null);
 											comboBoxAnoCarro.setSelectedItem("...");

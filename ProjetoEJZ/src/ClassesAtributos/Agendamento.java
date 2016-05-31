@@ -2,27 +2,57 @@ package ClassesAtributos;
 
 public class Agendamento {
 
-	private Automovel automovel;
-	private Funcionario funcionario;
-	private Servico servico;
-	private int idAgendamento;
 	private String dataAgendamento;
 	private String horarioInicial;
 	private String horarioFinal;
-	
+	private String statusAgendamento;
+	private int idAgendamento;
+	private int idAutomovel;
+	private int idServico;
+	private int idFuncionario;
+	private int idUnidade;
+
 	public Agendamento() {
 	}
+	
+	public String getStatusAgendamento() {
+		return statusAgendamento;
+	}
 
-	public Agendamento(int idAgendamento, Automovel automovel,
-			Funcionario funcionario, Servico servico, String dataAgendamento,
-			String horarioInicial, String horarioFinal) {
-		this.idAgendamento = idAgendamento;
-		this.automovel = automovel;
-		this.funcionario = funcionario;
-		this.servico = servico;
-		this.dataAgendamento = dataAgendamento;
-		this.horarioInicial = horarioInicial;
-		this.horarioFinal = horarioFinal;
+	public void setStatusAgendamento(String statusAgendamento) {
+		this.statusAgendamento = statusAgendamento;
+	}
+
+	public int getIdAutomovel() {
+		return idAutomovel;
+	}
+
+	public void setIdAutomovel(int idAutomovel) {
+		this.idAutomovel = idAutomovel;
+	}
+
+	public int getIdServico() {
+		return idServico;
+	}
+
+	public void setIdServico(int idServico) {
+		this.idServico = idServico;
+	}
+
+	public int getIdFuncionario() {
+		return idFuncionario;
+	}
+
+	public void setIdFuncionario(int idFuncionario) {
+		this.idFuncionario = idFuncionario;
+	}
+
+	public int getIdUnidade() {
+		return idUnidade;
+	}
+
+	public void setIdUnidade(int idUnidade) {
+		this.idUnidade = idUnidade;
 	}
 
 	public int getIdAgendamento() {
@@ -31,30 +61,6 @@ public class Agendamento {
 
 	public void setIdAgendamento(int idAgendamento) {
 		this.idAgendamento = idAgendamento;
-	}
-
-	public Automovel getAutomovel() {
-		return automovel;
-	}
-
-	public void setAutomovel(Automovel automovel) {
-		this.automovel = automovel;
-	}
-
-	public Funcionario getFuncionario() {
-		return funcionario;
-	}
-
-	public void setFuncionario(Funcionario funcionario) {
-		this.funcionario = funcionario;
-	}
-
-	public Servico getServico() {
-		return servico;
-	}
-
-	public void setServico(Servico servico) {
-		this.servico = servico;
 	}
 
 	public String getDataAgendamento() {

@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 
-import BancoDados.Conexao;
+import BancoDados.DAO;
 
 import javax.swing.JLabel;
 import javax.swing.JToolBar;
@@ -40,7 +40,7 @@ import javax.swing.SwingConstants;
 
 public class FormMainEJZ extends JFrame {
 	
-	Conexao conn = new Conexao();
+	DAO conn = new DAO();
 
 	private JPanel contentPane;
 

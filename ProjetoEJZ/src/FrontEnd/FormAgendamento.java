@@ -20,10 +20,12 @@ import javax.swing.JButton;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 
-import BancoDados.Conexao;
+import BancoDados.AgendamentoDAO;
+import BancoDados.DAO;
 import ClassesAtributos.Agendamento;
 import ClassesAtributos.Automovel;
 import ClassesAtributos.Cliente;
+import ClassesAtributos.Funcionario;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -44,6 +46,8 @@ import java.awt.Component;
 import javax.swing.ButtonGroup;
 import java.awt.Button;
 import java.awt.Canvas;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class FormAgendamento extends JFrame {
 
@@ -53,11 +57,12 @@ public class FormAgendamento extends JFrame {
 	private JTextField txtNomeCadastrado;
 	private JTextField txtCPFcadastrado;
 	private JTextField txtPlacaVeiculoCadastrado;
-	private Conexao conexao = new Conexao();
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private Cliente cliente;
 	private Automovel automovelCliente;
 	private int qtdAgendamentos;
+	
+	AgendamentoDAO agendamentoDAO = new AgendamentoDAO();
 
 	/**
 	 * Launch the application.
@@ -145,13 +150,13 @@ public class FormAgendamento extends JFrame {
 
 				} else {
 
-					cliente = conexao.buscaCliente(txtCampoBuscaClienteCpf.getText().replaceAll("\\D", ""));
-					automovelCliente = conexao.buscaAutomovelCliente(cliente.getIdCliente());
+					cliente = agendamentoDAO.buscaCliente(txtCampoBuscaClienteCpf.getText().replaceAll("\\D", ""));
+					automovelCliente = agendamentoDAO.buscaAutomovelCliente(cliente.getIdCliente());
 					txtNomeCadastrado.setText(cliente.getNomeCliente());
 					txtCPFcadastrado.setText(cliente.getCpf().trim());
 					comboBoxPlacasCadastradas.removeAllItems();
 
-					ArrayList<String> placas = conexao.buscaPlacaComboBox(cliente);
+					ArrayList<String> placas = agendamentoDAO.buscaPlacaComboBox(cliente);
 					for (String a : placas) {
 						comboBoxPlacasCadastradas.addItem(a);
 					}
@@ -268,28 +273,30 @@ public class FormAgendamento extends JFrame {
 					String data = sdf.format(date);
 
 					try {
-						ArrayList<Agendamento> horariosDisponiveis = conexao.buscaHorariosDisponiveis(unidade, data);
+						ArrayList<Agendamento> horariosDisponiveis = agendamentoDAO.buscaHorariosDisponiveis(unidade, data);
 						int agendaManha = 0;
 						int agendaTarde = 0;
 
 						for (Agendamento horario : horariosDisponiveis) {
-							if(horario.getHorarioInicial().equalsIgnoreCase("8:00")){
+							if (horario.getHorarioInicial().equalsIgnoreCase("8:00")) {
 								agendaManha++;
-							}else{
+							} else {
 								agendaTarde++;
 							}
 						}
-						
+
 						if (agendaManha < 3 && agendaTarde < 3) {
 							comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(
 									new String[] { "...", "Manhã (8h00 às 12h00)", "Tarde (13h15 às 17h15)" }));
-						}else if(agendaManha < 3 && agendaTarde > 2){
-							comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(new String[] {"...", "Manhã (8h00 às 12h00)"}));
-						}else if(agendaManha > 2 && agendaTarde < 3){
-							comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(new String[] {"...", "Tarde (13h15 às 17h15)"}));
-						}else{
+						} else if (agendaManha < 3 && agendaTarde > 2) {
+							comboBoxHorarioDisponivel.setModel(
+									new DefaultComboBoxModel(new String[] { "...", "Manhã (8h00 às 12h00)" }));
+						} else if (agendaManha > 2 && agendaTarde < 3) {
+							comboBoxHorarioDisponivel.setModel(
+									new DefaultComboBoxModel(new String[] { "...", "Tarde (13h15 às 17h15)" }));
+						} else {
 							JOptionPane.showMessageDialog(null, "Não há horarios disponiveis nesta data.");
-							
+
 						}
 
 					} catch (ClassNotFoundException | SQLException e) {
@@ -302,16 +309,18 @@ public class FormAgendamento extends JFrame {
 					public void actionPerformed(ActionEvent arg0) {
 
 						int unidade = comboBoxUnidade.getSelectedIndex();
-						int id_cliente = cliente.getIdCliente();
+						String placa = txtPlacaVeiculoCadastrado.getText().toString();
 						Object date = calendario.getDate();
 						SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 						String data = sdf.format(date);
 						int periodo = 0;
-
+						
+						Agendamento agendamento = new Agendamento();
+						
 					}
 				});
-
 			}
 		});
+
 	}
 }

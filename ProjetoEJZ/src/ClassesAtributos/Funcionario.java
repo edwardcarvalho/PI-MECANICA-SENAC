@@ -4,12 +4,19 @@ public class Funcionario {
 
 	private int idFuncionario;
 	private String nomeFuncionario;
+	private int idUnidade;
 
-	public Funcionario(int idFuncionario, String nomeFuncionario) {
-		super();
-		this.idFuncionario = idFuncionario;
-		this.nomeFuncionario = nomeFuncionario;
+	public Funcionario() {
 	}
+	
+	public int getIdUnidade() {
+		return idUnidade;
+	}
+
+	public void setIdUnidade(int idUnidade) {
+		this.idUnidade = idUnidade;
+	}
+
 
 	public int getIdFuncionario() {
 		return idFuncionario;

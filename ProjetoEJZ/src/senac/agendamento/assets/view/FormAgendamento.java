@@ -26,6 +26,7 @@ import senac.agendamento.model.Agendamento;
 import senac.agendamento.model.Automovel;
 import senac.agendamento.model.Cliente;
 import senac.agendamento.model.Funcionario;
+import senac.agendamento.model.Servico;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -44,6 +45,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.ScrollPaneConstants;
 import java.awt.Component;
 import javax.swing.ButtonGroup;
+import javax.swing.ComboBoxModel;
+
 import java.awt.Button;
 import java.awt.Canvas;
 import java.awt.event.ItemListener;
@@ -61,9 +64,11 @@ public class FormAgendamento extends JFrame {
 	private Cliente cliente;
 	private Automovel automovelCliente;
 	private String horarioInicial;
-	ArrayList<Automovel> placas;
-	ArrayList<Funcionario> funcionarios;
-	ArrayList<Agendamento> horariosDisponiveis;
+	private String horarioFinal;
+	private ArrayList<Automovel> placas;
+	private ArrayList<Funcionario> funcionarios;
+	private ArrayList<Agendamento> horariosDisponiveis;
+	private ArrayList<Servico> servicos;
 
 	AgendamentoDAO agendamentoDAO = new AgendamentoDAO();
 
@@ -125,13 +130,6 @@ public class FormAgendamento extends JFrame {
 		panelAgendamento.add(txtCPFcadastrado);
 		txtCPFcadastrado.setColumns(10);
 
-		JComboBox comboBoxStatusAgendamento = new JComboBox();
-		comboBoxStatusAgendamento.setBounds(279, 272, 142, 23);
-		comboBoxStatusAgendamento.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBoxStatusAgendamento
-				.setModel(new DefaultComboBoxModel(new String[] { "...", "Agendado", "Fila de Espera" }));
-		panelAgendamento.add(comboBoxStatusAgendamento);
-
 		JComboBox comboBoxUnidade = new JComboBox();
 		comboBoxUnidade.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBoxUnidade.setBounds(42, 150, 143, 20);
@@ -154,14 +152,19 @@ public class FormAgendamento extends JFrame {
 				} else {
 
 					cliente = agendamentoDAO.buscaCliente(txtCampoBuscaClienteCpf.getText().replaceAll("\\D", ""));
-					automovelCliente = agendamentoDAO.buscaAutomovelCliente(cliente.getIdCliente());
-					txtNomeCadastrado.setText(cliente.getNomeCliente());
-					txtCPFcadastrado.setText(cliente.getCpf().trim());
-					comboBoxPlacasCadastradas.removeAllItems();
 
-					placas = agendamentoDAO.buscaPlacaComboBox(cliente);
-					for (Automovel a : placas) {
-						comboBoxPlacasCadastradas.addItem(a.getPlaca());
+					if (cliente == null) {
+						JOptionPane.showMessageDialog(null, "Cliente não cadastrado!");
+					} else {
+						automovelCliente = agendamentoDAO.buscaAutomovelCliente(cliente.getIdCliente());
+						txtNomeCadastrado.setText(cliente.getNomeCliente());
+						txtCPFcadastrado.setText(cliente.getCpf().trim());
+						comboBoxPlacasCadastradas.removeAllItems();
+
+						placas = agendamentoDAO.buscaPlacaComboBox(cliente);
+						for (Automovel a : placas) {
+							comboBoxPlacasCadastradas.addItem(a.getPlaca());
+						}
 					}
 
 				}
@@ -195,11 +198,6 @@ public class FormAgendamento extends JFrame {
 		lblHorriosDisponiveis.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelAgendamento.add(lblHorriosDisponiveis);
 
-		JLabel lblStatus = new JLabel("Status");
-		lblStatus.setBounds(278, 253, 46, 14);
-		lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panelAgendamento.add(lblStatus);
-
 		JLabel lblReviso = new JLabel("Servi\u00E7o");
 		lblReviso.setBounds(43, 250, 61, 17);
 		lblReviso.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -208,11 +206,11 @@ public class FormAgendamento extends JFrame {
 		JComboBox comboBoxServicos = new JComboBox();
 		comboBoxServicos.setBounds(42, 272, 222, 23);
 		comboBoxServicos.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBoxServicos.setModel(new DefaultComboBoxModel(new String[] { "...", "Revis\u00E3o - 10.000 km",
-				"Revis\u00E3o - 20.000 km", "Revis\u00E3o - 30.000 km", "Revis\u00E3o - 40.000 km",
-				"Revis\u00E3o - 50.000 km", "Revis\u00E3o - 60.000 km", "Revis\u00E3o - 70.000 km",
-				"Revis\u00E3o - 80.000 km", "Revis\u00E3o - 90.000 km", "Revis\u00E3o - 100.000 km",
-				"Revis\u00E3o - Acima de 100.000 km" }));
+		comboBoxServicos.addItem("...");
+		servicos = agendamentoDAO.buscaServicos();
+		for (Servico s : servicos) {
+			comboBoxServicos.addItem(s.getDescricao());
+		}
 		panelAgendamento.add(comboBoxServicos);
 
 		JButton btnCancelar = new JButton("Cancelar");
@@ -251,16 +249,23 @@ public class FormAgendamento extends JFrame {
 		lblData.setBounds(209, 128, 46, 14);
 		panelAgendamento.add(lblData);
 
+		JComboBox comboBoxHorarioDisponivel = new JComboBox();
+		comboBoxHorarioDisponivel.setBounds(41, 210, 165, 20);
+		panelAgendamento.add(comboBoxHorarioDisponivel);
+
+		JRadioButton rdbtnFilaDeEspera = new JRadioButton("Fila de Espera");
+		rdbtnFilaDeEspera.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		rdbtnFilaDeEspera.setBounds(236, 209, 109, 23);
+		panelAgendamento.add(rdbtnFilaDeEspera);
+
 		JButton btnPesquisaData = new JButton("Pesquisar");
 		btnPesquisaData.setBounds(335, 149, 104, 23);
 		btnPesquisaData.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelAgendamento.add(btnPesquisaData);
-
-		JComboBox comboBoxHorarioDisponivel = new JComboBox();
-		comboBoxHorarioDisponivel.setBounds(41, 210, 165, 20);
-		panelAgendamento.add(comboBoxHorarioDisponivel);
 		btnPesquisaData.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+
+				rdbtnFilaDeEspera.setSelected(false);
 
 				if (txtCampoBuscaClienteCpf.getText().equals("   .   .   -  ")
 						|| comboBoxUnidade.getSelectedItem().equals("...") || calendario.getDate() == null) {
@@ -275,38 +280,47 @@ public class FormAgendamento extends JFrame {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 					String data = sdf.format(date);
 
-					try {
-						horariosDisponiveis = agendamentoDAO.buscaHorariosDisponiveis(unidade, data);
-						int agendaManha = 0;
-						int agendaTarde = 0;
+					horariosDisponiveis = agendamentoDAO.buscaHorariosDisponiveis(unidade, data);
+					int agendaManha = 0;
+					int agendaTarde = 0;
 
-						for (Agendamento horario : horariosDisponiveis) {
-							if (horario.getHorarioInicial().equalsIgnoreCase("8:00")) {
-								agendaManha++;
-							} else {
-								agendaTarde++;
-							}
-						}
-
-						if (agendaManha < 3 && agendaTarde < 3) {
-							comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(
-									new String[] { "...", "Manhã (8h00 às 12h00)", "Tarde (13h15 às 17h15)" }));
-						} else if (agendaManha < 3 && agendaTarde > 2) {
-							comboBoxHorarioDisponivel.setModel(
-									new DefaultComboBoxModel(new String[] { "...", "Manhã (8h00 às 12h00)" }));
-						} else if (agendaManha > 2 && agendaTarde < 3) {
-							comboBoxHorarioDisponivel.setModel(
-									new DefaultComboBoxModel(new String[] { "...", "Tarde (13h15 às 17h15)" }));
+					for (Agendamento horario : horariosDisponiveis) {
+						if (horario.getHorarioInicial().equalsIgnoreCase("8:00")) {
+							agendaManha++;
 						} else {
-							JOptionPane.showMessageDialog(null, "Não há horarios disponiveis nesta data.");
-
+							agendaTarde++;
 						}
+					}
 
-					} catch (ClassNotFoundException | SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					if (agendaManha < 3 && agendaTarde < 3) {
+						comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(
+								new String[] { "...", "Manhã (8h00 às 12h00)", "Tarde (13h15 às 17h15)" }));
+					} else if (agendaManha < 3 && agendaTarde > 2) {
+						comboBoxHorarioDisponivel
+								.setModel(new DefaultComboBoxModel(new String[] { "...", "Manhã (8h00 às 12h00)" }));
+					} else if (agendaManha > 2 && agendaTarde < 3) {
+						comboBoxHorarioDisponivel
+								.setModel(new DefaultComboBoxModel(new String[] { "...", "Tarde (13h15 às 17h15)" }));
+					} else {
+						JOptionPane.showMessageDialog(null, "Não há horarios disponiveis nesta data.");
+
 					}
 				}
+
+				ComboBoxModel comboPesquisa = comboBoxHorarioDisponivel.getModel();
+				rdbtnFilaDeEspera.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						if (rdbtnFilaDeEspera.isSelected()) {
+							comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(
+									new String[] { "...", "Manhã (8h00 às 12h00)", "Tarde (13h15 às 17h15)" }));
+						} else {
+							comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel());
+							for (int i = 0; i < comboPesquisa.getSize(); i++) {
+								comboBoxHorarioDisponivel.addItem(comboPesquisa.getElementAt(i));
+							}
+						}
+					}
+				});
 
 				btnAgendar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
@@ -316,36 +330,61 @@ public class FormAgendamento extends JFrame {
 						String data = sdf.format(date);
 
 						String periodo = comboBoxHorarioDisponivel.getSelectedItem().toString();
-						if(periodo.contains("Manhã")){
+						if (periodo.contains("Manhã")) {
 							horarioInicial = "8:00";
-						}else{
+							horarioFinal = "12:00";
+						} else {
 							horarioInicial = "13:15";
+							horarioFinal = "17:15";
 						}
-						
-						String status = comboBoxStatusAgendamento.getSelectedItem().toString();
-						int idAutomovel;
+
+						String status = null;
+						if (rdbtnFilaDeEspera.isSelected()) {
+							status = "FILA DE ESPERA";
+						} else {
+							status = "AGENDADO";
+						}
+
+						int idAutomovel = 0;
 						for (Automovel a : placas) {
 							if (a.getPlaca().toString()
-									.equalsIgnoreCase(txtPlacaVeiculoCadastrado.getText().toString())) {
+									.equalsIgnoreCase(comboBoxPlacasCadastradas.getSelectedItem().toString())) {
 								idAutomovel = a.getIdAutomovel();
-								break;
 							}
 						}
 
-						int unidade = comboBoxUnidade.getSelectedIndex();
+						int idUnidade = comboBoxUnidade.getSelectedIndex();
+						funcionarios = agendamentoDAO.buscaFuncionariosDisponiveis(idUnidade, data, horarioInicial);
+						
 						int idFuncionario;
-
-						try {
-							funcionarios = agendamentoDAO.buscaFuncionariosDisponiveis(unidade, data, horarioInicial);
-						} catch (ClassNotFoundException e) {
-							e.printStackTrace();
-						} catch (SQLException e) {
-							e.printStackTrace();
+						if (rdbtnFilaDeEspera.isSelected()) {
+							idFuncionario = 0;
+						} else {
+							idFuncionario = funcionarios.get(0).getIdFuncionario();
 						}
-
-						String placa = txtPlacaVeiculoCadastrado.getText().toString();
+						
+						String placa = comboBoxPlacasCadastradas.getSelectedItem().toString();
+						int idServico = comboBoxServicos.getSelectedIndex();
 
 						Agendamento agendamento = new Agendamento();
+
+						agendamento.setIdAutomovel(idAutomovel);
+						agendamento.setIdFuncionario(idFuncionario);
+						agendamento.setIdServico(idServico);
+						agendamento.setStatusAgendamento(status);
+						agendamento.setDataAgendamento(data);
+						agendamento.setHorarioInicial(horarioInicial);
+						agendamento.setHorarioFinal(horarioFinal);
+						agendamento.setIdUnidade(idUnidade);
+
+						boolean agendou = agendamentoDAO.agendarCliente(agendamento);
+
+						if (agendou) {
+							JOptionPane.showMessageDialog(null, "Agendamento realizado com sucesso!");
+							FormAgendamento.this.setVisible(false);
+						} else {
+							JOptionPane.showMessageDialog(null, "Falha no agendamento. Contate o administrador.");
+						}
 
 					}
 				});

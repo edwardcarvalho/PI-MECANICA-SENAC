@@ -11,46 +11,57 @@ import javax.swing.table.DefaultTableModel;
 import senac.agendamento.model.Automovel;
 import senac.agendamento.model.Cliente;
 
-public class ClienteDAO extends DAO{
-	
-	public void adicionaCliente(Cliente cliente) throws SQLException, ClassNotFoundException {
+public class ClienteDAO extends DAO {
+
+	public void adicionaCliente(Cliente cliente) {
 
 		conectaBanco();
 
 		String sql = "INSERT INTO CLIENTES (NOME, CPF, TELEFONE, CELULAR, DATANASCIMENTO, STATUS_CLIENTE) VALUES (?,?,?,?,?,?)";
 
-		pst = conn.prepareStatement(sql);
-		pst.setString(1, cliente.getNomeCliente().toUpperCase());
-		pst.setString(2, cliente.getCpf());
-		pst.setString(3, cliente.getTelefoneRes());
-		pst.setString(4, cliente.getTelefoneCelular());
-		pst.setString(5, cliente.getDataNas());
-		pst.setString(6, "ATIVO");
-		pst.executeUpdate();
-		pst.close();
-		rs = pst.getGeneratedKeys();
-		cliente.setIdCliente(rs.getInt(1));
-		desconectaBanco();
+		try {
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, cliente.getNomeCliente().toUpperCase());
+			pst.setString(2, cliente.getCpf());
+			pst.setString(3, cliente.getTelefoneRes());
+			pst.setString(4, cliente.getTelefoneCelular());
+			pst.setString(5, cliente.getDataNas());
+			pst.setString(6, "ATIVO");
+			pst.executeUpdate();
+			pst.close();
+			rs = pst.getGeneratedKeys();
+			cliente.setIdCliente(rs.getInt(1));
+			desconectaBanco();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
-	public void adicionaAutomovel(Automovel carro, Cliente cliente) throws ClassNotFoundException, SQLException {
+	public void adicionaAutomovel(Automovel carro, Cliente cliente) {
 
 		conectaBanco();
 
 		String sql = "INSERT INTO AUTOMOVEIS(id_cliente, Modelo, AnoFabricacao, Placa, Cor, Status_Auto) VALUES (?,?,?,?,?,?)";
 
-		PreparedStatement pst = conn.prepareStatement(sql);
-		pst.setInt(1, cliente.getIdCliente());
-		pst.setString(2, carro.getModelo().toUpperCase());
-		pst.setString(3, carro.getAnoFabricacao().toUpperCase());
-		pst.setString(4, carro.getPlaca().toUpperCase());
-		pst.setString(5, carro.getCor().toUpperCase());
-		pst.setString(6, "ATIVO");
-		pst.execute();
-		pst.close();
+		PreparedStatement pst;
+		try {
+			pst = conn.prepareStatement(sql);
+			pst.setInt(1, cliente.getIdCliente());
+			pst.setString(2, carro.getModelo().toUpperCase());
+			pst.setString(3, carro.getAnoFabricacao().toUpperCase());
+			pst.setString(4, carro.getPlaca().toUpperCase());
+			pst.setString(5, carro.getCor().toUpperCase());
+			pst.setString(6, "ATIVO");
+			pst.execute();
+			pst.close();
 
-		desconectaBanco();
+			desconectaBanco();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void atualizaTabelaCarrosCadastrado(Cliente cliente, JTable tabela)
@@ -81,9 +92,8 @@ public class ClienteDAO extends DAO{
 		desconectaBanco();
 
 	}
-	
-	public void excluirAutomovel(String placa) {
 
+	public void excluirAutomovel(String placa) {
 
 		try {
 			conectaBanco();
@@ -96,14 +106,11 @@ public class ClienteDAO extends DAO{
 			st.close();
 			desconectaBanco();
 
-		} catch (ClassNotFoundException e) {
-
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public boolean atualizaDadosCliente(Cliente cliente, Integer id_Cliente) {
 
 		try {
@@ -120,9 +127,6 @@ public class ClienteDAO extends DAO{
 
 			return true;
 
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -131,31 +135,38 @@ public class ClienteDAO extends DAO{
 		return false;
 
 	}
-	
-	public boolean validaCpf(String cpf) throws ClassNotFoundException, SQLException {
+
+	@SuppressWarnings("finally")
+	public boolean validaCpf(String cpf) {
 
 		String sql = "SELECT C.CPF FROM CLIENTES C WHERE CPF =" + cpf;
 
 		conectaBanco();
-		Statement st = conn.createStatement();
-		rs = st.executeQuery(sql);
-
+		Statement st;
 		ArrayList<String> ListaCpf = new ArrayList<>();
 
-		while (rs.next()) {
-			ListaCpf.add(rs.getString("cpf"));
+		try {
+			st = conn.createStatement();
+			rs = st.executeQuery(sql);
+
+			while (rs.next()) {
+				ListaCpf.add(rs.getString("cpf"));
+			}
+
+			st.close();
+			rs.close();
+			desconectaBanco();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+
+			if (ListaCpf.size() > 0) {
+				return true;
+			} else {
+				return false;
+			}
 		}
-
-		st.close();
-		rs.close();
-		desconectaBanco();
-
-		if (ListaCpf.size() > 0) {
-			return true;
-		} else {
-			return false;
-		}
-
 	}
 
 	public Cliente buscaCliente(String cpf) {
@@ -183,9 +194,6 @@ public class ClienteDAO extends DAO{
 			desconectaBanco();
 			return clienteBanco;
 
-		} catch (ClassNotFoundException e) {
-
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -193,7 +201,7 @@ public class ClienteDAO extends DAO{
 		return null;
 
 	}
-	
+
 	public void cancelaCadastro(int id_cliente) {
 
 		try {
@@ -204,10 +212,14 @@ public class ClienteDAO extends DAO{
 			Statement st = conn.createStatement();
 			st.executeUpdate(sql);
 			st.close();
+
+			String sql1 = "DELETE FROM AUTOMOVEIS WHERE ID_CLIENTE =" + id_cliente;
+
+			st = conn.createStatement();
+			st.executeUpdate(sql1);
+			st.close();
 			desconectaBanco();
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

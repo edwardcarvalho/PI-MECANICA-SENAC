@@ -25,11 +25,15 @@ public class DAO {
 	public static PreparedStatement pst;
 	public static ResultSet rs;
 
-	public void conectaBanco() throws ClassNotFoundException, SQLException {
+	public void conectaBanco() {
 
 		System.setProperty("jdbc.Drivers", "org.sqlite.JDBC");
-		conn = DriverManager
-				.getConnection("jdbc:sqlite:C:\\Users\\CASA\\Documents\\Repositorio_Edward\\Projetos\\teste.db");
+		try {
+			conn = DriverManager
+					.getConnection("jdbc:sqlite:C:\\Users\\CASA\\Documents\\Repositorio_Edward\\Projetos\\teste.db");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		System.out.println("Banco Conectado!");
 
 	}

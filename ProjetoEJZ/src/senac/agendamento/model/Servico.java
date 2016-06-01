@@ -12,6 +12,10 @@ public class Servico {
 		this.tempoExecucao = tempoExecucao;
 	}
 
+	public Servico() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getIdServico() {
 		return idServico;
 	}

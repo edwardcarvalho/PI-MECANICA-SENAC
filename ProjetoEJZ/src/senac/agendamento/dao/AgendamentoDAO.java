@@ -3,14 +3,16 @@ package senac.agendamento.dao;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import senac.agendamento.model.Agendamento;
 import senac.agendamento.model.Automovel;
 import senac.agendamento.model.Cliente;
 import senac.agendamento.model.Funcionario;
+import senac.agendamento.model.Servico;
 
-public class AgendamentoDAO extends DAO{
-	
+public class AgendamentoDAO extends DAO {
+
 	public Cliente buscaCliente(String cpf) {
 
 		Cliente clienteBanco = null;
@@ -36,9 +38,6 @@ public class AgendamentoDAO extends DAO{
 			desconectaBanco();
 			return clienteBanco;
 
-		} catch (ClassNotFoundException e) {
-
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -46,7 +45,7 @@ public class AgendamentoDAO extends DAO{
 		return null;
 
 	}
-	
+
 	public Automovel buscaAutomovelCliente(int id_cliente) {
 
 		Automovel automovelCliente = null;
@@ -72,9 +71,6 @@ public class AgendamentoDAO extends DAO{
 			desconectaBanco();
 			return automovelCliente;
 
-		} catch (ClassNotFoundException e) {
-
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -82,9 +78,8 @@ public class AgendamentoDAO extends DAO{
 		return null;
 
 	}
-	
-	public ArrayList<Agendamento> buscaHorariosDisponiveis(int unidade, String data)
-			throws ClassNotFoundException, SQLException {
+
+	public ArrayList<Agendamento> buscaHorariosDisponiveis(int unidade, String data) {
 
 		Agendamento agendamento = null;
 
@@ -95,56 +90,68 @@ public class AgendamentoDAO extends DAO{
 				+ "INNER JOIN AGENDAMENTOS AG ON AG.ID_AUTOMOVEL = A.ID_AUTOMOVEL INNER JOIN FUNCIONARIOS F ON F.ID_FUNCIONARIO = AG.ID_FUNCIONARIO "
 				+ "INNER JOIN SERVICOS S ON S.ID_SERVICO = AG.ID_SERVICO "
 				+ "INNER JOIN UNIDADE U ON U.ID_UNIDADE = AG.ID_UNIDADE WHERE AG.ID_UNIDADE ='" + unidade
-				+ "' AND AG.DATAAGENDAMENTO = '" + data + "' GROUP BY AG.ID_AUTOMOVEL";
+				+ "' AND AG.DATAAGENDAMENTO = '" + data + "' GROUP BY AG.ID_AGENDAMENTO";
 
 		conectaBanco();
 
-		Statement st = conn.createStatement();
+		Statement st;
+		try {
+			st = conn.createStatement();
+			rs = st.executeQuery(sql);
+			while (rs.next()) {
+				agendamento = new Agendamento();
 
-		rs = st.executeQuery(sql);
-		while (rs.next()) {
-			agendamento = new Agendamento();
+				agendamento.setHorarioInicial(rs.getString("HORARIOINICIAL"));
+				agendamento.setHorarioFinal(rs.getString("HORARIOFINAL"));
 
-			agendamento.setHorarioInicial(rs.getString("HORARIOINICIAL"));
-			agendamento.setHorarioFinal(rs.getString("HORARIOFINAL"));
+				horarios.add(agendamento);
+			}
 
-			horarios.add(agendamento);
+			st.close();
+			desconectaBanco();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		st.close();
-		desconectaBanco();
 
 		return horarios;
 
 	}
 
-	public ArrayList<Funcionario> buscaFuncionariosDisponiveis(int unidade, String data, String horario)
-			throws ClassNotFoundException, SQLException {
+	public ArrayList<Funcionario> buscaFuncionariosDisponiveis(int unidade, String data, String horario) {
 
 		Funcionario funcionarios = null;
 
 		ArrayList<Funcionario> funcionario = new ArrayList<>();
 
-		String sql = "SELECT * FROM FUNCIONARIOS F WHERE NOT EXISTS (SELECT * FROM AGENDAMENTOS WHERE ID_FUNCIONARIO = F.ID_FUNCIONARIO AND DATAAGENDAMENTO ='" + data+ "' AND HORARIOINICIAL ='" + horario + "') AND F.ID_UNIDADE ='" + unidade + "' GROUP BY F.NOME";
+		String sql = "SELECT * FROM FUNCIONARIOS F WHERE NOT EXISTS (SELECT * FROM AGENDAMENTOS WHERE ID_FUNCIONARIO = F.ID_FUNCIONARIO AND DATAAGENDAMENTO ='"
+				+ data + "' AND HORARIOINICIAL ='" + horario + "') AND F.ID_UNIDADE ='" + unidade + "' GROUP BY F.NOME";
 
 		conectaBanco();
 
-		Statement st = conn.createStatement();
+		Statement st;
+		try {
+			st = conn.createStatement();
+			rs = st.executeQuery(sql);
+			while (rs.next()) {
 
-		rs = st.executeQuery(sql);
-		while (rs.next()) {
+				funcionarios = new Funcionario();
 
-			funcionarios = new Funcionario();
+				funcionarios.setIdFuncionario(rs.getInt("ID_FUNCIONARIO"));
+				funcionarios.setNomeFuncionario(rs.getString("NOME"));
+				funcionarios.setIdUnidade(rs.getInt("ID_UNIDADE"));
 
-			funcionarios.setIdFuncionario(rs.getInt("ID_FUNCIONARIO"));
-			funcionarios.setNomeFuncionario(rs.getString("NOME"));
-			funcionarios.setIdUnidade(rs.getInt("ID_UNIDADE"));
+				funcionario.add(funcionarios);
+			}
 
-			funcionario.add(funcionarios);
+			st.close();
+			desconectaBanco();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		st.close();
-		desconectaBanco();
 
 		return funcionario;
 
@@ -153,7 +160,7 @@ public class AgendamentoDAO extends DAO{
 	public ArrayList<Automovel> buscaPlacaComboBox(Cliente cliente) {
 
 		ArrayList<Automovel> automovel = new ArrayList<>();
-		
+
 		Automovel auto;
 
 		try {
@@ -167,14 +174,14 @@ public class AgendamentoDAO extends DAO{
 
 			while (rs.next()) {
 				auto = new Automovel();
-				
+
 				auto.setIdAutomovel(rs.getInt("id_Automovel"));
 				auto.setIdCliente(rs.getInt("id_Cliente"));
 				auto.setPlaca(rs.getString("placa"));
 				auto.setModelo(rs.getString("modelo"));
 				auto.setAnoFabricacao(rs.getString("anoFabricacao"));
 				auto.setCor(rs.getString("cor"));
-				
+
 				automovel.add(auto);
 			}
 
@@ -183,13 +190,78 @@ public class AgendamentoDAO extends DAO{
 			desconectaBanco();
 			return automovel;
 
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		return null;
 	}
-//
+
+	public ArrayList<Servico> buscaServicos() {
+
+		ArrayList<Servico> servicos = new ArrayList<>();
+
+		String sql = "SELECT ID_SERVICO, DESCRICAO, TEMPOEXECUCAO FROM SERVICOS";
+
+		conectaBanco();
+
+		try {
+
+			Statement st = conn.createStatement();
+			rs = st.executeQuery(sql);
+
+			while (rs.next()) {
+
+				Servico serv = new Servico();
+
+				serv.setIdServico(rs.getInt("id_servico"));
+				serv.setDescricao(rs.getString("descricao"));
+				serv.setTempoExecucao(rs.getString("tempoExecucao"));
+
+				servicos.add(serv);
+
+			}
+
+			st.close();
+			rs.close();
+			desconectaBanco();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return servicos;
+	}
+
+	public boolean agendarCliente(Agendamento agendamento) {
+
+		String sql = "INSERT INTO AGENDAMENTOS (ID_AUTOMOVEL, ID_FUNCIONARIO, ID_SERVICO, STATUS, DATAAGENDAMENTO, HORARIOINICIAL,HORARIOFINAL,ID_UNIDADE) VALUES (?,?,?,?,?,?,?,?)";
+
+		try {
+			conectaBanco();
+
+			pst = conn.prepareStatement(sql);
+			pst.setInt(1, agendamento.getIdAutomovel());
+			pst.setInt(2, agendamento.getIdFuncionario());
+			pst.setInt(3, agendamento.getIdServico());
+			pst.setString(4, agendamento.getStatusAgendamento());
+			pst.setString(5, agendamento.getDataAgendamento());
+			pst.setString(6, agendamento.getHorarioInicial());
+			pst.setString(7, agendamento.getHorarioFinal());
+			pst.setInt(8, agendamento.getIdUnidade());
+			pst.executeUpdate();
+			pst.close();
+			rs = pst.getGeneratedKeys();
+
+			desconectaBanco();
+
+			return true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+
+	}
+
 }

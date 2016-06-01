@@ -288,114 +288,104 @@ public class FormCadastroCliente extends JFrame{
 
 				} else {
 
-					try {
+					Cliente cliente = new Cliente(txtNomeCliente.getText().toString(),
+							txtCpfCliente.getText().replaceAll("\\D", "").toString(),
+							txtTelefoneCliente.getText().replaceAll("\\D", "").toString(),
+							txtCelularCliente.getText().replaceAll("\\D", "").toString(),
+							txtDataNascimentoCliente.getText().replaceAll("/", "-").toString());
 
-						Cliente cliente = new Cliente(txtNomeCliente.getText().toString(),
-								txtCpfCliente.getText().replaceAll("\\D", "").toString(),
-								txtTelefoneCliente.getText().replaceAll("\\D", "").toString(),
-								txtCelularCliente.getText().replaceAll("\\D", "").toString(),
-								txtDataNascimentoCliente.getText().replaceAll("/", "-").toString());
+					clienteDAO.adicionaCliente(cliente);
 
-						clienteDAO.adicionaCliente(cliente);
+					txtIdCliente.setText(String.valueOf(cliente.getIdCliente()));
+					txtNomeCliente.setEditable(false);
+					txtCpfCliente.setEditable(false);
+					txtTelefoneCliente.setEditable(false);
+					txtCelularCliente.setEditable(false);
+					txtDataNascimentoCliente.setEditable(false);
+					txtPlacaVeiculoCliente.setEnabled(true);
+					comboBoxAnoCarro.setEnabled(true);
+					comboBoxCorCarro.setEnabled(true);
+					comboBoxModeloCarro.setEnabled(true);
+					btnExcluir.setEnabled(true);
+					btnAdicionar.setEnabled(true);
+					btnSalvar.setEnabled(true);
+					tableVeiculosCadastrados.setVisible(true);
 
-						txtIdCliente.setText(String.valueOf(cliente.getIdCliente()));
-						txtNomeCliente.setEditable(false);
-						txtCpfCliente.setEditable(false);
-						txtTelefoneCliente.setEditable(false);
-						txtCelularCliente.setEditable(false);
-						txtDataNascimentoCliente.setEditable(false);
-						txtPlacaVeiculoCliente.setEnabled(true);
-						comboBoxAnoCarro.setEnabled(true);
-						comboBoxCorCarro.setEnabled(true);
-						comboBoxModeloCarro.setEnabled(true);
-						btnExcluir.setEnabled(true);
-						btnAdicionar.setEnabled(true);
-						btnSalvar.setEnabled(true);
-						tableVeiculosCadastrados.setVisible(true);
+					btnCancelar.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							int opcao = JOptionPane.showConfirmDialog(null, "Cancelar o cadastro?", "Confirmação",
+									JOptionPane.YES_NO_OPTION);
+							if (opcao == 0) {
+								clienteDAO.cancelaCadastro(Integer.valueOf(txtIdCliente.getText()));
+								FormCadastroCliente.this.setVisible(false);
+							} else {
 
-						btnCancelar.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								int opcao = JOptionPane.showConfirmDialog(null, "Cancelar o cadastro?", "Confirmação",
-										JOptionPane.YES_NO_OPTION);
-								if (opcao == 0) {
-									clienteDAO.cancelaCadastro(Integer.valueOf(txtIdCliente.getText()));
-									FormCadastroCliente.this.setVisible(false);
+							}
+						}
+					});
+
+					btnAdicionar.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent arg0) {
+
+							try {
+								if (txtPlacaVeiculoCliente.getText().equals("   -    ")
+										|| comboBoxCorCarro.getSelectedItem().equals("...")
+										|| comboBoxModeloCarro.getSelectedItem().equals("...")
+										|| comboBoxAnoCarro.getSelectedItem().equals("...")) {
+
+									JOptionPane.showMessageDialog(null, "Complete todos os campos!");
+									FormCadastroCliente.this.setVisible(true);
+
 								} else {
+									Automovel automovel = new Automovel(cliente.getIdCliente(),
+											comboBoxModeloCarro.getSelectedItem().toString(),
+											comboBoxCorCarro.getSelectedItem().toString(),
+											comboBoxAnoCarro.getSelectedItem().toString(),
+											txtPlacaVeiculoCliente.getText());
+									clienteDAO.adicionaAutomovel(automovel, cliente);
+									clienteDAO.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
 
-								}
-							}
-						});
+									tableVeiculosCadastrados.addMouseListener(new MouseAdapter() {
+										@Override
+										public void mousePressed(MouseEvent arg0) {
 
-						btnAdicionar.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent arg0) {
+											String placa = tableVeiculosCadastrados
+													.getValueAt(tableVeiculosCadastrados.getSelectedRow(), 0)
+													.toString();
 
-								try {
-									if (txtPlacaVeiculoCliente.getText().equals("   -    ")
-											|| comboBoxCorCarro.getSelectedItem().equals("...")
-											|| comboBoxModeloCarro.getSelectedItem().equals("...")
-											|| comboBoxAnoCarro.getSelectedItem().equals("...")) {
+											btnExcluir.addActionListener(new ActionListener() {
+												public void actionPerformed(ActionEvent arg0) {
 
-										JOptionPane.showMessageDialog(null, "Complete todos os campos!");
-										FormCadastroCliente.this.setVisible(true);
-
-									} else {
-										Automovel automovel = new Automovel(cliente.getIdCliente(),
-												comboBoxModeloCarro.getSelectedItem().toString(),
-												comboBoxCorCarro.getSelectedItem().toString(),
-												comboBoxAnoCarro.getSelectedItem().toString(),
-												txtPlacaVeiculoCliente.getText());
-										clienteDAO.adicionaAutomovel(automovel, cliente);
-										clienteDAO.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
-
-										tableVeiculosCadastrados.addMouseListener(new MouseAdapter() {
-											@Override
-											public void mousePressed(MouseEvent arg0) {
-
-												String placa = tableVeiculosCadastrados
-														.getValueAt(tableVeiculosCadastrados.getSelectedRow(), 0)
-														.toString();
-
-												btnExcluir.addActionListener(new ActionListener() {
-													public void actionPerformed(ActionEvent arg0) {
-
-														try {
-															clienteDAO.excluirAutomovel(placa);
-															clienteDAO.atualizaTabelaCarrosCadastrado(cliente,
-																	tableVeiculosCadastrados);
-														} catch (ClassNotFoundException e) {
-															e.printStackTrace();
-														} catch (SQLException e) {
-															e.printStackTrace();
-														}
+													try {
+														clienteDAO.excluirAutomovel(placa);
+														clienteDAO.atualizaTabelaCarrosCadastrado(cliente,
+																tableVeiculosCadastrados);
+													} catch (ClassNotFoundException e) {
+														e.printStackTrace();
+													} catch (SQLException e) {
+														e.printStackTrace();
 													}
-												});
+												}
+											});
 
-											}
-										});
+										}
+									});
 
-										((JFormattedTextField) txtPlacaVeiculoCliente).setValue(null);
-										comboBoxAnoCarro.setSelectedItem("...");
-										comboBoxCorCarro.setSelectedItem("...");
-										comboBoxModeloCarro.setSelectedItem("...");
+									((JFormattedTextField) txtPlacaVeiculoCliente).setValue(null);
+									comboBoxAnoCarro.setSelectedItem("...");
+									comboBoxCorCarro.setSelectedItem("...");
+									comboBoxModeloCarro.setSelectedItem("...");
 
-									}
-								} catch (ClassNotFoundException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								} catch (SQLException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
 								}
+							} catch (ClassNotFoundException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-						});
-
-					} catch (ClassNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+						}
+					});
 
 				}
 

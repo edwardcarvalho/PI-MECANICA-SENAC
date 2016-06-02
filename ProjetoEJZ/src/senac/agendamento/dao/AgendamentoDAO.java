@@ -5,6 +5,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+import javafx.scene.control.ComboBox;
 import senac.agendamento.model.Agendamento;
 import senac.agendamento.model.Automovel;
 import senac.agendamento.model.Cliente;
@@ -262,6 +270,69 @@ public class AgendamentoDAO extends DAO {
 
 		return false;
 
+	}
+
+	public void atualizaTabelaCarrosAgendados(int idCliente, JTable tabela) {
+
+		conectaBanco();
+
+		DefaultTableModel model = (DefaultTableModel) tabela.getModel();
+
+		while (model.getRowCount() > 0) {
+			model.removeRow(0);
+		}
+
+		String sql = "SELECT AG.ID_AGENDAMENTO, A.PLACA, AG.DATAAGENDAMENTO, AG.HORARIOINICIAL, AG.HORARIOFINAL, U.NOME_UNIDADE, AG.STATUS FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON C.ID_CLIENTE = A.ID_CLIENTE INNER JOIN AGENDAMENTOS AG ON AG.ID_AUTOMOVEL = A.ID_AUTOMOVEL INNER JOIN UNIDADE U ON U.ID_UNIDADE = AG.ID_UNIDADE WHERE C.ID_CLIENTE = '"
+				+ idCliente + "' GROUP BY AG.ID_AGENDAMENTO";
+
+		try {
+			Statement st = conn.createStatement();
+
+			rs = st.executeQuery(sql);
+			while (rs.next()) {
+				model = (DefaultTableModel) tabela.getModel();
+				model.addRow(new String[] { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+						rs.getString(5), rs.getString(6),rs.getString(7) });
+			}
+
+			st.close();
+			desconectaBanco();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public ComboBoxModel mostraHorariosDisponiveis (ArrayList<Agendamento> horariosDisponiveis){
+		
+		int agendaManha = 0;
+		int agendaTarde = 0;
+		
+		JComboBox comboBoxHorarioDisponivel = new JComboBox();
+
+		for (Agendamento horario : horariosDisponiveis) {
+			if (horario.getHorarioInicial().equalsIgnoreCase("8:00")) {
+				agendaManha++;
+			} else {
+				agendaTarde++;
+			}
+		}
+
+		if (agendaManha < 3 && agendaTarde < 3) {
+			comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(
+					new String[] { "...", "Manhã (8h00 às 12h00)", "Tarde (13h15 às 17h15)" }));
+		} else if (agendaManha < 3 && agendaTarde > 2) {
+			comboBoxHorarioDisponivel
+					.setModel(new DefaultComboBoxModel(new String[] { "...", "Manhã (8h00 às 12h00)" }));
+		} else if (agendaManha > 2 && agendaTarde < 3) {
+			comboBoxHorarioDisponivel
+					.setModel(new DefaultComboBoxModel(new String[] { "...", "Tarde (13h15 às 17h15)" }));
+		} else {
+			comboBoxHorarioDisponivel
+			.setModel(new DefaultComboBoxModel(new String[] { "INDISPONIVEL" }));
+		}
+		
+		return comboBoxHorarioDisponivel.getModel();
 	}
 
 }

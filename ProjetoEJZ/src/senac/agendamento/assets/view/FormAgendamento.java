@@ -281,30 +281,7 @@ public class FormAgendamento extends JFrame {
 					String data = sdf.format(date);
 
 					horariosDisponiveis = agendamentoDAO.buscaHorariosDisponiveis(unidade, data);
-					int agendaManha = 0;
-					int agendaTarde = 0;
-
-					for (Agendamento horario : horariosDisponiveis) {
-						if (horario.getHorarioInicial().equalsIgnoreCase("8:00")) {
-							agendaManha++;
-						} else {
-							agendaTarde++;
-						}
-					}
-
-					if (agendaManha < 3 && agendaTarde < 3) {
-						comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(
-								new String[] { "...", "Manhã (8h00 às 12h00)", "Tarde (13h15 às 17h15)" }));
-					} else if (agendaManha < 3 && agendaTarde > 2) {
-						comboBoxHorarioDisponivel
-								.setModel(new DefaultComboBoxModel(new String[] { "...", "Manhã (8h00 às 12h00)" }));
-					} else if (agendaManha > 2 && agendaTarde < 3) {
-						comboBoxHorarioDisponivel
-								.setModel(new DefaultComboBoxModel(new String[] { "...", "Tarde (13h15 às 17h15)" }));
-					} else {
-						JOptionPane.showMessageDialog(null, "Não há horarios disponiveis nesta data.");
-
-					}
+					comboBoxHorarioDisponivel.setModel(agendamentoDAO.mostraHorariosDisponiveis(horariosDisponiveis));
 				}
 
 				ComboBoxModel comboPesquisa = comboBoxHorarioDisponivel.getModel();
@@ -325,69 +302,79 @@ public class FormAgendamento extends JFrame {
 				btnAgendar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 
-						Object date = calendario.getDate();
-						SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-						String data = sdf.format(date);
+						if (comboBoxUnidade.getSelectedItem().toString().equals("...")
+								|| calendario.getDate() ==  null
+								|| comboBoxHorarioDisponivel.getSelectedItem().equals("...")
+								|| comboBoxServicos.getSelectedItem().equals("...")) {
 
-						String periodo = comboBoxHorarioDisponivel.getSelectedItem().toString();
-						if (periodo.contains("Manhã")) {
-							horarioInicial = "8:00";
-							horarioFinal = "12:00";
+							JOptionPane.showMessageDialog(null, "Complete todos os campos!");
+							
 						} else {
-							horarioInicial = "13:15";
-							horarioFinal = "17:15";
-						}
 
-						String status = null;
-						if (rdbtnFilaDeEspera.isSelected()) {
-							status = "FILA DE ESPERA";
-						} else {
-							status = "AGENDADO";
-						}
+							Object date = calendario.getDate();
+							SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+							String data = sdf.format(date);
 
-						int idAutomovel = 0;
-						for (Automovel a : placas) {
-							if (a.getPlaca().toString()
-									.equalsIgnoreCase(comboBoxPlacasCadastradas.getSelectedItem().toString())) {
-								idAutomovel = a.getIdAutomovel();
+							String periodo = comboBoxHorarioDisponivel.getSelectedItem().toString();
+							if (periodo.contains("Manhã")) {
+								horarioInicial = "8:00";
+								horarioFinal = "12:00";
+							} else {
+								horarioInicial = "13:15";
+								horarioFinal = "17:15";
+							}
+
+							String status = null;
+							if (rdbtnFilaDeEspera.isSelected()) {
+								status = "FILA DE ESPERA";
+							} else {
+								status = "AGENDADO";
+							}
+
+							int idAutomovel = 0;
+							for (Automovel a : placas) {
+								if (a.getPlaca().toString()
+										.equalsIgnoreCase(comboBoxPlacasCadastradas.getSelectedItem().toString())) {
+									idAutomovel = a.getIdAutomovel();
+								}
+							}
+
+							int idUnidade = comboBoxUnidade.getSelectedIndex();
+							funcionarios = agendamentoDAO.buscaFuncionariosDisponiveis(idUnidade, data, horarioInicial);
+
+							int idFuncionario;
+							if (rdbtnFilaDeEspera.isSelected()) {
+								idFuncionario = 0;
+							} else {
+								idFuncionario = funcionarios.get(0).getIdFuncionario();
+							}
+
+							String placa = comboBoxPlacasCadastradas.getSelectedItem().toString();
+							int idServico = comboBoxServicos.getSelectedIndex();
+
+							Agendamento agendamento = new Agendamento();
+
+							agendamento.setIdAutomovel(idAutomovel);
+							agendamento.setIdFuncionario(idFuncionario);
+							agendamento.setIdServico(idServico);
+							agendamento.setStatusAgendamento(status);
+							agendamento.setDataAgendamento(data);
+							agendamento.setHorarioInicial(horarioInicial);
+							agendamento.setHorarioFinal(horarioFinal);
+							agendamento.setIdUnidade(idUnidade);
+
+							boolean agendou = agendamentoDAO.agendarCliente(agendamento);
+
+							if (agendou) {
+								JOptionPane.showMessageDialog(null, "Agendamento realizado com sucesso!");
+								FormAgendamento.this.setVisible(false);
+							} else {
+								JOptionPane.showMessageDialog(null, "Falha no agendamento. Contate o administrador.");
 							}
 						}
-
-						int idUnidade = comboBoxUnidade.getSelectedIndex();
-						funcionarios = agendamentoDAO.buscaFuncionariosDisponiveis(idUnidade, data, horarioInicial);
-						
-						int idFuncionario;
-						if (rdbtnFilaDeEspera.isSelected()) {
-							idFuncionario = 0;
-						} else {
-							idFuncionario = funcionarios.get(0).getIdFuncionario();
-						}
-						
-						String placa = comboBoxPlacasCadastradas.getSelectedItem().toString();
-						int idServico = comboBoxServicos.getSelectedIndex();
-
-						Agendamento agendamento = new Agendamento();
-
-						agendamento.setIdAutomovel(idAutomovel);
-						agendamento.setIdFuncionario(idFuncionario);
-						agendamento.setIdServico(idServico);
-						agendamento.setStatusAgendamento(status);
-						agendamento.setDataAgendamento(data);
-						agendamento.setHorarioInicial(horarioInicial);
-						agendamento.setHorarioFinal(horarioFinal);
-						agendamento.setIdUnidade(idUnidade);
-
-						boolean agendou = agendamentoDAO.agendarCliente(agendamento);
-
-						if (agendou) {
-							JOptionPane.showMessageDialog(null, "Agendamento realizado com sucesso!");
-							FormAgendamento.this.setVisible(false);
-						} else {
-							JOptionPane.showMessageDialog(null, "Falha no agendamento. Contate o administrador.");
-						}
-
 					}
 				});
+
 			}
 		});
 

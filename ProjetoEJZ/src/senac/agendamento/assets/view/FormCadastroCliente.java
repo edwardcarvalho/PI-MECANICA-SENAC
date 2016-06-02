@@ -146,6 +146,9 @@ public class FormCadastroCliente extends JFrame{
 		lblCpf.setBounds(10, 50, 46, 14);
 		panel.add(lblCpf);
 		txtCpfCliente = new JFormattedTextField(cpfMask);
+		txtCpfCliente.setBounds(66, 47, 125, 20);
+		panel.add(txtCpfCliente);
+		txtCpfCliente.setColumns(10);
 
 		JButton btnCancelar = new JButton("Cancelar");
 
@@ -547,9 +550,6 @@ public class FormCadastroCliente extends JFrame{
 				}
 			}
 		});
-		txtCpfCliente.setBounds(66, 47, 125, 20);
-		panel.add(txtCpfCliente);
-		txtCpfCliente.setColumns(10);
 
 	}
 }

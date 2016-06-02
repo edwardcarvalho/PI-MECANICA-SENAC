@@ -233,7 +233,6 @@ public class FormMainEJZ extends JFrame {
 		JLabel lblPlanoDeFundo = new JLabel("Plano de Fundo");
 		lblPlanoDeFundo.setBounds(0, 0, 1196, 634);
 		contentPane.add(lblPlanoDeFundo);
-		lblPlanoDeFundo.setIcon(new ImageIcon(
-				FormMainEJZ.class.getResource("/Imagens/119344_Papel-de-Parede-Fundo-de-Luz_1680x1050.jpg")));
+		lblPlanoDeFundo.setIcon(new ImageIcon(FormMainEJZ.class.getResource("/senac/agendamento/assets/images/119344_Papel-de-Parede-Fundo-de-Luz_1680x1050.jpg")));
 	}
 }

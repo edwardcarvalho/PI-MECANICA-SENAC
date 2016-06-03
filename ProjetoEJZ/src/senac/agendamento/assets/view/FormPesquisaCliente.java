@@ -7,7 +7,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
+
+import senac.agendamento.dao.AgendamentoDAO;
+import senac.agendamento.dao.ClienteDAO;
+import senac.agendamento.model.Cliente;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.text.ParseException;
@@ -19,6 +25,8 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class FormPesquisaCliente extends JFrame {
 
@@ -27,6 +35,9 @@ public class FormPesquisaCliente extends JFrame {
 	private JTextField txtNomeCliente;
 	private JTable tableDadosCliente;
 	private JTextField txtCelular;
+	
+	ClienteDAO clienteDao = new ClienteDAO();
+	AgendamentoDAO agendamentoDao = new AgendamentoDAO();
 
 	/**
 	 * Launch the application.
@@ -74,6 +85,26 @@ public class FormPesquisaCliente extends JFrame {
 		txtCpfCliente.setColumns(10);
 		
 		JButton btnPesquisar = new JButton("Pesquisar");
+		btnPesquisar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String cpf = txtCpfCliente.getText().replaceAll("\\D", "");
+				Cliente cliente = clienteDao.buscarCliente(cpf);
+				if (cliente == null) {
+					JOptionPane.showMessageDialog(null, "CPF não cadastrado!");
+				} else {
+					txtNomeCliente.setText(cliente.getNomeCliente());
+					txtCelular.setText(cliente.getTelefoneCelular());
+
+					clienteDao.atualizaTabelaCarrosCadastrado(cliente, tableDadosCliente);
+
+					if (tableDadosCliente.getRowCount() == 0) {
+						JOptionPane.showMessageDialog(null, "Cliente não possui automovel!");
+					}
+				}
+				
+				
+			}
+		});
 		btnPesquisar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnPesquisar.setBounds(196, 93, 108, 23);
 		contentPane.add(btnPesquisar);
@@ -111,7 +142,7 @@ public class FormPesquisaCliente extends JFrame {
 		MaskFormatter celMask = new MaskFormatter("(##)#####-####");
 		txtCelular = new JFormattedTextField(celMask);
 		txtCelular.setEditable(false);
-		txtCelular.setBounds(87, 170, 86, 20);
+		txtCelular.setBounds(87, 170, 94, 20);
 		contentPane.add(txtCelular);
 		txtCelular.setColumns(10);
 	}

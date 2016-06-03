@@ -71,6 +71,7 @@ public class FormAgendamento extends JFrame {
 	private ArrayList<Servico> servicos;
 
 	AgendamentoDAO agendamentoDAO = new AgendamentoDAO();
+	Agendamento agendamento = new Agendamento();
 
 	/**
 	 * Launch the application.
@@ -151,17 +152,17 @@ public class FormAgendamento extends JFrame {
 
 				} else {
 
-					cliente = agendamentoDAO.buscaCliente(txtCampoBuscaClienteCpf.getText().replaceAll("\\D", ""));
+					cliente = agendamentoDAO.buscarCliente(txtCampoBuscaClienteCpf.getText().replaceAll("\\D", ""));
 
 					if (cliente == null) {
 						JOptionPane.showMessageDialog(null, "Cliente não cadastrado!");
 					} else {
-						automovelCliente = agendamentoDAO.buscaAutomovelCliente(cliente.getIdCliente());
+						automovelCliente = agendamentoDAO.buscarAutomovelCliente(cliente.getIdCliente());
 						txtNomeCadastrado.setText(cliente.getNomeCliente());
 						txtCPFcadastrado.setText(cliente.getCpf().trim());
 						comboBoxPlacasCadastradas.removeAllItems();
 
-						placas = agendamentoDAO.buscaPlacaComboBox(cliente);
+						placas = agendamentoDAO.buscarPlacaComboBox(cliente);
 						for (Automovel a : placas) {
 							comboBoxPlacasCadastradas.addItem(a.getPlaca());
 						}
@@ -207,7 +208,7 @@ public class FormAgendamento extends JFrame {
 		comboBoxServicos.setBounds(42, 272, 222, 23);
 		comboBoxServicos.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBoxServicos.addItem("...");
-		servicos = agendamentoDAO.buscaServicos();
+		servicos = agendamentoDAO.buscarServicos();
 		for (Servico s : servicos) {
 			comboBoxServicos.addItem(s.getDescricao());
 		}
@@ -280,8 +281,8 @@ public class FormAgendamento extends JFrame {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 					String data = sdf.format(date);
 
-					horariosDisponiveis = agendamentoDAO.buscaHorariosDisponiveis(unidade, data);
-					comboBoxHorarioDisponivel.setModel(agendamentoDAO.mostraHorariosDisponiveis(horariosDisponiveis));
+					horariosDisponiveis = agendamentoDAO.buscarHorariosDisponiveis(unidade, data);
+					comboBoxHorarioDisponivel.setModel(agendamento.mostraHorariosDisponiveis(horariosDisponiveis));
 				}
 
 				ComboBoxModel comboPesquisa = comboBoxHorarioDisponivel.getModel();
@@ -340,7 +341,7 @@ public class FormAgendamento extends JFrame {
 							}
 
 							int idUnidade = comboBoxUnidade.getSelectedIndex();
-							funcionarios = agendamentoDAO.buscaFuncionariosDisponiveis(idUnidade, data, horarioInicial);
+							funcionarios = agendamentoDAO.buscarFuncionariosDisponiveis(idUnidade, data, horarioInicial);
 
 							int idFuncionario;
 							if (rdbtnFilaDeEspera.isSelected()) {

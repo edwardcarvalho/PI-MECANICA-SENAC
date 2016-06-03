@@ -1,5 +1,11 @@
 package senac.agendamento.model;
 
+import java.util.ArrayList;
+
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+
 public class Agendamento {
 
 	private String dataAgendamento;
@@ -85,6 +91,38 @@ public class Agendamento {
 
 	public void setHorarioFinal(String horarioFinal) {
 		this.horarioFinal = horarioFinal;
+	}
+	
+	public ComboBoxModel mostraHorariosDisponiveis (ArrayList<Agendamento> horariosDisponiveis){
+		
+		int agendaManha = 0;
+		int agendaTarde = 0;
+		
+		JComboBox comboBoxHorarioDisponivel = new JComboBox();
+
+		for (Agendamento horario : horariosDisponiveis) {
+			if (horario.getHorarioInicial().equalsIgnoreCase("8:00")) {
+				agendaManha++;
+			} else {
+				agendaTarde++;
+			}
+		}
+
+		if (agendaManha < 3 && agendaTarde < 3) {
+			comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(
+					new String[] { "...", "Manhã (8h00 às 12h00)", "Tarde (13h15 às 17h15)" }));
+		} else if (agendaManha < 3 && agendaTarde > 2) {
+			comboBoxHorarioDisponivel
+					.setModel(new DefaultComboBoxModel(new String[] { "...", "Manhã (8h00 às 12h00)" }));
+		} else if (agendaManha > 2 && agendaTarde < 3) {
+			comboBoxHorarioDisponivel
+					.setModel(new DefaultComboBoxModel(new String[] { "...", "Tarde (13h15 às 17h15)" }));
+		} else {
+			comboBoxHorarioDisponivel
+			.setModel(new DefaultComboBoxModel(new String[] { "INDISPONIVEL" }));
+		}
+		
+		return comboBoxHorarioDisponivel.getModel();
 	}
 
 }

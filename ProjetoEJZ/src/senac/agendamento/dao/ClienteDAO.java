@@ -13,7 +13,7 @@ import senac.agendamento.model.Cliente;
 
 public class ClienteDAO extends DAO {
 
-	public void adicionaCliente(Cliente cliente) {
+	public void salvarCliente(Cliente cliente) {
 
 		conectaBanco();
 
@@ -39,7 +39,7 @@ public class ClienteDAO extends DAO {
 
 	}
 
-	public void adicionaAutomovel(Automovel carro, Cliente cliente) {
+	public void salvarAutomovel(Automovel carro, Cliente cliente) {
 
 		conectaBanco();
 
@@ -64,8 +64,7 @@ public class ClienteDAO extends DAO {
 		}
 	}
 
-	public void atualizaTabelaCarrosCadastrado(Cliente cliente, JTable tabela)
-			throws ClassNotFoundException, SQLException {
+	public void atualizaTabelaCarrosCadastrado(Cliente cliente, JTable tabela){
 
 		conectaBanco();
 
@@ -75,21 +74,26 @@ public class ClienteDAO extends DAO {
 			model.removeRow(0);
 		}
 
-		rs = null;
-		Statement st = conn.createStatement();
-
+		Statement st;
+		
 		String sql = "SELECT A.PLACA, A.MODELO, A.COR, A.ANOFABRICACAO FROM AUTOMOVEIS A WHERE A.ID_CLIENTE ='"
 				+ cliente.getIdCliente() + "'AND A.STATUS_AUTO = 'ATIVO' GROUP BY A.PLACA";
-
-		rs = st.executeQuery(sql);
-
-		while (rs.next()) {
-			model = (DefaultTableModel) tabela.getModel();
-			model.addRow(new String[] { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4) });
+		try {
+			st = conn.createStatement();
+			
+			
+			rs = st.executeQuery(sql);
+			
+			while (rs.next()) {
+				model = (DefaultTableModel) tabela.getModel();
+				model.addRow(new String[] { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4) });
+			}
+			
+			st.close();
+			desconectaBanco();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-
-		st.close();
-		desconectaBanco();
 
 	}
 
@@ -111,7 +115,7 @@ public class ClienteDAO extends DAO {
 		}
 	}
 
-	public boolean atualizaDadosCliente(Cliente cliente, Integer id_Cliente) {
+	public boolean alterarCliente(Cliente cliente, Integer id_Cliente) {
 
 		try {
 			conectaBanco();
@@ -137,7 +141,7 @@ public class ClienteDAO extends DAO {
 	}
 
 	@SuppressWarnings("finally")
-	public boolean validaCpf(String cpf) {
+	public boolean validarCpf(String cpf) {
 
 		String sql = "SELECT C.CPF FROM CLIENTES C WHERE CPF =" + cpf;
 
@@ -169,7 +173,7 @@ public class ClienteDAO extends DAO {
 		}
 	}
 
-	public Cliente buscaCliente(String cpf) {
+	public Cliente buscarCliente(String cpf) {
 
 		Cliente clienteBanco = null;
 
@@ -202,7 +206,7 @@ public class ClienteDAO extends DAO {
 
 	}
 
-	public void cancelaCadastro(int id_cliente) {
+	public void cancelarCadastro(int id_cliente) {
 
 		try {
 			conectaBanco();

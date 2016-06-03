@@ -133,43 +133,27 @@ public class FormMainEJZ extends JFrame {
 		});
 		mntmAlterar_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnAgendamento.add(mntmAlterar_2);
-
-		JMenuItem mntmExcluir_1 = new JMenuItem("Excluir");
-		mntmExcluir_1.addActionListener(new ActionListener() {
+		
+		JMenu mnCliente = new JMenu("Cliente");
+		mnCliente.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mnArquivo.add(mnCliente);
+		
+		JMenuItem mntmCadastrarEditar = new JMenuItem("Novo / Alterar");
+		mntmCadastrarEditar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				FormExcluirAgendamento excluirAgendamento = new FormExcluirAgendamento();
-				
-				excluirAgendamento.setVisible(true);
-			}
-		});
-		mntmExcluir_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnAgendamento.add(mntmExcluir_1);
-		mnArquivo.add(mntmSair);
-
-		JMenu mnCadastro = new JMenu("Cadastro");
-		mnCadastro.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		menuBar.add(mnCadastro);
-
-		JMenu mnNovo = new JMenu("Editar / Novo");
-		mnNovo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnCadastro.add(mnNovo);
-
-		JMenuItem mntmCliente = new JMenuItem("Cliente");
-		mntmCliente.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				FormCadastroCliente cadastroCliente = null;
 				try {
-					cadastroCliente = new FormCadastroCliente();
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					FormCadastroCliente cadastroCliente = new FormCadastroCliente();
+					cadastroCliente.setVisible(true);
+					
+				} catch (ParseException e1) {
+					e1.printStackTrace();
 				}
-				cadastroCliente.setVisible(true);
 			}
 		});
-		mntmCliente.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mnNovo.add(mntmCliente);
+		mntmCadastrarEditar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mnCliente.add(mntmCadastrarEditar);
+		mnArquivo.add(mntmSair);
 
 		JMenu mnPesquisa = new JMenu("Pesquisar");
 		mnPesquisa.setFont(new Font("Segoe UI", Font.PLAIN, 14));

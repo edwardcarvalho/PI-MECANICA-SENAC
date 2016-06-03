@@ -21,7 +21,7 @@ import senac.agendamento.model.Servico;
 
 public class AgendamentoDAO extends DAO {
 
-	public Cliente buscaCliente(String cpf) {
+	public Cliente buscarCliente(String cpf) {
 
 		Cliente clienteBanco = null;
 
@@ -54,7 +54,7 @@ public class AgendamentoDAO extends DAO {
 
 	}
 
-	public Automovel buscaAutomovelCliente(int id_cliente) {
+	public Automovel buscarAutomovelCliente(int id_cliente) {
 
 		Automovel automovelCliente = null;
 
@@ -62,7 +62,7 @@ public class AgendamentoDAO extends DAO {
 			conectaBanco();
 
 			String sql = "SELECT A.ID_CLIENTE, A.MODELO, A.COR, A.ANOFABRICACAO, A.PLACA FROM AUTOMOVEIS A WHERE A.ID_CLIENTE ='"
-					+ id_cliente + "'";
+					+ id_cliente + "' AND STATUS_AUTO = 'ATIVO'";
 
 			Statement st = conn.createStatement();
 			rs = st.executeQuery(sql);
@@ -87,7 +87,7 @@ public class AgendamentoDAO extends DAO {
 
 	}
 
-	public ArrayList<Agendamento> buscaHorariosDisponiveis(int unidade, String data) {
+	public ArrayList<Agendamento> buscarHorariosDisponiveis(int unidade, String data) {
 
 		Agendamento agendamento = null;
 
@@ -119,7 +119,6 @@ public class AgendamentoDAO extends DAO {
 			desconectaBanco();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -127,7 +126,7 @@ public class AgendamentoDAO extends DAO {
 
 	}
 
-	public ArrayList<Funcionario> buscaFuncionariosDisponiveis(int unidade, String data, String horario) {
+	public ArrayList<Funcionario> buscarFuncionariosDisponiveis(int unidade, String data, String horario) {
 
 		Funcionario funcionarios = null;
 
@@ -157,7 +156,6 @@ public class AgendamentoDAO extends DAO {
 			desconectaBanco();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -165,7 +163,7 @@ public class AgendamentoDAO extends DAO {
 
 	}
 
-	public ArrayList<Automovel> buscaPlacaComboBox(Cliente cliente) {
+	public ArrayList<Automovel> buscarPlacaComboBox(Cliente cliente) {
 
 		ArrayList<Automovel> automovel = new ArrayList<>();
 
@@ -205,7 +203,7 @@ public class AgendamentoDAO extends DAO {
 		return null;
 	}
 
-	public ArrayList<Servico> buscaServicos() {
+	public ArrayList<Servico> buscarServicos() {
 
 		ArrayList<Servico> servicos = new ArrayList<>();
 
@@ -272,7 +270,7 @@ public class AgendamentoDAO extends DAO {
 
 	}
 
-	public void atualizaTabelaCarrosAgendados(int idCliente, JTable tabela) {
+	public void atualizarTabelaCarrosAgendados(int idCliente, JTable tabela) {
 
 		conectaBanco();
 
@@ -283,7 +281,7 @@ public class AgendamentoDAO extends DAO {
 		}
 
 		String sql = "SELECT AG.ID_AGENDAMENTO, A.PLACA, AG.DATAAGENDAMENTO, AG.HORARIOINICIAL, AG.HORARIOFINAL, U.NOME_UNIDADE, AG.STATUS FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON C.ID_CLIENTE = A.ID_CLIENTE INNER JOIN AGENDAMENTOS AG ON AG.ID_AUTOMOVEL = A.ID_AUTOMOVEL INNER JOIN UNIDADE U ON U.ID_UNIDADE = AG.ID_UNIDADE WHERE C.ID_CLIENTE = '"
-				+ idCliente + "' GROUP BY AG.ID_AGENDAMENTO";
+				+ idCliente + "' AND AG.STATUS <> 'CANCELADO' GROUP BY AG.ID_AGENDAMENTO";
 
 		try {
 			Statement st = conn.createStatement();
@@ -303,36 +301,45 @@ public class AgendamentoDAO extends DAO {
 
 	}
 	
-	public ComboBoxModel mostraHorariosDisponiveis (ArrayList<Agendamento> horariosDisponiveis){
+	public boolean alterarAgendamento (Agendamento agendamento){
 		
-		int agendaManha = 0;
-		int agendaTarde = 0;
+		String sql = "UPDATE AGENDAMENTOS SET ID_FUNCIONARIO = '"+agendamento.getIdFuncionario()+"' , ID_SERVICO = '"+agendamento.getIdServico()+"' , STATUS = '"+agendamento.getStatusAgendamento()+"' , DATAAGENDAMENTO = '"+agendamento.getDataAgendamento()+"', HORARIOINICIAL = '"+agendamento.getHorarioInicial()+"', HORARIOFINAL = '"+agendamento.getHorarioFinal()+"' , ID_UNIDADE = '"+agendamento.getIdUnidade()+"' WHERE ID_AGENDAMENTO = '"+agendamento.getIdAgendamento()+"'";
 		
-		JComboBox comboBoxHorarioDisponivel = new JComboBox();
-
-		for (Agendamento horario : horariosDisponiveis) {
-			if (horario.getHorarioInicial().equalsIgnoreCase("8:00")) {
-				agendaManha++;
-			} else {
-				agendaTarde++;
-			}
-		}
-
-		if (agendaManha < 3 && agendaTarde < 3) {
-			comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(
-					new String[] { "...", "Manhã (8h00 às 12h00)", "Tarde (13h15 às 17h15)" }));
-		} else if (agendaManha < 3 && agendaTarde > 2) {
-			comboBoxHorarioDisponivel
-					.setModel(new DefaultComboBoxModel(new String[] { "...", "Manhã (8h00 às 12h00)" }));
-		} else if (agendaManha > 2 && agendaTarde < 3) {
-			comboBoxHorarioDisponivel
-					.setModel(new DefaultComboBoxModel(new String[] { "...", "Tarde (13h15 às 17h15)" }));
-		} else {
-			comboBoxHorarioDisponivel
-			.setModel(new DefaultComboBoxModel(new String[] { "INDISPONIVEL" }));
+		conectaBanco();
+		
+		try {
+			Statement st = conn.createStatement();
+			st.executeUpdate(sql);
+			st.close();
+			desconectaBanco();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		
-		return comboBoxHorarioDisponivel.getModel();
+		return false;
+		
+		
 	}
+	
+	public boolean cancelarAgendamento(int idAgendamento, String status){
+		
+String sql = "UPDATE AGENDAMENTOS SET ID_FUNCIONARIO = 0 , STATUS = '"+status+"' WHERE ID_AGENDAMENTO = '"+idAgendamento+"'";
+		
+		conectaBanco();
+		
+		try {
+			Statement st = conn.createStatement();
+			st.executeUpdate(sql);
+			st.close();
+			desconectaBanco();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
 
 }

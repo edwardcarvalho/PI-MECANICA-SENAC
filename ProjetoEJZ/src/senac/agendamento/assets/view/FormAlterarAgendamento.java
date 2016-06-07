@@ -361,7 +361,7 @@ public class FormAlterarAgendamento extends JFrame {
 					updateAgendamento.setIdUnidade(idUnidade);
 
 					Object date = dateChooser.getDate();
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					String data = sdf.format(date);
 					updateAgendamento.setDataAgendamento(data);
 

@@ -278,7 +278,7 @@ public class FormAgendamento extends JFrame {
 					int unidade = comboBoxUnidade.getSelectedIndex();
 					int id_cliente = cliente.getIdCliente();
 					Object date = calendario.getDate();
-					SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					String data = sdf.format(date);
 
 					horariosDisponiveis = agendamentoDAO.buscarHorariosDisponiveis(unidade, data);
@@ -313,7 +313,7 @@ public class FormAgendamento extends JFrame {
 						} else {
 
 							Object date = calendario.getDate();
-							SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+							SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 							String data = sdf.format(date);
 
 							String periodo = comboBoxHorarioDisponivel.getSelectedItem().toString();

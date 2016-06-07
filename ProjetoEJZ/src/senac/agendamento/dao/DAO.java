@@ -27,11 +27,18 @@ public class DAO {
 
 	public void conectaBanco() {
 
-		System.setProperty("jdbc.Drivers", "org.sqlite.JDBC");
+		// String para receber o diretorio do banco de dados
+
+		String diretorio = System.getProperty("user.dir");
+		System.out.println(diretorio);
+
 		try {
-			conn = DriverManager
-					.getConnection("jdbc:sqlite:C:\\Users\\CASA\\Documents\\Repositorio_Edward\\Projetos\\teste.db");
+			Class.forName("org.sqlite.JDBC");
+			conn = DriverManager.getConnection("jdbc:sqlite:" + diretorio
+					+ "\\Banco\\bancoConcessionaria.db");
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		System.out.println("Banco Conectado!");

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import senac.agendamento.model.Cliente;
+import senac.agendamento.model.Funcionario;
+
 public class RelatoriosDAO extends DAO {
 
 	public String converteData(String data) {
@@ -93,5 +96,70 @@ public class RelatoriosDAO extends DAO {
 		return false;
 
 	}
-
+	
+	public ArrayList<Funcionario> bucarTodosFuncionario (){
+		
+		String sql = "SELECT F.ID_FUNCIONARIO, F.NOME, F.ID_UNIDADE FROM FUNCIONARIOS F GROUP BY ID_FUNCIONARIO";
+		
+		ArrayList<Funcionario> listaFuncionarios = new ArrayList<>();
+		
+		conectaBanco();
+		
+		try {
+			Statement st = conn.createStatement();
+			rs = st.executeQuery(sql);
+			
+			while(rs.next()){
+				
+				Funcionario funcionario = new Funcionario();
+				
+				funcionario.setIdFuncionario(rs.getInt("ID_FUNCIONARIO"));
+				funcionario.setNomeFuncionario(rs.getString("NOME"));
+				funcionario.setIdUnidade(rs.getInt("ID_UNIDADE"));
+				
+				listaFuncionarios.add(funcionario);
+				
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return listaFuncionarios;
+		
+	}
+	
+	public ArrayList<Cliente> bucarTodosClientes (){
+		
+		String sql = "SELECT C.ID_CLIENTE, C.NOME, C.CPF FROM CLIENTES C GROUP BY C.ID_CLIENTE ORDER BY C.NOME";
+		
+		ArrayList<Cliente> listaClientes = new ArrayList<>();
+		
+		conectaBanco();
+		
+		try {
+			Statement st = conn.createStatement();
+			rs = st.executeQuery(sql);
+			
+			while(rs.next()){
+				
+				Cliente cliente = new Cliente();
+				
+				cliente.setIdCliente(rs.getInt("ID_CLIENTE"));
+				cliente.setNomeCliente(rs.getString("NOME"));
+				cliente.setCpf(rs.getString("CPF"));
+				
+				listaClientes.add(cliente);
+				
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return listaClientes;
+		
+	}
+	
+	
 }

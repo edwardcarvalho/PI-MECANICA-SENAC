@@ -10,22 +10,34 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+
 import javax.swing.SwingConstants;
+
 import com.toedter.calendar.JDateChooser;
 
 import senac.agendamento.dao.RelatoriosDAO;
+import senac.agendamento.model.Cliente;
+import senac.agendamento.model.Funcionario;
 
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
+
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
+
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class FormRelatorios extends JFrame {
 
@@ -55,7 +67,6 @@ public class FormRelatorios extends JFrame {
 	 * Create the frame.
 	 */
 	public FormRelatorios() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1010, 443);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -101,14 +112,17 @@ public class FormRelatorios extends JFrame {
 		panel.add(scrollPane);
 
 		tableRelatorios = new JTable();
-		tableRelatorios.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Data", "Cliente",
-				"Placa", "Status", "Servi\u00E7o", "Inicio", "T\u00E9rmino", "Unidade", "Funcionario" }));
+		tableRelatorios.setModel(new DefaultTableModel(new Object[][] {},
+				new String[] { "ID", "Data", "Cliente", "Placa", "Status",
+						"Servi\u00E7o", "Inicio", "T\u00E9rmino", "Unidade",
+						"Funcionario", "Por Cliente" }));
 		scrollPane.setViewportView(tableRelatorios);
 
 		JComboBox comboBoxFiltros = new JComboBox();
 		comboBoxFiltros.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBoxFiltros.setModel(new DefaultComboBoxModel(
-				new String[] { "Todos", "Cancelados", "Fila de Espera", "Agendados", "Finalizados" }));
+		comboBoxFiltros.setModel(new DefaultComboBoxModel(new String[] {
+				"Todos", "Cancelados", "Fila de Espera", "Agendados",
+				"Finalizados" }));
 		comboBoxFiltros.setBounds(638, 21, 123, 23);
 		panel.add(comboBoxFiltros);
 
@@ -117,17 +131,65 @@ public class FormRelatorios extends JFrame {
 		lblFiltro.setBounds(598, 22, 34, 14);
 		panel.add(lblFiltro);
 
-		JComboBox comboBoxTipo = new JComboBox();
-		comboBoxTipo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBoxTipo.setModel(
-				new DefaultComboBoxModel(new String[] { "Por Agendamentos", "Por Funcion\u00E1rios", "Por Unidade" }));
-		comboBoxTipo.setBounds(421, 20, 156, 23);
-		panel.add(comboBoxTipo);
-
 		JLabel lblTipo = new JLabel("Tipo");
 		lblTipo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblTipo.setBounds(382, 21, 36, 16);
 		panel.add(lblTipo);
+
+		JLabel lblOpcoes = new JLabel("Op\u00E7\u00F5es");
+		lblOpcoes.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblOpcoes.setBounds(382, 54, 46, 21);
+		panel.add(lblOpcoes);
+		lblOpcoes.setVisible(false);
+
+		JComboBox comboBoxOpcoes = new JComboBox();
+		comboBoxOpcoes.setBounds(441, 54, 136, 22);
+		panel.add(comboBoxOpcoes);
+		comboBoxOpcoes.setVisible(false);
+
+		JComboBox comboBoxTipo = new JComboBox();
+		comboBoxTipo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int opcao = comboBoxTipo.getSelectedIndex();
+
+				if (opcao == 1) {
+					comboBoxOpcoes.setVisible(true);
+					lblOpcoes.setVisible(true);
+					comboBoxOpcoes.setBounds(441, 54, 136, 22);
+					ArrayList<Funcionario> funcionario = relatoriosDao
+							.bucarTodosFuncionario();
+					comboBoxOpcoes.removeAllItems();
+
+					for (Funcionario f : funcionario) {
+						comboBoxOpcoes.addItem(f.getNomeFuncionario());
+					}
+				} else if (opcao == 2) {
+					comboBoxOpcoes.setVisible(true);
+					lblOpcoes.setVisible(true);
+					comboBoxOpcoes.removeAllItems();
+				} else if (opcao == 3) {
+					comboBoxOpcoes.setVisible(true);
+					lblOpcoes.setVisible(true);
+					comboBoxOpcoes.setBounds(441, 54, 320, 22);
+					ArrayList<Cliente> clientes = relatoriosDao.bucarTodosClientes();
+					comboBoxOpcoes.removeAllItems();
+					
+					for (Cliente c : clientes) {
+						comboBoxOpcoes.addItem("ID " + c.getIdCliente() + " | " + c.getNomeCliente());
+					}
+				} else if (opcao == 0) {
+					comboBoxOpcoes.setVisible(false);
+					lblOpcoes.setVisible(false);
+					comboBoxOpcoes.removeAllItems();
+				}
+			}
+		});
+
+		comboBoxTipo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		comboBoxTipo.setModel(new DefaultComboBoxModel(new String[] {
+				"Por Agendamentos", "Por Funcion\u00E1rios", "Por Unidade", "Por Cliente" }));
+		comboBoxTipo.setBounds(421, 20, 156, 23);
+		panel.add(comboBoxTipo);
 
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -140,20 +202,20 @@ public class FormRelatorios extends JFrame {
 				String dataFim = sdf.format(dateFim);
 
 				int opcao = comboBoxTipo.getSelectedIndex();
-				
+
 				switch (opcao) {
-				
+
 				case 0:
 					int filtro = comboBoxFiltros.getSelectedIndex();
-					
-					boolean pesquisa = relatoriosDao.relatorioDeAgendamentos(tableRelatorios, dataIni, dataFim, filtro);
-					
+
+					boolean pesquisa = relatoriosDao.relatorioDeAgendamentos(
+							tableRelatorios, dataIni, dataFim, filtro);
+
 					break;
 
 				default:
 					break;
 				}
-
 
 			}
 		});

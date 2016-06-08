@@ -17,6 +17,10 @@ public class Cliente {
 		this.dataNas = dataNas;
 	}
 
+	public Cliente() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getIdCliente() {
 		return idCliente;
 	}

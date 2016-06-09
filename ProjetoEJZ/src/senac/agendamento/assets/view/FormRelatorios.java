@@ -102,27 +102,25 @@ public class FormRelatorios extends JFrame {
 		dateFinal.setBounds(269, 20, 94, 23);
 		panel.add(dateFinal);
 
-		JButton btnNewButton = new JButton("Pesquisar");
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnNewButton.setBounds(782, 21, 94, 23);
-		panel.add(btnNewButton);
+		JButton btnPesquisar = new JButton("Pesquisar");
+		btnPesquisar.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnPesquisar.setBounds(782, 21, 94, 23);
+		panel.add(btnPesquisar);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(18, 86, 955, 245);
 		panel.add(scrollPane);
 
 		tableRelatorios = new JTable();
-		tableRelatorios.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "ID", "Data", "Cliente", "Placa", "Status",
-						"Servi\u00E7o", "Inicio", "T\u00E9rmino", "Unidade",
-						"Funcionario", "Por Cliente" }));
+		tableRelatorios
+				.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Data", "Cliente", "Placa",
+						"Status", "Servi\u00E7o", "Inicio", "T\u00E9rmino", "Unidade", "Funcionario", "Por Cliente" }));
 		scrollPane.setViewportView(tableRelatorios);
 
 		JComboBox comboBoxFiltros = new JComboBox();
 		comboBoxFiltros.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBoxFiltros.setModel(new DefaultComboBoxModel(new String[] {
-				"Todos", "Cancelados", "Fila de Espera", "Agendados",
-				"Finalizados" }));
+		comboBoxFiltros.setModel(new DefaultComboBoxModel(
+				new String[] { "Todos", "Cancelados", "Fila de Espera", "Agendados", "Finalizados" }));
 		comboBoxFiltros.setBounds(638, 21, 123, 23);
 		panel.add(comboBoxFiltros);
 
@@ -156,67 +154,124 @@ public class FormRelatorios extends JFrame {
 					comboBoxOpcoes.setVisible(true);
 					lblOpcoes.setVisible(true);
 					comboBoxOpcoes.setBounds(441, 54, 136, 22);
-					ArrayList<Funcionario> funcionario = relatoriosDao
-							.bucarTodosFuncionario();
+					ArrayList<Funcionario> funcionario = relatoriosDao.bucarTodosFuncionarioComboBox();
 					comboBoxOpcoes.removeAllItems();
+					comboBoxOpcoes.addItem("...");
 
 					for (Funcionario f : funcionario) {
 						comboBoxOpcoes.addItem(f.getNomeFuncionario());
 					}
+
 				} else if (opcao == 2) {
 					comboBoxOpcoes.setVisible(true);
 					lblOpcoes.setVisible(true);
+					comboBoxOpcoes.setBounds(441, 54, 136, 22);
 					comboBoxOpcoes.removeAllItems();
+					comboBoxOpcoes.addItem("...");
+					comboBoxOpcoes.addItem("Morumbi");
+					comboBoxOpcoes.addItem("Brooklin");
+
 				} else if (opcao == 3) {
 					comboBoxOpcoes.setVisible(true);
 					lblOpcoes.setVisible(true);
 					comboBoxOpcoes.setBounds(441, 54, 320, 22);
-					ArrayList<Cliente> clientes = relatoriosDao.bucarTodosClientes();
+					ArrayList<Cliente> clientes = relatoriosDao.bucarTodosClientesComboBox();
 					comboBoxOpcoes.removeAllItems();
-					
+					comboBoxOpcoes.addItem("...");
+
 					for (Cliente c : clientes) {
 						comboBoxOpcoes.addItem("ID " + c.getIdCliente() + " | " + c.getNomeCliente());
 					}
+
 				} else if (opcao == 0) {
 					comboBoxOpcoes.setVisible(false);
 					lblOpcoes.setVisible(false);
 					comboBoxOpcoes.removeAllItems();
+
 				}
 			}
 		});
 
 		comboBoxTipo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		comboBoxTipo.setModel(new DefaultComboBoxModel(new String[] {
-				"Por Agendamentos", "Por Funcion\u00E1rios", "Por Unidade", "Por Cliente" }));
+		comboBoxTipo.setModel(new DefaultComboBoxModel(
+				new String[] { "Por Agendamentos", "Por Funcion\u00E1rios", "Por Unidade", "Por Cliente" }));
 		comboBoxTipo.setBounds(421, 20, 156, 23);
 		panel.add(comboBoxTipo);
 
-		btnNewButton.addActionListener(new ActionListener() {
+		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
 				Object dateIni = dateInicial.getDate();
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				String dataIni = sdf.format(dateIni);
-
 				Object dateFim = dateFinal.getDate();
-				String dataFim = sdf.format(dateFim);
 
-				int opcao = comboBoxTipo.getSelectedIndex();
+				if (dateIni == null || dateFim == null) {
+					JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
 
-				switch (opcao) {
+				} else {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					String dataIni = sdf.format(dateIni);
+					String dataFim = sdf.format(dateFim);
 
-				case 0:
-					int filtro = comboBoxFiltros.getSelectedIndex();
+					int opcao = comboBoxTipo.getSelectedIndex();
 
-					boolean pesquisa = relatoriosDao.relatorioDeAgendamentos(
-							tableRelatorios, dataIni, dataFim, filtro);
+					switch (opcao) {
 
-					break;
+					case 0:
+						int filtro = comboBoxFiltros.getSelectedIndex();
 
-				default:
-					break;
+						boolean pesquisa = relatoriosDao.relatorioDeAgendamentos(tableRelatorios, dataIni, dataFim,
+								filtro);
+
+						if (!pesquisa) {
+							JOptionPane.showMessageDialog(null,
+									"Não existem dados de relatorio para as opções selecionadas!");
+						}
+
+						break;
+
+					case 1:
+						int filtro1 = comboBoxFiltros.getSelectedIndex();
+						int opcao1 = comboBoxOpcoes.getSelectedIndex();
+
+						if (opcao1 != 0) {
+
+							boolean pesquisa1 = relatoriosDao.relatorioPorFuncionario(tableRelatorios, dataIni, dataFim,
+									filtro1, opcao1);
+
+							if (!pesquisa1) {
+								JOptionPane.showMessageDialog(null,
+										"Não existem dados de relatorio para as opções selecionadas!");
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+						}
+
+						break;
+
+					case 2:
+						int filtro2 = comboBoxFiltros.getSelectedIndex();
+						int opcao2 = comboBoxOpcoes.getSelectedIndex();
+
+						if (opcao2 != 0) {
+
+							boolean pesquisa2 = relatoriosDao.relatorioPorUnidade(tableRelatorios, dataIni, dataFim,
+									filtro2, opcao2);
+
+							if (!pesquisa2) {
+								JOptionPane.showMessageDialog(null,
+										"Não existem dados de relatorio para as opções selecionadas!");
+							}
+						} else {
+							JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+						}
+
+						break;
+
+					default:
+						break;
+					}
+
 				}
-
 			}
 		});
 	}

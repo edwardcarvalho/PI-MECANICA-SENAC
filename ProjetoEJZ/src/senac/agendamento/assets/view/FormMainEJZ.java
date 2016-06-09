@@ -197,6 +197,16 @@ public class FormMainEJZ extends JFrame {
 		JMenu mnRelatrios = new JMenu("Relat\u00F3rios");
 		mnRelatrios.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuBar.add(mnRelatrios);
+		
+		JMenuItem mntmGerarRelatorios = new JMenuItem("Gerar Relatorios");
+		mntmGerarRelatorios.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				FormRelatorios relatorios = new FormRelatorios();
+				relatorios.setVisible(true);
+			}
+		});
+		mnRelatrios.add(mntmGerarRelatorios);
 
 		JMenu mnSobre = new JMenu("Ajuda");
 		mnSobre.setFont(new Font("Segoe UI", Font.PLAIN, 14));

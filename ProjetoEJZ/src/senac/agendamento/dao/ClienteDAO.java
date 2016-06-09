@@ -8,10 +8,13 @@ import java.util.ArrayList;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import senac.agendamento.model.Agendamento;
 import senac.agendamento.model.Automovel;
 import senac.agendamento.model.Cliente;
 
 public class ClienteDAO extends DAO {
+	
+	Agendamento ag = new Agendamento();
 
 	public void salvarCliente(Cliente cliente) {
 

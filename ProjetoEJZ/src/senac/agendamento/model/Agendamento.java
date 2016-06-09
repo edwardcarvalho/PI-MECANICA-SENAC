@@ -124,5 +124,21 @@ public class Agendamento {
 		
 		return comboBoxHorarioDisponivel.getModel();
 	}
+	
+	public String converteData(String data) {
+		String dataForm = null;
+		String[] date = data.split("-");
+		for (int i = 2; i >= 0; i--) {
+			if (i == 2) {
+				dataForm = date[i] + "-";
+			} else if (i == 1) {
+				dataForm += date[i] + "-";
+			} else {
+				dataForm += date[i];
+			}
+		}
+
+		return dataForm;
+	}
 
 }

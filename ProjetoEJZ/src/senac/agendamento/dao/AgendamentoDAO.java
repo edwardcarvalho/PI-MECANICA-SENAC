@@ -20,6 +20,8 @@ import senac.agendamento.model.Funcionario;
 import senac.agendamento.model.Servico;
 
 public class AgendamentoDAO extends DAO {
+	
+	Agendamento ag = new Agendamento();
 
 	public Cliente buscarCliente(String cpf) {
 
@@ -281,7 +283,7 @@ public class AgendamentoDAO extends DAO {
 		}
 
 		String sql = "SELECT AG.ID_AGENDAMENTO, A.PLACA, AG.DATAAGENDAMENTO, AG.HORARIOINICIAL, AG.HORARIOFINAL, U.NOME_UNIDADE, AG.STATUS FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON C.ID_CLIENTE = A.ID_CLIENTE INNER JOIN AGENDAMENTOS AG ON AG.ID_AUTOMOVEL = A.ID_AUTOMOVEL INNER JOIN UNIDADE U ON U.ID_UNIDADE = AG.ID_UNIDADE WHERE C.ID_CLIENTE = '"
-				+ idCliente + "' AND AG.STATUS <> 'CANCELADO' GROUP BY AG.ID_AGENDAMENTO";
+				+ idCliente + "' AND AG.STATUS <> 'CANCELADO' GROUP BY AG.ID_AGENDAMENTO ORDER BY AG.DATAAGENDAMENTO ASC";
 
 		try {
 			Statement st = conn.createStatement();
@@ -289,7 +291,7 @@ public class AgendamentoDAO extends DAO {
 			rs = st.executeQuery(sql);
 			while (rs.next()) {
 				model = (DefaultTableModel) tabela.getModel();
-				model.addRow(new String[] { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4),
+				model.addRow(new String[] { rs.getString(1), rs.getString(2), ag.converteData(rs.getString(3)), rs.getString(4),
 						rs.getString(5), rs.getString(6),rs.getString(7) });
 			}
 

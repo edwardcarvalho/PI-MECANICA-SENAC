@@ -83,7 +83,8 @@ public class FormPesquisaCliente extends JFrame {
 		txtCpfCliente.setBounds(87, 95, 94, 20);
 		contentPane.add(txtCpfCliente);
 		txtCpfCliente.setColumns(10);
-		
+
+// faz a busca atraves do CPF e apresenta em uma tabela o cadastro do cliente e seus veiculos. Se o CPF não estiver cadastrado, uma mensagem será exibida.
 		JButton btnPesquisar = new JButton("Pesquisar");
 		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

@@ -99,6 +99,8 @@ public class Agendamento {
 	
 	public ComboBoxModel mostraHorariosDisponiveis (ArrayList<Agendamento> horariosDisponiveis){
 		
+//		recebe um arraylist e retorna um comboBox perenchido com os horarios disponiveis
+		
 		int agendaManha = 0;
 		int agendaTarde = 0;
 		
@@ -130,6 +132,10 @@ public class Agendamento {
 	}
 	
 	public String converteData(String data) {
+		
+//		recebe uma data String em formato yyyy-MM-dd e converte para dd-MM-yyyy,
+//		para facilitar a visualização da data pelo usuario.
+		
 		String dataForm = null;
 		String[] date = data.split("-");
 		for (int i = 2; i >= 0; i--) {
@@ -146,6 +152,9 @@ public class Agendamento {
 	}
 	
 	public boolean verificaDataAgendamentoValida(Date data){
+		
+//		recebe um Objeto Date com a data desejada para agendamento e verifica se é uma data valida (data atual ou futura).
+//		retorna true se atender a este requisito e false se for uma data anterior a atual.
 		
 		Date date = new Date();
 		

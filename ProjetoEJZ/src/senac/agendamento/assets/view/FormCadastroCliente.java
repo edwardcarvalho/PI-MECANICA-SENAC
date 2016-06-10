@@ -50,6 +50,9 @@ public class FormCadastroCliente extends JFrame{
 	ClienteDAO clienteDAO = new ClienteDAO();
 
 	public static void removeMask(JTextField item) {
+		
+//		função criada para remover mascara de um JtextFiel.
+		
 		item.getText().replaceAll("\\D", "");
 	}
 
@@ -123,6 +126,9 @@ public class FormCadastroCliente extends JFrame{
 		panel.add(lblNome);
 
 		txtNomeCliente = new JTextField();
+		
+//		este keyAction tem a função de limitar a entrada de apenas letras no campo nome.
+		
 		txtNomeCliente.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -201,6 +207,8 @@ public class FormCadastroCliente extends JFrame{
 		panel.add(lblPlaca);
 
 		txtPlacaVeiculoCliente = new JFormattedTextField(placaMask);
+		
+//		o focusLost tem como objetivo chamar a função que verifica a existencia da placa digitada no banco de dados, afim de evitar duplicidade.
 		txtPlacaVeiculoCliente.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
@@ -248,6 +256,8 @@ public class FormCadastroCliente extends JFrame{
 
 		JButton btnSalvar = new JButton("Salvar");
 		btnSalvar.setEnabled(false);
+//		ao clicar no botão salvar é feita a verificaçao de inclusao de veiculos para o cliente.
+//		o cadastro só é salvo após o preenchimento de todos os campos e inclusão de veiculo(s).
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -318,6 +328,9 @@ public class FormCadastroCliente extends JFrame{
 		JButton btnCadastrarVeiculo = new JButton("Cadastrar Veiculo");
 		btnCadastrarVeiculo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
+//				ao clicar em cadastrar veiculo é feita a verificação, se todos os campos com os dados do cliente estão preenchidos.
+//				se os dados estiverem incompletos o cadastro não segue adiante.
 
 				if (txtNomeCliente.getText().length() < 4 || txtDataNascimentoCliente.getText().length() < 10
 						|| txtCpfCliente.getText().length() < 14 || txtCelularCliente.getText().length() < 15
@@ -326,6 +339,9 @@ public class FormCadastroCliente extends JFrame{
 					FormCadastroCliente.this.setVisible(true);
 
 				} else {
+					
+//				com os dados completos é criado um objeto cliente e é chamada a função para inseri-lo no banco de dados.
+//				o cliente é cadastrado no banco antes do veiculo, para que o banco gere um ID que será utilizado para fazer o link do veiculo com cliente.
 
 					Cliente cliente = new Cliente(txtNomeCliente.getText().toString(),
 							txtCpfCliente.getText().replaceAll("\\D", "").toString(),
@@ -335,6 +351,8 @@ public class FormCadastroCliente extends JFrame{
 
 					clienteDAO.salvarCliente(cliente);
 
+//				após o cadastro do cliente ser realizado, é liberado ao usuario o preenchimento dos campos e cadastramento de veiculos para o cliente em questão.
+					
 					txtIdCliente.setText(String.valueOf(cliente.getIdCliente()));
 					txtNomeCliente.setEditable(false);
 					txtCpfCliente.setEditable(false);
@@ -353,6 +371,8 @@ public class FormCadastroCliente extends JFrame{
 					tableVeiculosCadastrados.setVisible(true);
 
 					btnCancelar.addActionListener(new ActionListener() {
+						
+//				caso o usuario chegue até os ultimos passos do cadastro e resolva cancelar a operação, o cliente é excluido do banco de dados.
 						public void actionPerformed(ActionEvent e) {
 							int opcao = JOptionPane.showConfirmDialog(null, "Cancelar o cadastro?", "Confirmação",
 									JOptionPane.YES_NO_OPTION);
@@ -368,8 +388,9 @@ public class FormCadastroCliente extends JFrame{
 					btnAdicionar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent arg0) {
 							
+//				ao clicar em adicionar veiculo, é feita a verificação se todos os campos foram preenchidos corretamente.
+//				se não estiverem o processo não segue adiante.
 							
-
 							if (txtPlacaVeiculoCliente.getText().equals("   -    ")
 									|| comboBoxCorCarro.getSelectedItem().equals("...")
 									|| comboBoxModeloCarro.getSelectedItem().equals("...")
@@ -379,6 +400,10 @@ public class FormCadastroCliente extends JFrame{
 								FormCadastroCliente.this.setVisible(true);
 
 							} else {
+								
+//				no caso dos campos estarem todos preenchidos, é criado um objeto automovel e passado para a função que irá fazer o insert do veiculo no banco de dados.
+//				a tabela de cadastro de automoveis é atualizada e mostra o veiculo cadastrao para aquele cliente.
+								
 								Automovel automovel = new Automovel(cliente.getIdCliente(),
 										comboBoxModeloCarro.getSelectedItem().toString(),
 										comboBoxCorCarro.getSelectedItem().toString(),
@@ -386,7 +411,9 @@ public class FormCadastroCliente extends JFrame{
 										txtPlacaVeiculoCliente.getText());
 								clienteDAO.salvarAutomovel(automovel, cliente);
 								clienteDAO.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
-
+								
+//				após o insert do veiculo no banco de dados, o operador pode decidir exclui-lo caso algum dado esteja divergente.
+//				este metodo capta a placa do veiculo ao click na linha da tabela.
 								tableVeiculosCadastrados.addMouseListener(new MouseAdapter() {
 									@Override
 									public void mousePressed(MouseEvent arg0) {
@@ -394,7 +421,8 @@ public class FormCadastroCliente extends JFrame{
 										String placa = tableVeiculosCadastrados
 												.getValueAt(tableVeiculosCadastrados.getSelectedRow(), 0)
 												.toString();
-
+										
+//				ao clicar no botão excluir o dado contendo a placa captado anteriormente é passado para a função que faz a exclusão da placa no banco de dados.
 										btnExcluir.addActionListener(new ActionListener() {
 											public void actionPerformed(ActionEvent arg0) {
 
@@ -406,7 +434,8 @@ public class FormCadastroCliente extends JFrame{
 
 									}
 								});
-
+								
+//				apos inserir o veiculo no banco de dados, o codigo abaixo tem a função de deixar os campos relacionados a veiculo com valores default.			
 								((JFormattedTextField) txtPlacaVeiculoCliente).setValue(null);
 								comboBoxAnoCarro.setSelectedItem("...");
 								comboBoxCorCarro.setSelectedItem("...");
@@ -424,6 +453,8 @@ public class FormCadastroCliente extends JFrame{
 		btnCadastrarVeiculo.setBounds(11, 125, 148, 23);
 		panel.add(btnCadastrarVeiculo);
 
+//		o botão alterar veiculo só fica visivel caso o CPF digitado esteja cadastrado no banco e o operador deseje alterar o cadastro.
+		
 		JButton btnAlterarVeiculo = new JButton("Alterar Veiculo");
 		btnAlterarVeiculo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -444,7 +475,7 @@ public class FormCadastroCliente extends JFrame{
 		btnAlterarVeiculo.setBounds(10, 126, 148, 23);
 		panel.add(btnAlterarVeiculo);
 		
-
+//		este focusLost verifica se o cpf digitado esta cadastrado no banco de dados.
 		txtCpfCliente.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
@@ -452,11 +483,14 @@ public class FormCadastroCliente extends JFrame{
 
 				boolean validacao = clienteDAO.validarCpf(cpf);
 				if (validacao) {
+//		caso o CPF exista no banco, ele oferece a opção de editar o cadastro.
 					JOptionPane.showMessageDialog(null, "CPF ja cadastrado!");
 					int opcao = JOptionPane.showConfirmDialog(null, "Deseja editar?", "Confirmação de Edição",
 							JOptionPane.YES_NO_OPTION);
 
 					if (opcao == 0) {
+						
+//		se a opção escolhida for editar, o cpf é passado para a função que busca e preenche todos os campos com os dados do cliente e seu(s) automovel(is) cadastrado(s).
 
 						Cliente cliente = clienteDAO.buscarCliente(cpf);
 
@@ -482,6 +516,8 @@ public class FormCadastroCliente extends JFrame{
 						panel.add(btnConcluirAlterao);
 						btnConcluirAlterao.setEnabled(true);
 						
+//		se no meio da alteração o operador deseje cancelar o processo, o form se fecha sem promover qualquer alteração.
+						
 						btnCancelar.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								int opcao = JOptionPane.showConfirmDialog(null, "Cancelar o alteração?", "Confirmação",
@@ -494,6 +530,7 @@ public class FormCadastroCliente extends JFrame{
 							}
 						});
 
+//		este metodo capta a placa do veiculo ao click na linha da tabela.
 						tableVeiculosCadastrados.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mousePressed(MouseEvent arg0) {
@@ -503,6 +540,7 @@ public class FormCadastroCliente extends JFrame{
 
 								btnExcluir.addActionListener(new ActionListener() {
 									public void actionPerformed(ActionEvent arg0) {
+//		ao clicar no botão excluir o dado contendo a placa captado anteriormente é passado para a função que faz a exclusão da placa no banco de dados.
 
 										clienteDAO.excluirAutomovel(placa);
 										clienteDAO.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
@@ -511,6 +549,8 @@ public class FormCadastroCliente extends JFrame{
 
 							}
 						});
+						
+//		ao clicar em concluir a alteração é criado um novo objeto cliente e os dados são alterados no banco atraves da função alterarCliente().
 
 						btnConcluirAlterao.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
@@ -524,7 +564,9 @@ public class FormCadastroCliente extends JFrame{
 								boolean atualiza = clienteDAO.alterarCliente(altCliente,
 										Integer.valueOf((txtIdCliente.getText())));
 
+//	 	é mostrada uma mensagem, confirmando a alteração.
 								if (atualiza) {
+									
 									JOptionPane.showMessageDialog(null, "Alteração feita com sucesso!");
 									FormCadastroCliente.this.setVisible(false);
 								}
@@ -534,6 +576,9 @@ public class FormCadastroCliente extends JFrame{
 
 						btnAdicionar.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent arg0) {
+								
+//	 		ao clicar em adicionar veiculo, é feita a verificação se todos os campos foram preenchidos corretamente.
+//			se não estiverem o processo não segue adiante.
 
 								if (txtPlacaVeiculoCliente.getText().equals("   -    ")
 										|| comboBoxCorCarro.getSelectedItem().equals("...")
@@ -544,6 +589,10 @@ public class FormCadastroCliente extends JFrame{
 									FormCadastroCliente.this.setVisible(true);
 
 								} else {
+									
+//			no caso dos campos estarem todos preenchidos, é criado um objeto automovel e passado para a função que irá fazer o insert do veiculo no banco de dados.
+//			a tabela de cadastro de automoveis é atualizada e mostra o veiculo cadastrado/alterado para aquele cliente.
+									
 									Automovel automovel = new Automovel(cliente.getIdCliente(),
 											comboBoxModeloCarro.getSelectedItem().toString(),
 											comboBoxCorCarro.getSelectedItem().toString(),
@@ -552,6 +601,8 @@ public class FormCadastroCliente extends JFrame{
 									clienteDAO.salvarAutomovel(automovel, cliente);
 
 									clienteDAO.atualizaTabelaCarrosCadastrado(cliente, tableVeiculosCadastrados);
+									
+//				apos inserir o veiculo no banco de dados, o codigo abaixo tem a função de deixar os campos relacionados a veiculo com valores default.	
 
 									((JFormattedTextField) txtPlacaVeiculoCliente).setValue(null);
 									comboBoxAnoCarro.setSelectedItem("...");
@@ -562,6 +613,8 @@ public class FormCadastroCliente extends JFrame{
 						});
 
 					} else {
+						
+//		caso o operador opte por não alterar os dados do cliente, o campo CPF retoma o focu do cursor e volta a seu valor default.
 
 						((JFormattedTextField) txtCpfCliente).setValue(null);
 						txtCpfCliente.requestFocusInWindow();

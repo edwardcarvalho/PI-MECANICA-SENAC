@@ -112,7 +112,6 @@ public class FormMainEJZ extends JFrame {
 					agendamento = new FormAgendamento();
 					agendamento.setVisible(true);
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -178,7 +177,6 @@ public class FormMainEJZ extends JFrame {
 					FormPesquisaAgendamento pesquisaAgendamento = new FormPesquisaAgendamento();
 					pesquisaAgendamento.setVisible(true);
 				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -195,7 +193,6 @@ public class FormMainEJZ extends JFrame {
 					pesquisaCLiente = new FormPesquisaCliente();
 					pesquisaCLiente.setVisible(true);
 				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				

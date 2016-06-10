@@ -85,6 +85,7 @@ public class FormPesquisaAgendamento extends JFrame {
 		contentPane.add(txtCpfCliente);
 		txtCpfCliente.setColumns(10);
 
+// faz a busca atraves do CPF e apresenta em uma tabela o agendamento do cliente. Se o CPF não estiver cadastrado, uma mensagem será exibida.
 		JButton btnPesquisar = new JButton("Pesquisar");
 		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

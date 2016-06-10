@@ -390,7 +390,9 @@ public class FormAlterarAgendamento extends JFrame {
 						String status;
 						if (rdbtnFilaDeEspera.isSelected()) {
 							status = "FILA DE ESPERA";
-							idFuncionario = 0;
+							ArrayList<Funcionario>funcionariosListaEspera = new ArrayList<>();
+							funcionariosListaEspera = agendamentoDao.buscarFuncionariosFilaDeEspera(idUnidade, data, horarioInicial);
+							idFuncionario = funcionariosListaEspera.get(0).getIdFuncionario();
 						} else {
 							ArrayList<Funcionario> funcionario = agendamentoDao.buscarFuncionariosDisponiveis(idUnidade,
 									data, horarioFinal);

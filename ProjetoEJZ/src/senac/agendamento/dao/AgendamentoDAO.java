@@ -165,6 +165,44 @@ public class AgendamentoDAO extends DAO {
 		return funcionario;
 
 	}
+	
+	public ArrayList<Funcionario> buscarFuncionariosFilaDeEspera(int unidade, String data, String horario) {
+
+		Funcionario funcionarios = null;
+
+		ArrayList<Funcionario> funcionario = new ArrayList<>();
+
+		String sql = "SELECT * FROM FUNCIONARIOS F WHERE NOT EXISTS (SELECT * FROM AGENDAMENTOS WHERE ID_FUNCIONARIO = F.ID_FUNCIONARIO AND DATAAGENDAMENTO ='"
+				+ data + "' AND HORARIOINICIAL ='" + horario + "' AND STATUS = 'FILA DE ESPERA') AND F.ID_UNIDADE ='"
+				+ unidade + "' GROUP BY F.ID_FUNCIONARIO";
+
+		conectaBanco();
+
+		Statement st;
+		try {
+			st = conn.createStatement();
+			rs = st.executeQuery(sql);
+			while (rs.next()) {
+
+				funcionarios = new Funcionario();
+
+				funcionarios.setIdFuncionario(rs.getInt("ID_FUNCIONARIO"));
+				funcionarios.setNomeFuncionario(rs.getString("NOME"));
+				funcionarios.setIdUnidade(rs.getInt("ID_UNIDADE"));
+
+				funcionario.add(funcionarios);
+			}
+
+			st.close();
+			desconectaBanco();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return funcionario;
+
+	}
 
 	public ArrayList<Automovel> buscarPlacaComboBox(Cliente cliente) {
 

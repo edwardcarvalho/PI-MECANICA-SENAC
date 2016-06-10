@@ -70,7 +70,7 @@ public class FormAgendamento extends JFrame {
 	private ArrayList<Agendamento> horariosDisponiveis;
 	private ArrayList<Servico> servicos;
 
-	AgendamentoDAO agendamentoDAO = new AgendamentoDAO();
+	AgendamentoDAO agendamentoDao = new AgendamentoDAO();
 	Agendamento agendamento = new Agendamento();
 
 	/**
@@ -152,17 +152,17 @@ public class FormAgendamento extends JFrame {
 
 				} else {
 
-					cliente = agendamentoDAO.buscarCliente(txtCampoBuscaClienteCpf.getText().replaceAll("\\D", ""));
+					cliente = agendamentoDao.buscarCliente(txtCampoBuscaClienteCpf.getText().replaceAll("\\D", ""));
 
 					if (cliente == null) {
 						JOptionPane.showMessageDialog(null, "Cliente não cadastrado!");
 					} else {
-						automovelCliente = agendamentoDAO.buscarAutomovelCliente(cliente.getIdCliente());
+						automovelCliente = agendamentoDao.buscarAutomovelCliente(cliente.getIdCliente());
 						txtNomeCadastrado.setText(cliente.getNomeCliente());
 						txtCPFcadastrado.setText(cliente.getCpf().trim());
 						comboBoxPlacasCadastradas.removeAllItems();
 
-						placas = agendamentoDAO.buscarPlacaComboBox(cliente);
+						placas = agendamentoDao.buscarPlacaComboBox(cliente);
 						for (Automovel a : placas) {
 							comboBoxPlacasCadastradas.addItem(a.getPlaca());
 						}
@@ -208,7 +208,7 @@ public class FormAgendamento extends JFrame {
 		comboBoxServicos.setBounds(42, 272, 222, 23);
 		comboBoxServicos.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBoxServicos.addItem("...");
-		servicos = agendamentoDAO.buscarServicos();
+		servicos = agendamentoDao.buscarServicos();
 		for (Servico s : servicos) {
 			comboBoxServicos.addItem(s.getDescricao());
 		}
@@ -282,7 +282,7 @@ public class FormAgendamento extends JFrame {
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					String data = sdf.format(date);
 
-					horariosDisponiveis = agendamentoDAO.buscarHorariosDisponiveis(unidade, data);
+					horariosDisponiveis = agendamentoDao.buscarHorariosDisponiveis(unidade, data);
 					comboBoxHorarioDisponivel.setModel(agendamento.mostraHorariosDisponiveis(horariosDisponiveis));
 				}
 
@@ -348,11 +348,13 @@ public class FormAgendamento extends JFrame {
 						}
 
 						int idUnidade = comboBoxUnidade.getSelectedIndex();
-						funcionarios = agendamentoDAO.buscarFuncionariosDisponiveis(idUnidade, data, horarioInicial);
+						funcionarios = agendamentoDao.buscarFuncionariosDisponiveis(idUnidade, data, horarioInicial);
 
 						int idFuncionario;
 						if (rdbtnFilaDeEspera.isSelected()) {
-							idFuncionario = 0;
+							ArrayList<Funcionario>funcionariosListaEspera = new ArrayList<>();
+							funcionariosListaEspera = agendamentoDao.buscarFuncionariosFilaDeEspera(idUnidade, data, horarioInicial);
+							idFuncionario = funcionariosListaEspera.get(0).getIdFuncionario();
 						} else {
 							idFuncionario = funcionarios.get(0).getIdFuncionario();
 						}
@@ -370,14 +372,14 @@ public class FormAgendamento extends JFrame {
 						agendamento.setHorarioFinal(horarioFinal);
 						agendamento.setIdUnidade(idUnidade);
 
-						boolean duplicado = agendamentoDAO.verificarDuplicidadeAgendamento(agendamento);
+						boolean duplicado = agendamentoDao.verificarDuplicidadeAgendamento(agendamento);
 
 						if (duplicado) {
 							JOptionPane.showMessageDialog(null,
 									"Este veiculo ja possui agendamento para este dia e horario.");
 						} else {
 
-							boolean agendou = agendamentoDAO.agendarCliente(agendamento);
+							boolean agendou = agendamentoDao.agendarCliente(agendamento);
 
 							if (agendou) {
 								JOptionPane.showMessageDialog(null, "Agendamento realizado com sucesso!");

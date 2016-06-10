@@ -34,7 +34,7 @@ public class FormSobre extends JFrame {
 	 * Create frame.
 	 */
 	public FormSobre() {
-		setBounds(100, 100, 259, 173);
+		setBounds(500,300, 259, 173);
 		paneSobre = new JPanel();
 		paneSobre.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(paneSobre);
@@ -46,7 +46,7 @@ public class FormSobre extends JFrame {
 		paneSobre.add(lblEjzConsultoriaDe);
 		
 		JLabel lblLogo = new JLabel("");
-		lblLogo.setIcon(new ImageIcon(FormSobre.class.getResource("/Imagens/logoEJZ_103x68.png")));
+		lblLogo.setIcon(new ImageIcon(FormSobre.class.getResource("/senac/agendamento/assets/images/logoEJZ_103x68.png")));
 		lblLogo.setBounds(69, 51, 103, 68);
 		paneSobre.add(lblLogo);
 		

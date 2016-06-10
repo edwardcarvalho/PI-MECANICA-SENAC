@@ -70,7 +70,7 @@ public class FormMainEJZ extends JFrame {
 		
 		setTitle("SCA - Sistema de Controle de Agendamento");
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 1200, 660);
+		setBounds(100, 30, 1200, 660);
 		contentPane = new JPanel();
 		contentPane.setMinimumSize(new Dimension(32767, 32767));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -229,8 +229,8 @@ public class FormMainEJZ extends JFrame {
 		mntmSobre.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				FormSobre telaSobre = new FormSobre();
-				telaSobre.setVisible(true);
+				FormSobre sobre = new FormSobre();
+				sobre.setVisible(true);
 
 			}
 		});

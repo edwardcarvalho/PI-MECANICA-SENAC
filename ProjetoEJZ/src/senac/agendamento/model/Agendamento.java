@@ -1,6 +1,10 @@
 package senac.agendamento.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -139,6 +143,28 @@ public class Agendamento {
 		}
 
 		return dataForm;
+	}
+	
+	public boolean verificaDataAgendamentoValida(Date data){
+		
+		Date date = new Date();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String dateSdf = sdf.format(date);
+		String dataSdf = sdf.format(data);
+		try {
+			date = sdf.parse(dateSdf);
+			data = sdf.parse(dataSdf);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		if(data.equals(date) || data.after(date)){
+			return true;
+		}else{
+			return false;
+		}
+		
 	}
 
 }

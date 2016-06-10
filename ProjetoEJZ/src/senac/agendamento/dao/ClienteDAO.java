@@ -17,6 +17,8 @@ public class ClienteDAO extends DAO {
 	Agendamento ag = new Agendamento();
 
 	public void salvarCliente(Cliente cliente) {
+		
+//		esta função recebe um objeto Cliente e faz o cadastramento no banco de dados
 
 		conectaBanco();
 
@@ -36,13 +38,16 @@ public class ClienteDAO extends DAO {
 			cliente.setIdCliente(rs.getInt(1));
 			desconectaBanco();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
 	public void salvarAutomovel(Automovel carro, Cliente cliente) {
+		
+//		esta função recebe um objeto automovel e um objeto cliente. 
+//		faz o cadastramento do veiculo no banco de dados atrelando-o ao idCliente 
+
 
 		conectaBanco();
 
@@ -62,12 +67,15 @@ public class ClienteDAO extends DAO {
 
 			desconectaBanco();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public void atualizaTabelaCarrosCadastrado(Cliente cliente, JTable tabela){
+		
+//		esta função recebe um objeto Cliente e uma JTable(tabela). Tem a função de preencher a tabela
+//		de carros cadastrados de um determinado cliente.
+
 
 		conectaBanco();
 
@@ -101,6 +109,9 @@ public class ClienteDAO extends DAO {
 	}
 
 	public void excluirAutomovel(String placa) {
+		
+//		esta função recebe uma String com a placa a ser removida do cadastro de um cliente.
+//		ela faz a alteração do status do veiculo para (inativo) e um update na placa acrescentando (I) sinalizando inatividade para efeitos de relatorio.
 
 		try {
 			conectaBanco();
@@ -119,6 +130,9 @@ public class ClienteDAO extends DAO {
 	}
 
 	public boolean alterarCliente(Cliente cliente, Integer id_Cliente) {
+		
+//		esta funcao recebe um objeto cliente e um idCliente.
+//		faz uma alteração no cadastro do idCliente, para os dados do objeto Cliente
 
 		try {
 			conectaBanco();
@@ -135,7 +149,6 @@ public class ClienteDAO extends DAO {
 			return true;
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -145,6 +158,8 @@ public class ClienteDAO extends DAO {
 
 	@SuppressWarnings("finally")
 	public boolean validarCpf(String cpf) {
+		
+//		esta funcao recebe uma String com o numero do CPF e verifica se ja possui cadastro no banco de dados.
 
 		String sql = "SELECT C.CPF FROM CLIENTES C WHERE CPF =" + cpf;
 
@@ -177,6 +192,8 @@ public class ClienteDAO extends DAO {
 	}
 
 	public Cliente buscarCliente(String cpf) {
+		
+//		esta função recebe um CPF e busca no banco de dados todos os dados do cliente
 
 		Cliente clienteBanco = null;
 
@@ -210,6 +227,9 @@ public class ClienteDAO extends DAO {
 	}
 
 	public void cancelarCadastro(int id_cliente) {
+		
+//		esta função recebe um idCliente e o exclui do banco de dados.
+//		só é usada se um cadastro de novo cliente for iniciado e cancelado antes de ser finalizado (salvo).
 
 		try {
 			conectaBanco();
@@ -235,6 +255,8 @@ public class ClienteDAO extends DAO {
 	
 	@SuppressWarnings("finally")		
 	public boolean validarPlaca(String placa) {
+		
+//		esta função recebe uma String com a placa e verifica no banco de dados, se a placa ja esta cadastrada.
 
 		String sql = "SELECT A.PLACA FROM AUTOMOVEIS A WHERE A.PLACA = '"+placa+"'";
 

@@ -27,10 +27,9 @@ public class DAO {
 
 	public void conectaBanco() {
 
-		// String para receber o diretorio do banco de dados
-
+//		faz a abertura de uma conexão com o banco de dados.
+		
 		String diretorio = System.getProperty("user.dir");
-		System.out.println(diretorio);
 
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -46,6 +45,8 @@ public class DAO {
 	}
 
 	public void desconectaBanco() throws SQLException {
+		
+//		faz o fechamento da conexão aberta com o banco de dados.
 
 		conn.close();
 		System.out.println("Banco desconectado!");

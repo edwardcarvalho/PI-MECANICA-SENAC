@@ -219,7 +219,7 @@ public class FormAlterarAgendamento extends JFrame {
 
 						idAgendamento = Integer.parseInt(tableVeiculosAgendados
 								.getValueAt(tableVeiculosAgendados.getSelectedRow(), 0).toString());
-						boolean cancelado = agendamentoDao.cancelarAgendamento(idAgendamento, status);
+						boolean cancelado = agendamentoDao.cancelarBaixarAgendamento(idAgendamento, status);
 
 						if (cancelado) {
 							JOptionPane.showMessageDialog(null, "Agendamento cancelado com sucesso!");

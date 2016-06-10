@@ -133,7 +133,7 @@ public class FormBaixarAgendamento extends JFrame {
 
 					String status = "FINALIZADO";
 
-					agendamentoDao.cancelarAgendamento(idAgendamento, status);
+					agendamentoDao.cancelarBaixarAgendamento(idAgendamento, status);
 					JOptionPane.showMessageDialog(null, "Baixa realizada com sucesso!");
 					FormBaixarAgendamento.this.setVisible(false);
 

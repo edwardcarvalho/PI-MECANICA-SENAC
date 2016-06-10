@@ -1,6 +1,5 @@
 package senac.agendamento.dao;
 
-import java.awt.Dimension;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -17,6 +16,9 @@ public class RelatoriosDAO extends DAO {
 	Agendamento ag = new Agendamento();
 
 	public boolean relatorioDeAgendamentos(JTable tabela, String dataInicio, String dataFinal, int filtro) {
+		
+//		esta funcao recebe uma tabela, uma data inicial, uma data final e um filtro para pesquisa.
+//		de acordo com o numero do filtro é gerado um tipo de relatorio geral de agendamento.
 
 		String sql;
 		String pesquisa;
@@ -86,6 +88,9 @@ public class RelatoriosDAO extends DAO {
 	}
 	
 	public boolean relatorioPorFuncionario(JTable tabela, String dataInicio, String dataFinal, int filtro, int opcao) {
+		
+//		esta funcao recebe uma tabela, uma data inicial, uma data final, um filtro e uma opcao que traz o idFuncionario.
+//		de acordo com o numero do filtro é gerado um tipo de relatorio, para um funcionario especifico.
 
 		String sql;
 		String pesquisa;
@@ -155,6 +160,9 @@ public class RelatoriosDAO extends DAO {
 	}
 	
 	public boolean relatorioPorUnidade(JTable tabela, String dataInicio, String dataFinal, int filtro, int opcao) {
+		
+//		esta funcao recebe uma tabela, uma data inicial, uma data final, um filtro e uma opcao que traz o idUnidade.
+//		de acordo com o numero do filtro é gerado um tipo de relatorio, para uma unidade especifica.
 
 		String sql;
 		String pesquisa;
@@ -224,6 +232,9 @@ public class RelatoriosDAO extends DAO {
 	}
 	
 	public boolean relatorioPorCliente(JTable tabela, String dataInicio, String dataFinal, int filtro, int opcao) {
+		
+//		esta funcao recebe uma tabela, uma data inicial, uma data final, um filtro e uma opcao que traz o idCliente.
+//		de acordo com o numero do filtro é gerado um tipo de relatorio, para um cliente especifico.
 
 		String sql;
 		String pesquisa;
@@ -294,6 +305,9 @@ public class RelatoriosDAO extends DAO {
 	
 	public ArrayList<Funcionario> bucarTodosFuncionarioComboBox (){
 		
+//		esta funcao busca todos os funcionarios cadastrados no banco de dados e retorna um arraylist
+//		para preenchimento de um comboBox.
+		
 		String sql = "SELECT F.ID_FUNCIONARIO, F.NOME, F.ID_UNIDADE FROM FUNCIONARIOS F GROUP BY ID_FUNCIONARIO";
 		
 		ArrayList<Funcionario> listaFuncionarios = new ArrayList<>();
@@ -329,6 +343,10 @@ public class RelatoriosDAO extends DAO {
 	}
 	
 	public ArrayList<Cliente> bucarTodosClientesComboBox (){
+		
+//		esta funcao busca todos os clientes cadastrados no banco de dados e retorna um arraylist
+//		para preenchimento de um comboBox.
+		
 		
 		String sql = "SELECT C.ID_CLIENTE, C.NOME, C.CPF FROM CLIENTES C GROUP BY C.ID_CLIENTE ORDER BY C.NOME";
 		

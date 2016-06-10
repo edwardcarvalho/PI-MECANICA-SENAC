@@ -67,7 +67,7 @@ public class FormRelatorios extends JFrame {
 	 * Create the frame.
 	 */
 	public FormRelatorios() {
-		setBounds(100, 100, 1010, 443);
+		setBounds(100, 100, 1010, 476);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -80,7 +80,7 @@ public class FormRelatorios extends JFrame {
 		contentPane.add(lblRelatrios);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(0, 62, 994, 342);
+		panel.setBounds(0, 62, 994, 375);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
@@ -112,9 +112,8 @@ public class FormRelatorios extends JFrame {
 		panel.add(scrollPane);
 
 		tableRelatorios = new JTable();
-		tableRelatorios
-				.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Data", "Cliente", "Placa",
-						"Status", "Servi\u00E7o", "Inicio", "T\u00E9rmino", "Unidade", "Funcionario", "Por Cliente" }));
+		tableRelatorios.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "ID", "Data", "Cliente",
+				"Placa", "Status", "Servi\u00E7o", "Inicio", "T\u00E9rmino", "Unidade", "Funcionario" }));
 		scrollPane.setViewportView(tableRelatorios);
 
 		JComboBox comboBoxFiltros = new JComboBox();
@@ -231,12 +230,12 @@ public class FormRelatorios extends JFrame {
 
 					case 1:
 						int filtro1 = comboBoxFiltros.getSelectedIndex();
-						int opcao1 = comboBoxOpcoes.getSelectedIndex();
+						int opcaoIdFuncionario = comboBoxOpcoes.getSelectedIndex();
 
-						if (opcao1 != 0) {
+						if (opcaoIdFuncionario != 0) {
 
 							boolean pesquisa1 = relatoriosDao.relatorioPorFuncionario(tableRelatorios, dataIni, dataFim,
-									filtro1, opcao1);
+									filtro1, opcaoIdFuncionario);
 
 							if (!pesquisa1) {
 								JOptionPane.showMessageDialog(null,
@@ -250,12 +249,12 @@ public class FormRelatorios extends JFrame {
 
 					case 2:
 						int filtro2 = comboBoxFiltros.getSelectedIndex();
-						int opcao2 = comboBoxOpcoes.getSelectedIndex();
+						int opcaoIdUnidade = comboBoxOpcoes.getSelectedIndex();
 
-						if (opcao2 != 0) {
+						if (opcaoIdUnidade != 0) {
 
 							boolean pesquisa2 = relatoriosDao.relatorioPorUnidade(tableRelatorios, dataIni, dataFim,
-									filtro2, opcao2);
+									filtro2, opcaoIdUnidade);
 
 							if (!pesquisa2) {
 								JOptionPane.showMessageDialog(null,
@@ -263,6 +262,28 @@ public class FormRelatorios extends JFrame {
 							}
 						} else {
 							JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+						}
+
+						break;
+
+					case 3:
+						int filtro3 = comboBoxFiltros.getSelectedIndex();
+						
+						if (comboBoxOpcoes.getSelectedIndex() == 0) {
+							JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+							
+						} else {
+
+							int opcaoIdCliente = Integer.parseInt(
+									comboBoxOpcoes.getSelectedItem().toString().replaceAll("\\D", " ").trim());
+
+							boolean pesquisa3 = relatoriosDao.relatorioPorCliente(tableRelatorios, dataIni, dataFim,
+									filtro3, opcaoIdCliente);
+
+							if (!pesquisa3) {
+								JOptionPane.showMessageDialog(null,
+										"Não existem dados de relatorio para as opções selecionadas!");
+							}
 						}
 
 						break;

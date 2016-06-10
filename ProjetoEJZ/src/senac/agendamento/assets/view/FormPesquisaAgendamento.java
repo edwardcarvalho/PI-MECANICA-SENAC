@@ -70,7 +70,7 @@ public class FormPesquisaAgendamento extends JFrame {
 		JLabel lblPesquisarCliente = new JLabel("Pesquisar Agendamento");
 		lblPesquisarCliente.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPesquisarCliente.setFont(new Font("Dialog", Font.BOLD, 28));
-		lblPesquisarCliente.setBounds(0, 0, 601, 47);
+		lblPesquisarCliente.setBounds(0, 0, 757, 47);
 		contentPane.add(lblPesquisarCliente);
 
 		JLabel lblCpf = new JLabel("CPF");

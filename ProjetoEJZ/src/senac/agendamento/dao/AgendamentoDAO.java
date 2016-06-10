@@ -20,7 +20,7 @@ import senac.agendamento.model.Funcionario;
 import senac.agendamento.model.Servico;
 
 public class AgendamentoDAO extends DAO {
-	
+
 	Agendamento ag = new Agendamento();
 
 	public Cliente buscarCliente(String cpf) {
@@ -56,7 +56,7 @@ public class AgendamentoDAO extends DAO {
 
 	}
 
-	public Automovel buscarAutomovelCliente(int id_cliente) {
+	public Automovel buscarAutomovelCliente(int idCliente) {
 
 		Automovel automovelCliente = null;
 
@@ -64,7 +64,7 @@ public class AgendamentoDAO extends DAO {
 			conectaBanco();
 
 			String sql = "SELECT A.ID_CLIENTE, A.MODELO, A.COR, A.ANOFABRICACAO, A.PLACA FROM AUTOMOVEIS A WHERE A.ID_CLIENTE ='"
-					+ id_cliente + "' AND STATUS_AUTO = 'ATIVO'";
+					+ idCliente + "' AND STATUS_AUTO = 'ATIVO'";
 
 			Statement st = conn.createStatement();
 			rs = st.executeQuery(sql);
@@ -100,7 +100,7 @@ public class AgendamentoDAO extends DAO {
 				+ "INNER JOIN AGENDAMENTOS AG ON AG.ID_AUTOMOVEL = A.ID_AUTOMOVEL INNER JOIN FUNCIONARIOS F ON F.ID_FUNCIONARIO = AG.ID_FUNCIONARIO "
 				+ "INNER JOIN SERVICOS S ON S.ID_SERVICO = AG.ID_SERVICO "
 				+ "INNER JOIN UNIDADE U ON U.ID_UNIDADE = AG.ID_UNIDADE WHERE AG.ID_UNIDADE ='" + unidade
-				+ "' AND AG.DATAAGENDAMENTO = '" + data + "' GROUP BY AG.ID_AGENDAMENTO";
+				+ "' AND AG.DATAAGENDAMENTO = '" + data + "' AND AG.STATUS = 'AGENDADO' GROUP BY AG.ID_AGENDAMENTO";
 
 		conectaBanco();
 
@@ -135,7 +135,8 @@ public class AgendamentoDAO extends DAO {
 		ArrayList<Funcionario> funcionario = new ArrayList<>();
 
 		String sql = "SELECT * FROM FUNCIONARIOS F WHERE NOT EXISTS (SELECT * FROM AGENDAMENTOS WHERE ID_FUNCIONARIO = F.ID_FUNCIONARIO AND DATAAGENDAMENTO ='"
-				+ data + "' AND HORARIOINICIAL ='" + horario + "') AND F.ID_UNIDADE ='" + unidade + "' GROUP BY F.NOME";
+				+ data + "' AND HORARIOINICIAL ='" + horario + "' AND STATUS = 'AGENDADO') AND F.ID_UNIDADE ='"
+				+ unidade + "' GROUP BY F.ID_FUNCIONARIO";
 
 		conectaBanco();
 
@@ -283,7 +284,8 @@ public class AgendamentoDAO extends DAO {
 		}
 
 		String sql = "SELECT AG.ID_AGENDAMENTO, A.PLACA, AG.DATAAGENDAMENTO, AG.HORARIOINICIAL, AG.HORARIOFINAL, U.NOME_UNIDADE, AG.STATUS FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON C.ID_CLIENTE = A.ID_CLIENTE INNER JOIN AGENDAMENTOS AG ON AG.ID_AUTOMOVEL = A.ID_AUTOMOVEL INNER JOIN UNIDADE U ON U.ID_UNIDADE = AG.ID_UNIDADE WHERE C.ID_CLIENTE = '"
-				+ idCliente + "' AND AG.STATUS <> 'CANCELADO' GROUP BY AG.ID_AGENDAMENTO ORDER BY AG.DATAAGENDAMENTO ASC";
+				+ idCliente
+				+ "' AND AG.STATUS <> 'CANCELADO' GROUP BY AG.ID_AGENDAMENTO ORDER BY AG.DATAAGENDAMENTO ASC";
 
 		try {
 			Statement st = conn.createStatement();
@@ -291,8 +293,8 @@ public class AgendamentoDAO extends DAO {
 			rs = st.executeQuery(sql);
 			while (rs.next()) {
 				model = (DefaultTableModel) tabela.getModel();
-				model.addRow(new String[] { rs.getString(1), rs.getString(2), ag.converteData(rs.getString(3)), rs.getString(4),
-						rs.getString(5), rs.getString(6),rs.getString(7) });
+				model.addRow(new String[] { rs.getString(1), rs.getString(2), ag.converteData(rs.getString(3)),
+						rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7) });
 			}
 
 			st.close();
@@ -302,13 +304,18 @@ public class AgendamentoDAO extends DAO {
 		}
 
 	}
-	
-	public boolean alterarAgendamento (Agendamento agendamento){
-		
-		String sql = "UPDATE AGENDAMENTOS SET ID_FUNCIONARIO = '"+agendamento.getIdFuncionario()+"' , ID_SERVICO = '"+agendamento.getIdServico()+"' , STATUS = '"+agendamento.getStatusAgendamento()+"' , DATAAGENDAMENTO = '"+agendamento.getDataAgendamento()+"', HORARIOINICIAL = '"+agendamento.getHorarioInicial()+"', HORARIOFINAL = '"+agendamento.getHorarioFinal()+"' , ID_UNIDADE = '"+agendamento.getIdUnidade()+"' WHERE ID_AGENDAMENTO = '"+agendamento.getIdAgendamento()+"'";
-		
+
+	public boolean alterarAgendamento(Agendamento agendamento) {
+
+		String sql = "UPDATE AGENDAMENTOS SET ID_FUNCIONARIO = '" + agendamento.getIdFuncionario()
+				+ "' , ID_SERVICO = '" + agendamento.getIdServico() + "' , STATUS = '"
+				+ agendamento.getStatusAgendamento() + "' , DATAAGENDAMENTO = '" + agendamento.getDataAgendamento()
+				+ "', HORARIOINICIAL = '" + agendamento.getHorarioInicial() + "', HORARIOFINAL = '"
+				+ agendamento.getHorarioFinal() + "' , ID_UNIDADE = '" + agendamento.getIdUnidade()
+				+ "' WHERE ID_AGENDAMENTO = '" + agendamento.getIdAgendamento() + "'";
+
 		conectaBanco();
-		
+
 		try {
 			Statement st = conn.createStatement();
 			st.executeUpdate(sql);
@@ -318,18 +325,17 @@ public class AgendamentoDAO extends DAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
-		
-		
+
 	}
-	
-	public boolean cancelarAgendamento(int idAgendamento, String status){
-		
-String sql = "UPDATE AGENDAMENTOS SET ID_FUNCIONARIO = 0 , STATUS = '"+status+"' WHERE ID_AGENDAMENTO = '"+idAgendamento+"'";
-		
+
+	public boolean cancelarAgendamento(int idAgendamento, String status) {
+
+		String sql = "UPDATE AGENDAMENTOS SET STATUS = '" + status + "' WHERE ID_AGENDAMENTO = '" + idAgendamento + "'";
+
 		conectaBanco();
-		
+
 		try {
 			Statement st = conn.createStatement();
 			st.executeUpdate(sql);
@@ -339,9 +345,82 @@ String sql = "UPDATE AGENDAMENTOS SET ID_FUNCIONARIO = 0 , STATUS = '"+status+"'
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
-	
+
+	public boolean atualizarTabelaBaixarCarrosAgendados(int idCliente, JTable tabela) {
+
+		conectaBanco();
+
+		DefaultTableModel model = (DefaultTableModel) tabela.getModel();
+
+		while (model.getRowCount() > 0) {
+			model.removeRow(0);
+		}
+
+		String sql = "SELECT AG.ID_AGENDAMENTO, A.PLACA, AG.DATAAGENDAMENTO, AG.STATUS FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON C.ID_CLIENTE = A.ID_CLIENTE INNER JOIN AGENDAMENTOS AG ON AG.ID_AUTOMOVEL = A.ID_AUTOMOVEL INNER JOIN UNIDADE U ON U.ID_UNIDADE = AG.ID_UNIDADE WHERE AG.ID_AGENDAMENTO = '"
+				+ idCliente + "' AND AG.STATUS = 'AGENDADO' GROUP BY AG.ID_AGENDAMENTO ORDER BY AG.DATAAGENDAMENTO ASC";
+
+		try {
+			Statement st = conn.createStatement();
+
+			rs = st.executeQuery(sql);
+			while (rs.next()) {
+				model = (DefaultTableModel) tabela.getModel();
+				model.addRow(new String[] { rs.getString(1), rs.getString(2), ag.converteData(rs.getString(3)),
+						rs.getString(4) });
+			}
+
+			st.close();
+			desconectaBanco();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		if (model.getRowCount() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	public boolean verificarDuplicidadeAgendamento(Agendamento agendamento) {
+		
+		int idAuto = agendamento.getIdAutomovel();
+		String dataAgendamento = agendamento.getDataAgendamento().toString();
+		String horarioInicio = agendamento.getHorarioInicial().toString();
+
+		String sql = "SELECT AG.ID_AGENDAMENTO FROM AGENDAMENTOS AG WHERE AG.ID_AUTOMOVEL = '" + idAuto
+				+ "' AND AG.DATAAGENDAMENTO = '" + dataAgendamento + "' AND AG.HORARIOINICIAL = '"
+				+ horarioInicio + "'";
+
+		ArrayList<Agendamento> agendamentoDuplicado = new ArrayList<>();
+		try {
+			conectaBanco();
+
+			Statement st = conn.createStatement();
+			rs = st.executeQuery(sql);
+
+			while (rs.next()) {
+				Agendamento ag = new Agendamento();
+				ag.setIdAutomovel(rs.getInt("ID_AGENDAMENTO"));
+				agendamentoDuplicado.add(ag);
+			}
+
+			desconectaBanco();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		if (agendamentoDuplicado.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
 
 }

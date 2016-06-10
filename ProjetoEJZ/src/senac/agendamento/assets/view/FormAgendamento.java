@@ -230,7 +230,7 @@ public class FormAgendamento extends JFrame {
 		panelAgendamento.add(btnCancelar);
 
 		JButton btnAgendar = new JButton("Agendar");
-		
+
 		btnAgendar.setBounds(547, 333, 89, 23);
 		btnAgendar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelAgendamento.add(btnAgendar);
@@ -300,24 +300,23 @@ public class FormAgendamento extends JFrame {
 						}
 					}
 				});
-				
+
 			}
 		});
 		btnAgendar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboBoxUnidade.getSelectedItem().toString().equals("...")
-						|| calendario.getDate() ==  null
+				if (comboBoxUnidade.getSelectedItem().toString().equals("...") || calendario.getDate() == null
 						|| comboBoxHorarioDisponivel.getSelectedItem().equals("...")
 						|| comboBoxServicos.getSelectedItem().equals("...")) {
-					
+
 					JOptionPane.showMessageDialog(null, "Complete todos os campos!");
-					
+
 				} else {
-					
+
 					Object date = calendario.getDate();
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					String data = sdf.format(date);
-					
+
 					String periodo = comboBoxHorarioDisponivel.getSelectedItem().toString();
 					if (periodo.contains("Manhã")) {
 						horarioInicial = "8:00";
@@ -326,14 +325,14 @@ public class FormAgendamento extends JFrame {
 						horarioInicial = "13:15";
 						horarioFinal = "17:15";
 					}
-					
+
 					String status = null;
 					if (rdbtnFilaDeEspera.isSelected()) {
 						status = "FILA DE ESPERA";
 					} else {
 						status = "AGENDADO";
 					}
-					
+
 					int idAutomovel = 0;
 					for (Automovel a : placas) {
 						if (a.getPlaca().toString()
@@ -341,22 +340,21 @@ public class FormAgendamento extends JFrame {
 							idAutomovel = a.getIdAutomovel();
 						}
 					}
-					
+
 					int idUnidade = comboBoxUnidade.getSelectedIndex();
 					funcionarios = agendamentoDAO.buscarFuncionariosDisponiveis(idUnidade, data, horarioInicial);
-					
+
 					int idFuncionario;
 					if (rdbtnFilaDeEspera.isSelected()) {
 						idFuncionario = 0;
 					} else {
 						idFuncionario = funcionarios.get(0).getIdFuncionario();
 					}
-					
-					String placa = comboBoxPlacasCadastradas.getSelectedItem().toString();
+
 					int idServico = comboBoxServicos.getSelectedIndex();
-					
+
 					Agendamento agendamento = new Agendamento();
-					
+
 					agendamento.setIdAutomovel(idAutomovel);
 					agendamento.setIdFuncionario(idFuncionario);
 					agendamento.setIdServico(idServico);
@@ -365,14 +363,21 @@ public class FormAgendamento extends JFrame {
 					agendamento.setHorarioInicial(horarioInicial);
 					agendamento.setHorarioFinal(horarioFinal);
 					agendamento.setIdUnidade(idUnidade);
-					
-					boolean agendou = agendamentoDAO.agendarCliente(agendamento);
-					
-					if (agendou) {
-						JOptionPane.showMessageDialog(null, "Agendamento realizado com sucesso!");
-						FormAgendamento.this.setVisible(false);
+
+					boolean duplicado = agendamentoDAO.verificarDuplicidadeAgendamento(agendamento);
+
+					if (duplicado) {
+						JOptionPane.showMessageDialog(null, "Este veiculo ja possui agendamento para este dia e horario.");
 					} else {
-						JOptionPane.showMessageDialog(null, "Falha no agendamento. Contate o administrador.");
+
+						boolean agendou = agendamentoDAO.agendarCliente(agendamento);
+
+						if (agendou) {
+							JOptionPane.showMessageDialog(null, "Agendamento realizado com sucesso!");
+							FormAgendamento.this.setVisible(false);
+						} else {
+							JOptionPane.showMessageDialog(null, "Falha no agendamento. Contate o administrador.");
+						}
 					}
 				}
 			}

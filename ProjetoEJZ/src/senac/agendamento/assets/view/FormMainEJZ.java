@@ -134,6 +134,17 @@ public class FormMainEJZ extends JFrame {
 		mntmAlterar_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnAgendamento.add(mntmAlterar_2);
 		
+		JMenuItem mntmBaixar = new JMenuItem("Baixar");
+		mntmBaixar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				FormBaixarAgendamento baixarAgendamento = new FormBaixarAgendamento();
+				baixarAgendamento.setVisible(true);
+			}
+		});
+		mntmBaixar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mnAgendamento.add(mntmBaixar);
+		
 		JMenu mnCliente = new JMenu("Cliente");
 		mnCliente.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnArquivo.add(mnCliente);
@@ -199,6 +210,7 @@ public class FormMainEJZ extends JFrame {
 		menuBar.add(mnRelatrios);
 		
 		JMenuItem mntmGerarRelatorios = new JMenuItem("Gerar Relatorios");
+		mntmGerarRelatorios.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmGerarRelatorios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				

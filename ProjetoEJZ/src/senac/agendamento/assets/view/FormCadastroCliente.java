@@ -42,6 +42,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class FormCadastroCliente extends JFrame{
 
@@ -121,6 +123,16 @@ public class FormCadastroCliente extends JFrame{
 		panel.add(lblNome);
 
 		txtNomeCliente = new JTextField();
+		txtNomeCliente.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				String caracteres="0987654321<>.,?;:^~]}[{´`_-+='!@$%¨&*()|";
+			       if(caracteres.contains(e.getKeyChar()+"")){
+			              e.consume();
+
+			       }
+			}
+		});
 		txtNomeCliente.setBounds(270, 47, 295, 20);
 		txtNomeCliente.getText().toUpperCase();
 		panel.add(txtNomeCliente);
@@ -189,6 +201,19 @@ public class FormCadastroCliente extends JFrame{
 		panel.add(lblPlaca);
 
 		txtPlacaVeiculoCliente = new JFormattedTextField(placaMask);
+		txtPlacaVeiculoCliente.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+				
+				boolean validou = clienteDAO.validarPlaca(txtPlacaVeiculoCliente.getText().toString());
+				if (validou) {
+					JOptionPane.showMessageDialog(null, "Placa ja cadastrado!");
+					((JFormattedTextField) txtPlacaVeiculoCliente).setValue(null);
+					txtPlacaVeiculoCliente.requestFocusInWindow();
+				}else{
+				}
+			}
+		});
 		txtPlacaVeiculoCliente.setEnabled(false);
 		txtPlacaVeiculoCliente.setBounds(66, 173, 93, 20);
 		panel.add(txtPlacaVeiculoCliente);
@@ -342,6 +367,8 @@ public class FormCadastroCliente extends JFrame{
 
 					btnAdicionar.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent arg0) {
+							
+							
 
 							if (txtPlacaVeiculoCliente.getText().equals("   -    ")
 									|| comboBoxCorCarro.getSelectedItem().equals("...")

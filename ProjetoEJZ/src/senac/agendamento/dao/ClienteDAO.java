@@ -232,5 +232,38 @@ public class ClienteDAO extends DAO {
 		}
 
 	}
+	
+	@SuppressWarnings("finally")		
+	public boolean validarPlaca(String placa) {
+
+		String sql = "SELECT A.PLACA FROM AUTOMOVEIS A WHERE A.PLACA = '"+placa+"'";
+
+		conectaBanco();
+		Statement st;
+		ArrayList<String> ListaPlaca = new ArrayList<>();
+
+		try {
+			st = conn.createStatement();
+			rs = st.executeQuery(sql);
+
+			while (rs.next()) {
+				ListaPlaca.add(rs.getString("PLACA"));
+			}
+
+			st.close();
+			rs.close();
+			desconectaBanco();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+
+			if (ListaPlaca.size() > 0) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
 
 }

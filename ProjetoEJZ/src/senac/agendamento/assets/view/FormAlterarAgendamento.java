@@ -359,6 +359,8 @@ public class FormAlterarAgendamento extends JFrame {
 					if (comboBoxUnidade.getSelectedItem().equals("...") || dateChooser.getDate() == null
 							|| comboBoxHorarios.getSelectedItem().equals("...")
 							|| comboBoxServicos.getSelectedItem().equals("...")) {
+						
+						JOptionPane.showMessageDialog(null, "Complete todos os campos!");
 
 					} else {
 

@@ -35,7 +35,7 @@ public class FormPesquisaCliente extends JFrame {
 	private JTextField txtNomeCliente;
 	private JTable tableDadosCliente;
 	private JTextField txtCelular;
-	
+
 	ClienteDAO clienteDao = new ClienteDAO();
 	AgendamentoDAO agendamentoDao = new AgendamentoDAO();
 
@@ -57,7 +57,8 @@ public class FormPesquisaCliente extends JFrame {
 
 	/**
 	 * Create the frame.
-	 * @throws ParseException 
+	 * 
+	 * @throws ParseException
 	 */
 	public FormPesquisaCliente() throws ParseException {
 		setBounds(100, 100, 498, 382);
@@ -65,81 +66,83 @@ public class FormPesquisaCliente extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		JLabel lblPesquisarCliente = new JLabel("Pesquisar Cliente");
 		lblPesquisarCliente.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPesquisarCliente.setFont(new Font("Dialog", Font.BOLD, 28));
 		lblPesquisarCliente.setBounds(0, 0, 482, 47);
 		contentPane.add(lblPesquisarCliente);
-		
+
 		JLabel lblCpf = new JLabel("CPF");
 		lblCpf.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblCpf.setBounds(39, 96, 33, 14);
 		contentPane.add(lblCpf);
-		
+
 		MaskFormatter cpfMask = new MaskFormatter("###.###.###-##");
-		
+
 		txtCpfCliente = new JFormattedTextField(cpfMask);
 		txtCpfCliente.setBounds(87, 95, 94, 20);
 		contentPane.add(txtCpfCliente);
 		txtCpfCliente.setColumns(10);
 
-// faz a busca atraves do CPF e apresenta em uma tabela o cadastro do cliente e seus veiculos. Se o CPF não estiver cadastrado, uma mensagem será exibida.
+		// faz a busca atraves do CPF e apresenta em uma tabela o cadastro do
+		// cliente e seus veiculos. Se o CPF não estiver cadastrado, uma
+		// mensagem será exibida.
 		JButton btnPesquisar = new JButton("Pesquisar");
 		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String cpf = txtCpfCliente.getText().replaceAll("\\D", "");
-				Cliente cliente = clienteDao.buscarCliente(cpf);
-				if (cliente == null) {
-					JOptionPane.showMessageDialog(null, "CPF não cadastrado!");
+
+				if (txtCpfCliente.getText().equals("   .   .   -  ")) {
+					JOptionPane.showMessageDialog(null, "Digite um CPF para pesquisa!");
 				} else {
-					txtNomeCliente.setText(cliente.getNomeCliente());
-					txtCelular.setText(cliente.getTelefoneCelular());
 
-					clienteDao.atualizaTabelaCarrosCadastrado(cliente, tableDadosCliente);
+					String cpf = txtCpfCliente.getText().replaceAll("\\D", "");
+					Cliente cliente = clienteDao.buscarCliente(cpf);
+					if (cliente == null) {
+						JOptionPane.showMessageDialog(null, "CPF não cadastrado!");
+					} else {
+						txtNomeCliente.setText(cliente.getNomeCliente());
+						txtCelular.setText(cliente.getTelefoneCelular());
 
-					if (tableDadosCliente.getRowCount() == 0) {
-						JOptionPane.showMessageDialog(null, "Cliente não possui automovel!");
+						clienteDao.atualizaTabelaCarrosCadastrado(cliente, tableDadosCliente);
+
+						if (tableDadosCliente.getRowCount() == 0) {
+							JOptionPane.showMessageDialog(null, "Cliente não possui automovel!");
+						}
 					}
 				}
-				
-				
+
 			}
 		});
 		btnPesquisar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnPesquisar.setBounds(196, 93, 108, 23);
 		contentPane.add(btnPesquisar);
-		
+
 		JLabel lblNome = new JLabel("Nome");
 		lblNome.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNome.setBounds(39, 137, 46, 14);
 		contentPane.add(lblNome);
-		
+
 		txtNomeCliente = new JTextField();
 		txtNomeCliente.setEditable(false);
 		txtNomeCliente.setBounds(87, 136, 278, 20);
 		contentPane.add(txtNomeCliente);
 		txtNomeCliente.setColumns(10);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(39, 216, 404, 105);
 		contentPane.add(scrollPane);
-		
+
 		tableDadosCliente = new JTable();
-		tableDadosCliente.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"Placa", "Modelo", "Cor", "Ano"
-			}
-		));
+		tableDadosCliente
+				.setModel(new DefaultTableModel(new Object[][] {}, new String[] { "Placa", "Modelo", "Cor", "Ano" }));
 		scrollPane.setViewportView(tableDadosCliente);
-		
+
 		JLabel lblCpf_1 = new JLabel("Celular");
 		lblCpf_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblCpf_1.setBounds(39, 173, 46, 14);
 		contentPane.add(lblCpf_1);
-		
+
 		MaskFormatter celMask = new MaskFormatter("(##)#####-####");
 		txtCelular = new JFormattedTextField(celMask);
 		txtCelular.setEditable(false);

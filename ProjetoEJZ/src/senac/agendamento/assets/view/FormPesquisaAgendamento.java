@@ -85,23 +85,29 @@ public class FormPesquisaAgendamento extends JFrame {
 		contentPane.add(txtCpfCliente);
 		txtCpfCliente.setColumns(10);
 
-// faz a busca atraves do CPF e apresenta em uma tabela o agendamento do cliente. Se o CPF não estiver cadastrado, uma mensagem será exibida.
+		// faz a busca atraves do CPF e apresenta em uma tabela o agendamento do
+		// cliente. Se o CPF não estiver cadastrado, uma mensagem será exibida.
 		JButton btnPesquisar = new JButton("Pesquisar");
 		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				String cpf = txtCpfCliente.getText().replaceAll("\\D", "");
-				Cliente cliente = clienteDao.buscarCliente(cpf);
-				if (cliente == null) {
-					JOptionPane.showMessageDialog(null, "CPF não cadastrado!");
+				if (txtCpfCliente.getText().equals("   .   .   -  ")) {
+					JOptionPane.showMessageDialog(null, "Digite um CPF para pesquisa!");
 				} else {
-					txtNomeCliente.setText(cliente.getNomeCliente());
-					txtCelular.setText(cliente.getTelefoneCelular());
 
-					agendamentoDao.atualizarTabelaCarrosAgendados(cliente.getIdCliente(), tableAgendamento);
+					String cpf = txtCpfCliente.getText().replaceAll("\\D", "");
+					Cliente cliente = clienteDao.buscarCliente(cpf);
+					if (cliente == null) {
+						JOptionPane.showMessageDialog(null, "CPF não cadastrado!");
+					} else {
+						txtNomeCliente.setText(cliente.getNomeCliente());
+						txtCelular.setText(cliente.getTelefoneCelular());
 
-					if (tableAgendamento.getRowCount() == 0) {
-						JOptionPane.showMessageDialog(null, "Cliente não possui agendamento!");
+						agendamentoDao.atualizarTabelaCarrosAgendados(cliente.getIdCliente(), tableAgendamento);
+
+						if (tableAgendamento.getRowCount() == 0) {
+							JOptionPane.showMessageDialog(null, "Cliente não possui agendamento!");
+						}
 					}
 				}
 

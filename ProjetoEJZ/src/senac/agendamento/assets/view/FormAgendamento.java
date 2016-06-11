@@ -141,31 +141,37 @@ public class FormAgendamento extends JFrame {
 		comboBoxPlacasCadastradas.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		comboBoxPlacasCadastradas.setBounds(637, 87, 91, 20);
 		panelAgendamento.add(comboBoxPlacasCadastradas);
-		
-//		botão buscar dispara a função para o BD trazer para a tela os dados do cliente cadastrado.
+
+		// botão buscar dispara a função para o BD trazer para a tela os dados
+		// do cliente cadastrado.
 		JButton btnBuscarCliente = new JButton("Buscar");
 		btnBuscarCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
-//		verifica se o campo CPF foi preenchido para fazer a busca no BD.
-				
+
+				// verifica se o campo CPF foi preenchido para fazer a busca no
+				// BD.
+
 				if (txtCampoBuscaClienteCpf.getText().equals("   .   .   -  ")) {
 
 					JOptionPane.showMessageDialog(null, "Digite um CPF para fazer a busca!");
 
 				} else {
-					
 
 					cliente = agendamentoDao.buscarCliente(txtCampoBuscaClienteCpf.getText().replaceAll("\\D", ""));
 
-//		se o CPF for corretamente digitado, mas não estiver cadastrado no BD, retornará uma mensagem com esta informação.
+					// se o CPF for corretamente digitado, mas não estiver
+					// cadastrado no BD, retornará uma mensagem com esta
+					// informação.
 					if (cliente == null) {
 						JOptionPane.showMessageDialog(null, "Cliente não cadastrado!");
 					} else {
-						
-//		se o CPF for corretamente digitado e encontrado no BD, os dados de cadastro do cliente aparecerão na tela e 
-//		um comboBox com a(s) placa(s) do(s) automovel(is) será preenchido.
-						
+
+						// se o CPF for corretamente digitado e encontrado no
+						// BD, os dados de cadastro do cliente aparecerão na
+						// tela e
+						// um comboBox com a(s) placa(s) do(s) automovel(is)
+						// será preenchido.
+
 						automovelCliente = agendamentoDao.buscarAutomovelCliente(cliente.getIdCliente());
 						txtNomeCadastrado.setText(cliente.getNomeCliente());
 						txtCPFcadastrado.setText(cliente.getCpf().trim());
@@ -225,8 +231,9 @@ public class FormAgendamento extends JFrame {
 
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.setBounds(647, 333, 89, 23);
-		
-//		caso o operador deseje cancelar a operaçao de agendamento, o form se fecha sem qualquer inclusão no BD.
+
+		// caso o operador deseje cancelar a operaçao de agendamento, o form se
+		// fecha sem qualquer inclusão no BD.
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -276,13 +283,15 @@ public class FormAgendamento extends JFrame {
 		btnPesquisaData.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelAgendamento.add(btnPesquisaData);
 
-//      botão de pesquisa de horarios disponiveis
+		// botão de pesquisa de horarios disponiveis
 		btnPesquisaData.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-//		verifica se os campos CPF, comboBox Unidade e data de agendamento foram preenchidos corretamente.
-//		se algum dos campos não estiverem preenchidos o processo não segue adiante.
-				
+				// verifica se os campos CPF, comboBox Unidade e data de
+				// agendamento foram preenchidos corretamente.
+				// se algum dos campos não estiverem preenchidos o processo não
+				// segue adiante.
+
 				rdbtnFilaDeEspera.setSelected(false);
 
 				if (txtCampoBuscaClienteCpf.getText().equals("   .   .   -  ")
@@ -291,31 +300,49 @@ public class FormAgendamento extends JFrame {
 					JOptionPane.showMessageDialog(null, "Complete todos os campos para fazer a pesquisa!");
 
 				} else {
-					
-//		com os campos preenchidos corretamente, o comboBoxHorariosDiponiveis é preenchido com base nos dados informados pelo operador.			
 
-					int unidade = comboBoxUnidade.getSelectedIndex();
-					int id_cliente = cliente.getIdCliente();
-					Object date = calendario.getDate();
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					String data = sdf.format(date);
+					// é feita verificação, para saber se a data informada é
+					// uma data atual ou futura, válida. Se não for, será
+					// apresentada mensagem de erro.
 
-					horariosDisponiveis = agendamentoDao.buscarHorariosDisponiveis(unidade, data);
-					comboBoxHorarioDisponivel.setModel(agendamento.mostraHorariosDisponiveis(horariosDisponiveis));
+					boolean dataValida = agendamento.verificaDataAgendamentoValida(calendario.getDate());
+
+					if (!dataValida) {
+						JOptionPane.showMessageDialog(null, "Data Inválida!");
+						calendario.setDate(null);
+						comboBoxHorarioDisponivel.removeAllItems();
+					} else {
+
+						// com os campos preenchidos corretamente, o
+						// comboBoxHorariosDiponiveis é preenchido com base nos
+						// dados informados pelo operador.
+
+						int unidade = comboBoxUnidade.getSelectedIndex();
+						int id_cliente = cliente.getIdCliente();
+						Object date = calendario.getDate();
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+						String data = sdf.format(date);
+
+						horariosDisponiveis = agendamentoDao.buscarHorariosDisponiveis(unidade, data);
+						comboBoxHorarioDisponivel.setModel(agendamento.mostraHorariosDisponiveis(horariosDisponiveis));
+					}
 				}
 
 				ComboBoxModel comboPesquisa = comboBoxHorarioDisponivel.getModel();
-				
-//		se o radioButton "Fila de Espera" for selecionado, no comboBox serão mostrados todos os horarios.
-				
+
+				// se o radioButton "Fila de Espera" for selecionado, no
+				// comboBox serão mostrados todos os horarios.
+
 				rdbtnFilaDeEspera.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						if (rdbtnFilaDeEspera.isSelected()) {
 							comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel(
 									new String[] { "...", "Manhã (8h00 às 12h00)", "Tarde (13h15 às 17h15)" }));
 						} else {
-							
-//		se o radioButton "Fila de Espera" não for selecionado o comboBox volta a apresentar os resultados da pesquisa.
+
+							// se o radioButton "Fila de Espera" não for
+							// selecionado o comboBox volta a apresentar os
+							// resultados da pesquisa.
 							comboBoxHorarioDisponivel.setModel(new DefaultComboBoxModel());
 							for (int i = 0; i < comboPesquisa.getSize(); i++) {
 								comboBoxHorarioDisponivel.addItem(comboPesquisa.getElementAt(i));
@@ -326,30 +353,38 @@ public class FormAgendamento extends JFrame {
 
 			}
 		});
-		
-// o botão agendar realiza o registro no banco de dados do agendamento.
+
+		// o botão agendar realiza o registro no banco de dados do agendamento.
 		btnAgendar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-//	inicialmente é feita verificação, se a data informada é uma data atual ou futura, válida. Se não for, será apresentada mensagem.
-				
-				boolean dataValida = agendamento.verificaDataAgendamentoValida(calendario.getDate());
-				
-				if (!dataValida) {
-					JOptionPane.showMessageDialog(null, "Data Inválida!");
+
+				// inicialmente é feita a checagem do preenchimento
+				// de todos os campos. Se não estiverem todos preenchidos, será
+				// apresentada mensagem de erro.
+
+				if (comboBoxUnidade.getSelectedItem().toString().equals("...") || calendario.getDate() == null
+						|| comboBoxHorarioDisponivel.getSelectedItem().equals("...")
+						|| comboBoxServicos.getSelectedItem().equals("...")
+						|| txtCPFcadastrado.getText().equals("   .   .   -  ")) {
+
+					JOptionPane.showMessageDialog(null, "Complete todos os campos!");
+
 				} else {
-					
-//	após verificação da data é feita a checagem do preenchimento de todos os campos. Se não estiverem todos preenchidos, será apresentada mensagem.
-					
-					if (comboBoxUnidade.getSelectedItem().toString().equals("...") || calendario.getDate() == null
-							|| comboBoxHorarioDisponivel.getSelectedItem().equals("...")
-							|| comboBoxServicos.getSelectedItem().equals("...")) {
+					// é feita verificação, para saber se a data informada é
+					// uma data atual ou futura, válida. Se não for, será
+					// apresentada mensagem de erro.
 
-						JOptionPane.showMessageDialog(null, "Complete todos os campos!");
+					boolean dataValida = agendamento.verificaDataAgendamentoValida(calendario.getDate());
 
+					if (!dataValida) {
+						JOptionPane.showMessageDialog(null, "Data Inválida!");
+						calendario.setDate(null);
+						comboBoxHorarioDisponivel.removeAllItems();
 					} else {
-						
-//	com os campos preenchidos corretamente são extraidos da tela os dados para criação de um objeto agendamento.
+
+						// com os campos preenchidos corretamente são extraidos
+						// da tela os dados para criação de um objeto
+						// agendamento.
 
 						Object date = calendario.getDate();
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -373,33 +408,44 @@ public class FormAgendamento extends JFrame {
 						}
 
 						int idUnidade = comboBoxUnidade.getSelectedIndex();
-						
+
 						String status = null;
 						int idFuncionario;
 						if (rdbtnFilaDeEspera.isSelected()) {
-							
-// se o radioButton "Fila de Espera" estiver selecionado, é feita busca no banco dos funcionarios disponiveis e o primeiro(index 0) será incluido no agendamento.
-// o status do agendamento é alterado para "FILA DE ESPERA";
-							
+
+							// se o radioButton "Fila de Espera" estiver
+							// selecionado, é feita busca no banco dos
+							// funcionarios disponiveis e o primeiro(index 0)
+							// será incluido no agendamento.
+							// o status do agendamento é alterado para "FILA DE
+							// ESPERA";
+
 							status = "FILA DE ESPERA";
-							ArrayList<Funcionario>funcionariosListaEspera = new ArrayList<>();
-							funcionariosListaEspera = agendamentoDao.buscarFuncionariosFilaDeEspera(idUnidade, data, horarioInicial);
+							ArrayList<Funcionario> funcionariosListaEspera = new ArrayList<>();
+							funcionariosListaEspera = agendamentoDao.buscarFuncionariosFilaDeEspera(idUnidade, data,
+									horarioInicial);
 							idFuncionario = funcionariosListaEspera.get(0).getIdFuncionario();
-							
+
 						} else {
-							
-// se o radioButton "Fila de Espera" não estiver selecionado, é feita busca no banco dos funcionarios disponiveis e o primeiro(index 0) será incluido no agendamento.
-// o status do agendamento é alterado para "AGENDADO";
-							
+
+							// se o radioButton "Fila de Espera" não estiver
+							// selecionado, é feita busca no banco dos
+							// funcionarios disponiveis e o primeiro(index 0)
+							// será incluido no agendamento.
+							// o status do agendamento é alterado para
+							// "AGENDADO";
+
 							status = "AGENDADO";
-							funcionarios = agendamentoDao.buscarFuncionariosDisponiveis(idUnidade, data, horarioInicial);
+							funcionarios = agendamentoDao.buscarFuncionariosDisponiveis(idUnidade, data,
+									horarioInicial);
 							idFuncionario = funcionarios.get(0).getIdFuncionario();
 						}
 
 						int idServico = comboBoxServicos.getSelectedIndex();
 
-// é criado um objeto agendamento com os dados inseridos em tela.
-						
+						// é criado um objeto agendamento com os dados inseridos
+						// em tela.
+
 						Agendamento agendamento = new Agendamento();
 
 						agendamento.setIdAutomovel(idAutomovel);
@@ -410,8 +456,10 @@ public class FormAgendamento extends JFrame {
 						agendamento.setHorarioInicial(horarioInicial);
 						agendamento.setHorarioFinal(horarioFinal);
 						agendamento.setIdUnidade(idUnidade);
-						
-// antes de salvar o agendamento no BD é feita uma verificação afim de evitar duplicidades, envolvendo a mesma data, horario e veiculo.
+
+						// antes de salvar o agendamento no BD é feita uma
+						// verificação afim de evitar duplicidades, envolvendo a
+						// mesma data, horario e veiculo.
 
 						boolean duplicado = agendamentoDao.verificarDuplicidadeAgendamento(agendamento);
 
@@ -419,8 +467,9 @@ public class FormAgendamento extends JFrame {
 							JOptionPane.showMessageDialog(null,
 									"Este veiculo ja possui agendamento para este dia e horario.");
 						} else {
-							
-//	passando pela verificação de duplicidade o agendamento é inserido no banco de dados.
+
+							// passando pela verificação de duplicidade o
+							// agendamento é inserido no banco de dados.
 
 							boolean agendou = agendamentoDao.agendarCliente(agendamento);
 

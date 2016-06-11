@@ -81,8 +81,9 @@ public class FormBaixarAgendamento extends JFrame {
 		txtIdAgendamento.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				
-// este keyTyped bloqueia a inserção de caracteres diferentes de numeros.
+
+				// este keyTyped bloqueia a inserção de caracteres diferentes de
+				// numeros.
 
 				String caracteres = "qwertyuiop´[]~çlkjhgfdsazxcvbnm,.;QWERTYUIOP`{}^ÇLKJHGFDSA|ZXCVBNM<>:";
 				if (caracteres.contains(e.getKeyChar() + "")) {
@@ -98,17 +99,25 @@ public class FormBaixarAgendamento extends JFrame {
 		JButton btnPesquisar = new JButton("Pesquisar");
 		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-// utiliza o idAgendamento digitado pelo operador e faz a busca do agendamento no BD. Se não existir, uma mensagem será exibida.
 
-				idAgendamento = Integer.parseInt(txtIdAgendamento.getText().toString().replaceAll("\\D", " ").trim());
+				if (txtIdAgendamento.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Digite um numero de agendamento para pesquisa!");
+				} else {
 
-				boolean agendamento = agendamentoDao.atualizarTabelaBaixarCarrosAgendados(idAgendamento,
-						tableBaixarAgendamento);
+					// utiliza o idAgendamento digitado pelo operador e faz a
+					// busca do agendamento no BD. Se não existir, uma mensagem
+					// será exibida.
 
-				if (!agendamento)
-					JOptionPane.showMessageDialog(null, "Numero de agendamento inexistente!");
+					idAgendamento = Integer
+							.parseInt(txtIdAgendamento.getText().toString().replaceAll("\\D", " ").trim());
 
+					boolean agendamento = agendamentoDao.atualizarTabelaBaixarCarrosAgendados(idAgendamento,
+							tableBaixarAgendamento);
+
+					if (!agendamento)
+						JOptionPane.showMessageDialog(null, "Numero de agendamento inexistente!");
+
+				}
 			}
 		});
 		btnPesquisar.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -129,8 +138,9 @@ public class FormBaixarAgendamento extends JFrame {
 		JButton btnBaixar = new JButton("Baixar");
 		btnBaixar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-// ao clicar em baixar o status do agendamento é alterado para FINALIZADO.
+
+				// ao clicar em baixar o status do agendamento é alterado para
+				// FINALIZADO.
 
 				int opcao = JOptionPane.showConfirmDialog(null, "Confirma a baixa do agendamento?",
 						"Baixar Agendamento", JOptionPane.YES_NO_OPTION);

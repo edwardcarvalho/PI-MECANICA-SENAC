@@ -24,8 +24,9 @@ public class AgendamentoDAO extends DAO {
 	Agendamento ag = new Agendamento();
 
 	public Cliente buscarCliente(String cpf) {
-		
-//		esta função recebe um CPF e busca no banco de dados todos os dados do cliente
+
+		// esta função recebe um CPF e busca no banco de dados todos os dados do
+		// cliente
 
 		Cliente clienteBanco = null;
 
@@ -59,8 +60,9 @@ public class AgendamentoDAO extends DAO {
 	}
 
 	public Automovel buscarAutomovelCliente(int idCliente) {
-		
-//		esta função recebe um idCliente e busca no banco de dados todos os veiculos cadastrado para este cliente
+
+		// esta função recebe um idCliente e busca no banco de dados todos os
+		// veiculos cadastrado para este cliente
 
 		Automovel automovelCliente = null;
 
@@ -93,9 +95,10 @@ public class AgendamentoDAO extends DAO {
 	}
 
 	public ArrayList<Agendamento> buscarHorariosDisponiveis(int unidade, String data) {
-		
-//		esta função recebe o idUnidade e a data desejada para agendamento e 
-//		retorna um arraylist com todos os agendamentos marcados na data e unidade passados por parametro
+
+		// esta função recebe o idUnidade e a data desejada para agendamento e
+		// retorna um arraylist com todos os agendamentos marcados na data e
+		// unidade passados por parametro
 
 		Agendamento agendamento = null;
 
@@ -135,9 +138,11 @@ public class AgendamentoDAO extends DAO {
 	}
 
 	public ArrayList<Funcionario> buscarFuncionariosDisponiveis(int unidade, String data, String horario) {
-		
-//		esta função recebe o idUnidade, a data desejada de agendamento e o horario Inicial
-//		retorna um arraylist com os funcionarios que não possuem agendamento registrado no banco de dados
+
+		// esta função recebe o idUnidade, a data desejada de agendamento e o
+		// horario Inicial
+		// retorna um arraylist com os funcionarios que não possuem agendamento
+		// registrado no banco de dados
 
 		Funcionario funcionarios = null;
 
@@ -174,11 +179,13 @@ public class AgendamentoDAO extends DAO {
 		return funcionario;
 
 	}
-	
+
 	public ArrayList<Funcionario> buscarFuncionariosFilaDeEspera(int unidade, String data, String horario) {
-		
-//		esta função recebe o idUnidade, a data desejada de agendamento e o horario Inicial
-//		retorna um arraylist com os funcionarios que não possuem agendamento com status de fila de espera, registrado no banco de dados
+
+		// esta função recebe o idUnidade, a data desejada de agendamento e o
+		// horario Inicial
+		// retorna um arraylist com os funcionarios que não possuem agendamento
+		// com status de fila de espera, registrado no banco de dados
 
 		Funcionario funcionarios = null;
 
@@ -217,9 +224,10 @@ public class AgendamentoDAO extends DAO {
 	}
 
 	public ArrayList<Automovel> buscarPlacaComboBox(Cliente cliente) {
-		
-//		esta função recebe um Cliente a através do idCliente, retorna um arraylist
-//		com todos os veiculos registrados para este ID.
+
+		// esta função recebe um Cliente a através do idCliente, retorna um
+		// arraylist
+		// com todos os veiculos registrados para este ID.
 
 		ArrayList<Automovel> automovel = new ArrayList<>();
 
@@ -260,9 +268,10 @@ public class AgendamentoDAO extends DAO {
 	}
 
 	public ArrayList<Servico> buscarServicos() {
-		
-//		esta função retorna um arraylist contendo todos os serviços cadastrados no banco
-//		é usada para preencher um comboBox
+
+		// esta função retorna um arraylist contendo todos os serviços
+		// cadastrados no banco
+		// é usada para preencher um comboBox
 
 		ArrayList<Servico> servicos = new ArrayList<>();
 
@@ -298,8 +307,9 @@ public class AgendamentoDAO extends DAO {
 	}
 
 	public boolean agendarCliente(Agendamento agendamento) {
-		
-//		esta função recebe um Objeto Agendamento e faz a gravação no banco de dados.
+
+		// esta função recebe um Objeto Agendamento e faz a gravação no banco de
+		// dados.
 
 		String sql = "INSERT INTO AGENDAMENTOS (ID_AUTOMOVEL, ID_FUNCIONARIO, ID_SERVICO, STATUS, DATAAGENDAMENTO, HORARIOINICIAL,HORARIOFINAL,ID_UNIDADE) VALUES (?,?,?,?,?,?,?,?)";
 
@@ -332,9 +342,10 @@ public class AgendamentoDAO extends DAO {
 	}
 
 	public void atualizarTabelaCarrosAgendados(int idCliente, JTable tabela) {
-		
-//		esta função recebe o idCliente e uma JTable(tabela). Tem a função de preencher a tabela
-//		com os dados de agendamento cadastrados no banco.
+
+		// esta função recebe o idCliente e uma JTable(tabela). Tem a função de
+		// preencher a tabela
+		// com os dados de agendamento cadastrados no banco.
 
 		conectaBanco();
 
@@ -345,8 +356,7 @@ public class AgendamentoDAO extends DAO {
 		}
 
 		String sql = "SELECT AG.ID_AGENDAMENTO, A.PLACA, AG.DATAAGENDAMENTO, AG.HORARIOINICIAL, AG.HORARIOFINAL, U.NOME_UNIDADE, AG.STATUS FROM AUTOMOVEIS A INNER JOIN CLIENTES C ON C.ID_CLIENTE = A.ID_CLIENTE INNER JOIN AGENDAMENTOS AG ON AG.ID_AUTOMOVEL = A.ID_AUTOMOVEL INNER JOIN UNIDADE U ON U.ID_UNIDADE = AG.ID_UNIDADE WHERE C.ID_CLIENTE = '"
-				+ idCliente
-				+ "' AND AG.STATUS <> 'CANCELADO' GROUP BY AG.ID_AGENDAMENTO ORDER BY AG.DATAAGENDAMENTO ASC";
+				+ idCliente + "'GROUP BY AG.ID_AGENDAMENTO ORDER BY AG.DATAAGENDAMENTO ASC";
 
 		try {
 			Statement st = conn.createStatement();
@@ -354,8 +364,10 @@ public class AgendamentoDAO extends DAO {
 			rs = st.executeQuery(sql);
 			while (rs.next()) {
 				model = (DefaultTableModel) tabela.getModel();
-				model.addRow(new String[] { rs.getString(1), rs.getString(2), ag.converteData(rs.getString(3)),
-						rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7) });
+				if (rs.getString(7).equals("AGENDADO") || rs.getString(7).equals("FILA DE ESPERA")) {
+					model.addRow(new String[] { rs.getString(1), rs.getString(2), ag.converteData(rs.getString(3)),
+							rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7) });
+				}
 			}
 
 			st.close();
@@ -367,9 +379,10 @@ public class AgendamentoDAO extends DAO {
 	}
 
 	public boolean alterarAgendamento(Agendamento agendamento) {
-		
-//		esta função recebe um objeto agendamento e tem a função de alterar/atualizar
-//		os dados de agendamento de um cliente
+
+		// esta função recebe um objeto agendamento e tem a função de
+		// alterar/atualizar
+		// os dados de agendamento de um cliente
 
 		String sql = "UPDATE AGENDAMENTOS SET ID_FUNCIONARIO = '" + agendamento.getIdFuncionario()
 				+ "' , ID_SERVICO = '" + agendamento.getIdServico() + "' , STATUS = '"
@@ -395,9 +408,11 @@ public class AgendamentoDAO extends DAO {
 	}
 
 	public boolean cancelarBaixarAgendamento(int idAgendamento, String status) {
-		
-//		esta função recebe o idAgendamento e uma String status, que tem como objetivo cancelar um agendamento.
-//		faz um update no banco de dados alterando o status default (agendado) para (cancelado) ou (finalizado).
+
+		// esta função recebe o idAgendamento e uma String status, que tem como
+		// objetivo cancelar um agendamento.
+		// faz um update no banco de dados alterando o status default (agendado)
+		// para (cancelado) ou (finalizado).
 
 		String sql = "UPDATE AGENDAMENTOS SET STATUS = '" + status + "' WHERE ID_AGENDAMENTO = '" + idAgendamento + "'";
 
@@ -417,9 +432,11 @@ public class AgendamentoDAO extends DAO {
 	}
 
 	public boolean atualizarTabelaBaixarCarrosAgendados(int idCliente, JTable tabela) {
-		
-//		esta função recebe o idCliente e uma JTable(tabela). Tem a função de preencher a tabela
-//		com os dados de agendamento cadastrados no banco, para efeitos de confirmação, para posterior finalização do agendamento.
+
+		// esta função recebe o idCliente e uma JTable(tabela). Tem a função de
+		// preencher a tabela
+		// com os dados de agendamento cadastrados no banco, para efeitos de
+		// confirmação, para posterior finalização do agendamento.
 
 		conectaBanco();
 
@@ -457,17 +474,19 @@ public class AgendamentoDAO extends DAO {
 	}
 
 	public boolean verificarDuplicidadeAgendamento(Agendamento agendamento) {
-		
-//		esta função recebe um objeto agendamento e verifica se para o veiculo indicado,
-//		ja existe algum agendamento com o mesmo dia e horario cadastrado no banco de dados.
-		
+
+		// esta função recebe um objeto agendamento e verifica se para o veiculo
+		// indicado,
+		// ja existe algum agendamento com o mesmo dia e horario cadastrado no
+		// banco de dados.
+
 		int idAuto = agendamento.getIdAutomovel();
 		String dataAgendamento = agendamento.getDataAgendamento().toString();
 		String horarioInicio = agendamento.getHorarioInicial().toString();
 
 		String sql = "SELECT AG.ID_AGENDAMENTO FROM AGENDAMENTOS AG WHERE AG.ID_AUTOMOVEL = '" + idAuto
-				+ "' AND AG.DATAAGENDAMENTO = '" + dataAgendamento + "' AND AG.HORARIOINICIAL = '"
-				+ horarioInicio + "'";
+				+ "' AND AG.DATAAGENDAMENTO = '" + dataAgendamento + "' AND AG.HORARIOINICIAL = '" + horarioInicio
+				+ "'";
 
 		ArrayList<Agendamento> agendamentoDuplicado = new ArrayList<>();
 		try {

@@ -53,7 +53,6 @@ public class FormBaixarAgendamento extends JFrame {
 	 * Create the frame.
 	 */
 	public FormBaixarAgendamento() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 353, 294);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -85,8 +84,8 @@ public class FormBaixarAgendamento extends JFrame {
 				// este keyTyped bloqueia a inserção de caracteres diferentes de
 				// numeros.
 
-				String caracteres = "qwertyuiop´[]~çlkjhgfdsazxcvbnm,.;QWERTYUIOP`{}^ÇLKJHGFDSA|ZXCVBNM<>:";
-				if (caracteres.contains(e.getKeyChar() + "")) {
+				String caracteres = "0123456789";
+				if (!caracteres.contains(e.getKeyChar() + "")) {
 					e.consume();
 
 				}

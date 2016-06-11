@@ -1,6 +1,7 @@
 package senac.agendamento.assets.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -15,6 +16,7 @@ import javax.swing.SwingConstants;
 
 import com.toedter.calendar.JDateChooser;
 
+import javafx.scene.control.TableRow;
 import senac.agendamento.dao.RelatoriosDAO;
 import senac.agendamento.model.Cliente;
 import senac.agendamento.model.Funcionario;
@@ -32,6 +34,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.MouseAdapter;
@@ -146,15 +149,17 @@ public class FormRelatorios extends JFrame {
 
 		JComboBox comboBoxTipo = new JComboBox();
 		comboBoxTipo.addActionListener(new ActionListener() {
-			
-// ao selecionar o tipo de relatorio desejado, ações diferentes são tomadas para preenhimento do comboBox.
-			
+
+			// ao selecionar o tipo de relatorio desejado, ações diferentes são
+			// tomadas para preenhimento do comboBox.
+
 			public void actionPerformed(ActionEvent arg0) {
 				int opcao = comboBoxTipo.getSelectedIndex();
 
 				if (opcao == 1) {
-					
-// ao selecionar relatorio de funcionarios é apresentado um novo comboBox com o nome dos funcionarios.
+
+					// ao selecionar relatorio de funcionarios é apresentado um
+					// novo comboBox com o nome dos funcionarios.
 					comboBoxOpcoes.setVisible(true);
 					lblOpcoes.setVisible(true);
 					comboBoxOpcoes.setBounds(441, 54, 136, 22);
@@ -167,9 +172,10 @@ public class FormRelatorios extends JFrame {
 					}
 
 				} else if (opcao == 2) {
-					
-// ao selecionar relatorio de unidade é apresentado um novo comboBox com o nome das unidades.
-					
+
+					// ao selecionar relatorio de unidade é apresentado um novo
+					// comboBox com o nome das unidades.
+
 					comboBoxOpcoes.setVisible(true);
 					lblOpcoes.setVisible(true);
 					comboBoxOpcoes.setBounds(441, 54, 136, 22);
@@ -179,8 +185,9 @@ public class FormRelatorios extends JFrame {
 					comboBoxOpcoes.addItem("Brooklin");
 
 				} else if (opcao == 3) {
-					
-// ao selecionar relatorio de clientes é apresentado um novo comboBox com o nome dos clientes cadastrados.
+
+					// ao selecionar relatorio de clientes é apresentado um novo
+					// comboBox com o nome dos clientes cadastrados.
 					comboBoxOpcoes.setVisible(true);
 					lblOpcoes.setVisible(true);
 					comboBoxOpcoes.setBounds(441, 54, 320, 22);
@@ -193,8 +200,10 @@ public class FormRelatorios extends JFrame {
 					}
 
 				} else if (opcao == 0) {
-					
-// ao selecionar relatorio de agendamento se mantem a formatação padrão do formulario, sem inclusão de um novo comboBox.
+
+					// ao selecionar relatorio de agendamento se mantem a
+					// formatação padrão do formulario, sem inclusão de um novo
+					// comboBox.
 					comboBoxOpcoes.setVisible(false);
 					lblOpcoes.setVisible(false);
 					comboBoxOpcoes.removeAllItems();
@@ -208,14 +217,16 @@ public class FormRelatorios extends JFrame {
 				new String[] { "Por Agendamentos", "Por Funcion\u00E1rios", "Por Unidade", "Por Cliente" }));
 		comboBoxTipo.setBounds(421, 20, 156, 23);
 		panel.add(comboBoxTipo);
-		
-// botão que dispara o comando de pesquisa no BD.
+
+		// botão que dispara o comando de pesquisa no BD.
 
 		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-// faz a verificação se os campos das datas foram preenchidos e promove a formatação da data para que o BD possa fazer a leitura.
-				
+				// faz a verificação se os campos das datas foram preenchidos e
+				// promove a formatação da data para que o BD possa fazer a
+				// leitura.
+
 				Object dateIni = dateInicial.getDate();
 				Object dateFim = dateFinal.getDate();
 
@@ -228,20 +239,21 @@ public class FormRelatorios extends JFrame {
 					String dataFim = sdf.format(dateFim);
 
 					int opcao = comboBoxTipo.getSelectedIndex();
-					
-// de acordo com a opção de relatorio desejada, é apresentado em tela o respectivo relatorio.
+
+					// de acordo com a opção de relatorio desejada, é
+					// apresentado em tela o respectivo relatorio.
 
 					switch (opcao) {
 
 					case 0:
-						
-// apresenta em tela um relatorio de agendamentos.
-						
+
+						// apresenta em tela um relatorio de agendamentos.
+
 						int filtro = comboBoxFiltros.getSelectedIndex();
 
 						boolean pesquisa = relatoriosDao.relatorioDeAgendamentos(tableRelatorios, dataIni, dataFim,
 								filtro);
-
+						
 						if (!pesquisa) {
 							JOptionPane.showMessageDialog(null,
 									"Não existem dados de relatorio para as opções selecionadas!");
@@ -250,9 +262,9 @@ public class FormRelatorios extends JFrame {
 						break;
 
 					case 1:
-						
-// apresenta em tela um relatorio por Funcionarios
-						
+
+						// apresenta em tela um relatorio por Funcionarios
+
 						int filtro1 = comboBoxFiltros.getSelectedIndex();
 						int opcaoIdFuncionario = comboBoxOpcoes.getSelectedIndex();
 
@@ -272,9 +284,9 @@ public class FormRelatorios extends JFrame {
 						break;
 
 					case 2:
-						
-// apresenta em tela um relatorio por Unidade
-						
+
+						// apresenta em tela um relatorio por Unidade
+
 						int filtro2 = comboBoxFiltros.getSelectedIndex();
 						int opcaoIdUnidade = comboBoxOpcoes.getSelectedIndex();
 
@@ -282,7 +294,7 @@ public class FormRelatorios extends JFrame {
 
 							boolean pesquisa2 = relatoriosDao.relatorioPorUnidade(tableRelatorios, dataIni, dataFim,
 									filtro2, opcaoIdUnidade);
-
+							
 							if (!pesquisa2) {
 								JOptionPane.showMessageDialog(null,
 										"Não existem dados de relatorio para as opções selecionadas!");
@@ -294,14 +306,14 @@ public class FormRelatorios extends JFrame {
 						break;
 
 					case 3:
-						
-// apresenta em tela um relatorio por Cliente
-						
+
+						// apresenta em tela um relatorio por Cliente
+
 						int filtro3 = comboBoxFiltros.getSelectedIndex();
-						
+
 						if (comboBoxOpcoes.getSelectedIndex() == 0) {
 							JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
-							
+
 						} else {
 
 							int opcaoIdCliente = Integer.parseInt(

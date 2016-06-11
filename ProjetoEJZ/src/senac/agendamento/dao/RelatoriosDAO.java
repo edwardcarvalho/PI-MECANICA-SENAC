@@ -1,5 +1,6 @@
 package senac.agendamento.dao;
 
+import java.awt.Color;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
